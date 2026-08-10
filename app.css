@@ -60,3 +60,10 @@
 
 .legal-page{max-width:900px;margin:auto}.legal-page h1{color:var(--navy)}.legal-page h2{margin-top:26px;color:var(--navy)}.legal-note{background:#fff8e7;border:1px solid #ead39a;border-radius:14px;padding:14px}.footer-links{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;padding:18px 0;color:#d9e7f4}.pilot-banner{background:#fff3cd;color:#775a00;border-bottom:1px solid #ead39a;padding:9px;text-align:center;font-size:12px}
 .qa-ok{color:#178b58;font-weight:800}.qa-warn{color:#a66b00;font-weight:800}
+
+/* Pilot V2 product detail helpers */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.heroimg{height:330px;border-radius:24px;background:linear-gradient(135deg,#dff7f4,#f7ffff);display:grid;place-items:center;font-size:120px}
+.btn-ghost{background:#fff;border:1px solid var(--line);color:var(--ink)}
+@media(max-width:780px){.grid3{grid-template-columns:1fr}.heroimg{height:240px;font-size:90px}}
