@@ -1,0 +1,33 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة الشركات | بحرنا وشراعنا</title><link rel="stylesheet" href="app.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script defer src="app.js"></script></head><body>
+<div class="topbar"><div class="container">حساب شركات / مطاعم / فنادق • Demo</div></div>
+<header class="header"><div class="container header-row"><a class="brand" href="home.html"><span class="brand-mark">⛵🐟</span><div>بحرنا وشراعنا<br><small>BUSINESS BUYER</small></div></a><div style="margin-right:auto">الحساب المؤسسي</div></div></header>
+<div class="buyer-shell">
+<aside class="buyer-sidebar"><h3>المشتري المؤسسي</h3>
+<a class="active" href="#" onclick="showBuyerPanel('overviewPanel',this)">الرئيسية</a>
+<a href="#" onclick="showBuyerPanel('wholesalePanel',this)">أسعار الجملة</a>
+<a href="#" onclick="showBuyerPanel('newRfqPanel',this)">طلب عرض سعر RFQ</a>
+<a href="#" onclick="showBuyerPanel('rfqPanel',this)">طلبات RFQ</a>
+<a href="#" onclick="showBuyerPanel('ordersPanel',this)">الطلبات</a>
+</aside>
+<main class="buyer-main">
+<div class="admin-top"><div><h1 style="margin:0;color:var(--navy)">لوحة المشتري المؤسسي</h1><p class="muted">للمطاعم والفنادق وشركات التموين والجهات المؤسسية.</p></div><div><a class="btn btn-gold" href="catalog.html">السوق</a></div></div>
+
+<section id="overviewPanel" class="buyer-panel active"><div class="grid4">
+<div class="stat-card"><span class="muted">RFQ</span><div id="rfqCount" class="big">0</div></div>
+<div class="stat-card"><span class="muted">طلبات جملة</span><div id="b2bOrderCount" class="big">0</div></div>
+<div class="stat-card"><span class="muted">حالة الحساب</span><div class="big">✓</div></div>
+<div class="stat-card"><span class="muted">حد ائتماني</span><div class="big">—</div></div>
+</div><div class="card" style="margin-top:16px"><h2>لماذا حساب الأعمال؟</h2><p class="muted">مقارنة أسعار الجملة، طلب كميات، RFQ، عقود أسعار لاحقًا، وفواتير وتقارير دورية.</p></div></section>
+
+<section id="wholesalePanel" class="buyer-panel"><h2>أفضل أسعار الجملة</h2><div id="wholesaleCards" class="grid4"></div></section>
+
+<section id="newRfqPanel" class="buyer-panel"><div class="card"><h2>طلب عرض سعر RFQ</h2><div class="form-grid">
+<div class="field"><label>المنتج</label><input id="rfqItem" placeholder="مثال: هامور محلي"></div>
+<div class="field"><label>الكمية كجم</label><input id="rfqQty" type="number" step="1"></div>
+<div class="field"><label>الإمارة</label><select id="rfqDelivery"><option>دبي</option><option>أبوظبي</option><option>الشارقة</option><option>عجمان</option><option>رأس الخيمة</option><option>الفجيرة</option><option>أم القيوين</option></select></div>
+<div class="field"><label>موعد التسليم المطلوب</label><input type="date"></div>
+</div><div class="field"><label>ملاحظات</label><textarea rows="3" placeholder="المقاس، التنظيف، التغليف، أي شروط أخرى"></textarea></div><button class="btn btn-primary" onclick="submitRFQ()">إرسال RFQ</button></div></section>
+
+<section id="rfqPanel" class="buyer-panel"><div class="card"><h2>طلبات عروض الأسعار</h2><table class="table"><thead><tr><th>الرقم</th><th>المنتج</th><th>الكمية</th><th>التسليم</th><th>الحالة</th></tr></thead><tbody id="rfqRows"></tbody></table></div></section>
+<section id="ordersPanel" class="buyer-panel"><div class="card"><h2>طلبات الجملة</h2><table class="table"><thead><tr><th>الطلب</th><th>المنتج</th><th>القيمة</th><th>الحالة</th></tr></thead><tbody id="b2bRows"></tbody></table></div></section>
+</main></div><script src="buyer.js"></script></body></html>

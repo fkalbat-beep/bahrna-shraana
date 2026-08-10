@@ -1,0 +1,56 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>شراعنا للمزادات | بحرنا وشراعنا</title><link rel="stylesheet" href="app.css"></head><body>
+<div class="topbar"><div class="container">شراعنا للمزادات • محاكاة تشغيلية • لا يوجد تحصيل مالي حقيقي في هذه النسخة</div></div>
+<header class="header"><div class="container header-row"><a class="brand" href="home.html"><span class="brand-mark">⛵🐟</span><div>بحرنا وشراعنا<br><small>SHRAANA AUCTIONS</small></div></a><div style="margin-right:auto"><a class="btn btn-gold" href="buyer.html">حساب الأعمال</a></div></div></header>
+
+<section class="section"><div class="container auction-shell">
+<div>
+ <div class="live-panel">
+  <span class="badge">🔴 LIVE DEMO</span>
+  <h1>هامور محلي طازج — 20 كجم</h1>
+  <p style="color:#d7e7f4">الإمارات • صيد اليوم • مورد موثق عند التشغيل</p>
+  <div class="auction-price" id="currentPrice">AED 1,250</div>
+  <p>السعر الحالي</p>
+  <div class="timer"><div class="timer-box"><strong id="min">07</strong><br><small>دقيقة</small></div><div class="timer-box"><strong id="sec">50</strong><br><small>ثانية</small></div></div>
+  <p style="font-size:12px;color:#d7e7f4">إذا وصلت مزايدة خلال آخر 30 ثانية، يمدد النظام المزاد دقيقتين تلقائيًا.</p>
+ </div>
+
+ <div class="card" style="margin-top:16px">
+  <h2>التأهيل قبل المزايدة</h2>
+  <div class="qualify-grid"><div id="q1" class="qualify"></div><div id="q2" class="qualify"></div><div id="q3" class="qualify"></div></div>
+  <div class="grid2" style="margin-top:12px"><div><strong>رسوم المشاركة</strong><div id="fee" class="price" style="font-size:22px"></div></div><div><strong>ضمان المزايدة</strong><div id="deposit" class="price" style="font-size:22px"></div></div></div>
+  <button class="btn btn-primary" onclick="openQualification()">مراجعة التأهيل</button>
+ </div>
+
+ <div class="card" style="margin-top:16px">
+  <h2>المزايدة</h2>
+  <div class="field"><label>عرضك التالي</label><input id="nextBid" type="number"></div>
+  <button id="bidButton" class="btn btn-gold" style="width:100%" onclick="placeBid()">🔨 زايد الآن</button>
+  <div class="field"><label>Auto Bid — الحد الأقصى</label><input id="autoMax" type="number" placeholder="مثال: 1800"></div>
+  <button class="btn btn-primary" onclick="setAutoBid()">تفعيل Auto Bid</button>
+ </div>
+</div>
+
+<div>
+ <div class="card">
+  <h2>سجل المزايدات</h2>
+  <div id="bidRows" class="bid-log"></div>
+ </div>
+ <div class="card" style="margin-top:16px">
+  <h2>الترتيب الحالي</h2>
+  <p>🥇 <strong id="leader1">—</strong></p>
+  <p>🥈 <strong id="leader2">—</strong></p>
+  <p class="muted small">يحتفظ النظام بالمركزين الأول والثاني لضمان انتقال الترسية سريعًا إذا فشل الدفع.</p>
+ </div>
+ <div id="resultBox" class="card winner" style="margin-top:16px;display:none">
+  <h2>نتيجة المزاد</h2>
+  <p>الفائز: <strong id="winnerText">—</strong></p>
+  <p>البديل الثاني: <strong id="secondText">—</strong></p>
+  <button class="btn btn-primary" onclick="simulateFailedPayment()">محاكاة فشل الدفع</button>
+  <p id="fallbackText" style="display:none;margin-top:12px"></p>
+ </div>
+</div>
+</div></section>
+
+<div id="qualModal" class="modal-back"><div class="modal"><h2>تأهيل المزايد</h2><p>في النسخة الحقيقية ستتم هذه الخطوات عبر بوابة دفع آمنة:</p><ol><li>توثيق الحساب والهوية/الشركة.</li><li>تحصيل رسوم المشاركة.</li><li>حجز ضمان Pre-Authorization.</li><li>الموافقة على أن المزايدة ملزمة.</li></ol><div class="row"><button class="btn btn-primary" onclick="completeQualification()">محاكاة اكتمال التأهيل</button><button class="btn" onclick="closeQualification()">إغلاق</button></div></div></div>
+
+<script src="auction_live.js"></script></body></html>

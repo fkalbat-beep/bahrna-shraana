@@ -1,0 +1,42 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة الإدارة | بحرنا وشراعنا</title><link rel="stylesheet" href="app.css"></head><body>
+<div class="topbar"><div class="container">لوحة إدارة تجريبية • لا توجد بيانات مالية حقيقية في هذه النسخة</div></div>
+<header class="header"><div class="container header-row"><a class="brand" href="home.html"><span class="brand-mark">⛵🐟</span><div>بحرنا وشراعنا<br><small>ADMIN DASHBOARD</small></div></a><div style="margin-right:auto">مدير النظام</div></div></header>
+<div class="admin-shell">
+<aside class="sidebar"><h3>الإدارة</h3>
+<a class="active" href="#" onclick="showPanel('overviewPanel',this)">لوحة المؤشرات</a>
+<a href="#" onclick="showPanel('suppliersPanel',this)">الموردون</a>
+<a href="#" onclick="showPanel('productsPanel',this)">المنتجات والأسعار</a>
+<a href="#" onclick="showPanel('ordersPanel',this)">الطلبات</a>
+<a href="#" onclick="showPanel('auctionsPanel',this)">المزادات</a>
+<a href="#" onclick="showPanel('addProductPanel',this)">إضافة منتج</a>
+</aside>
+<main class="admin-main">
+<div class="admin-top"><div><h1 style="margin:0;color:var(--navy)">لوحة الإدارة</h1><p class="muted">تشغيل الموردين والأسعار والطلبات والمزادات.</p></div><div class="admin-actions"><a class="btn btn-gold" href="home.html">عرض الموقع</a></div></div>
+
+<section id="overviewPanel" class="panel active">
+<div class="grid4">
+<div class="stat-card"><span class="muted">الموردون</span><div id="supCount" class="big">0</div></div>
+<div class="stat-card"><span class="muted">المنتجات</span><div id="prodCount" class="big">0</div></div>
+<div class="stat-card"><span class="muted">الطلبات</span><div id="ordCount" class="big">0</div></div>
+<div class="stat-card"><span class="muted">GMV تجريبي</span><div id="gmv" class="big">AED 0</div></div>
+</div>
+<div class="grid2" style="margin-top:16px">
+<div class="card"><h2>تنبيهات التشغيل</h2><p><span class="status-dot orange"></span> مورد واحد قيد المراجعة</p><p><span class="status-dot green"></span> 4 منتجات نشطة</p><p><span class="status-dot orange"></span> مزاد واحد مجدول</p></div>
+<div class="card"><h2>قاعدة المرحلة الأولى</h2><p class="muted">أي رقم هنا تجريبي حتى الربط الفعلي بقاعدة البيانات. لن يتم عرض مؤشرات وهمية على الموقع العام.</p></div>
+</div>
+</section>
+
+<section id="suppliersPanel" class="panel"><div class="card"><h2>إدارة الموردين</h2><table class="table"><thead><tr><th>المورد</th><th>الإمارة</th><th>الرخصة</th><th>TRN</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody id="supplierRows"></tbody></table></div></section>
+<section id="productsPanel" class="panel"><div class="card"><h2>المنتجات والأسعار</h2><table class="table"><thead><tr><th>المنتج</th><th>المورد</th><th>السعر/كجم</th><th>المخزون</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody id="productRows"></tbody></table></div></section>
+<section id="ordersPanel" class="panel"><div class="card"><h2>الطلبات</h2><table class="table"><thead><tr><th>رقم الطلب</th><th>العميل</th><th>الإجمالي</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody id="orderRows"></tbody></table></div></section>
+<section id="auctionsPanel" class="panel"><div class="card"><h2>إدارة المزادات</h2><table class="table"><thead><tr><th>المزاد</th><th>السعر</th><th>المزايدون</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody id="auctionRows"></tbody></table></div></section>
+
+<section id="addProductPanel" class="panel"><div class="card"><h2>إضافة منتج</h2><div class="form-grid">
+<div class="field"><label>اسم المنتج</label><input id="pname" placeholder="مثال: هامور محلي"></div>
+<div class="field"><label>السعر لكل كجم</label><input id="pprice" type="number" step="0.01"></div>
+<div class="field"><label>المخزون كجم</label><input id="pstock" type="number" step="0.1"></div>
+<div class="field"><label>الفئة</label><select><option>سمك</option><option>قشريات</option><option>محاريات</option></select></div>
+</div><button class="btn btn-primary" onclick="addProduct()">إضافة المنتج</button></div></section>
+</main></div>
+<script src="admin.js"></script>
+</body></html>

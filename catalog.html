@@ -1,0 +1,21 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>السوق</title><link rel="stylesheet" href="app.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script defer src="app.js"></script></head><body><div class="topbar"><div class="container">🇦🇪 الإمارات • AED • MVP تجريبي</div></div><header class="header"><div class="container header-row"><a class="brand" href="home.html"><span class="brand-mark">⛵🐟</span><div>بحرنا وشراعنا<br><small>BAHRNA & SHRAANA</small></div></a><div class="search"><input placeholder="ابحث عن سمك، مورد، منتج..."></div><nav class="navlinks"><a href="catalog.html">الأسماك الطازجة</a><a href="auction.html">المزادات</a><a href="register.html">الشركات</a><a href="login.html">حسابي</a></nav></div></header><section class="section"><div class="container"><h1>الأسماك الطازجة</h1><p class="muted">السعر موحد لكل كجم للمقارنة العادلة.</p><div id="products" class="grid4"></div></div></section><script>
+document.addEventListener('DOMContentLoaded',async()=>{
+ const offers=await Bahrna.getMarketOffers();
+ document.getElementById('products').innerHTML=offers.sort((a,b)=>a.retail-b.retail).map(o=>`
+ <div class="card">
+  <div style="font-size:62px;text-align:center">🐟</div>
+  <span class="badge">${o.origin||'الإمارات'}</span>
+  <h3>${o.name}</h3>
+  <p class="muted">${o.supplier||'مورد موثق'} • وصول ${o.arrived||'اليوم'}</p>
+  <div class="price">AED ${Number(o.retail).toFixed(2)} <small>/كجم</small></div>
+  ${o.wholesale?`<p class="muted">جملة: AED ${Number(o.wholesale).toFixed(2)} /كجم</p>`:''}
+  <p class="muted">متوفر: ${o.qty} كجم</p>
+  <button class="btn btn-primary" onclick='localStorage.setItem("selectedOffer",JSON.stringify(${JSON.stringify({})})); localStorage.setItem("selectedOfferRaw",JSON.stringify(${JSON.stringify("PLACEHOLDER")}))'>اختر المنتج</button>
+ </div>`).join('');
+ // wire buttons safely after render
+ [...document.querySelectorAll('#products .card')].forEach((card,i)=>{
+   const b=card.querySelector('button');
+   b.onclick=()=>{localStorage.setItem("selectedOffer",JSON.stringify(offers[i]));location.href="product.html"}
+ });
+});
+</script><nav class="mobile-bottom"><a href="home.html">⌂<br>الرئيسية</a><a href="catalog.html">🐟<br>السوق</a><a href="auction.html">🔴<br>المزاد</a><a href="checkout.html">🛒<br>السلة</a><a href="login.html">👤<br>حسابي</a></nav></body></html>

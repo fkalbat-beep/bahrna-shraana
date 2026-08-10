@@ -1,0 +1,20 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>التجهيز والتغليف</title><link rel="stylesheet" href="app.css"><script defer src="order_delivery.js"></script></head><body><div class="topbar"><div class="container">🇦🇪 الإمارات • AED • مسار الطلب التجريبي</div></div><header class="header"><div class="container header-row"><a class="brand" href="home.html"><span class="brand-mark">⛵🐟</span><div>بحرنا وشراعنا<br><small>BAHRNA & SHRAANA</small></div></a><div style="margin-right:auto"><a class="btn btn-gold" href="catalog.html">السوق</a></div></div></header>
+<section class="section"><div class="container"><div class="checkout-steps"><div class="checkout-step">1 السلة</div><div class="checkout-step active">2 التجهيز</div><div class="checkout-step">3 التوصيل</div><div class="checkout-step">4 الدفع</div><div class="checkout-step">5 التأكيد</div></div>
+<div class="grid2"><div>
+<div class="card"><h1>طريقة التقطيع</h1><div class="video-demo"><div><div style="font-size:44px">▶️</div><strong id="cutVideoTitle">فيديو توضيحي: كامل</strong><p style="color:#c5d8e7;font-size:12px">مكان الفيديو الحقيقي لكل طريقة تجهيز.</p></div></div>
+<div class="choice-grid" style="margin-top:12px">
+<div data-cut class="choice active" onclick="chooseCut(this,'كامل',0)">🐟<br><strong>كامل</strong><br><small>مجانًا</small></div>
+<div data-cut class="choice" onclick="chooseCut(this,'تنظيف فقط',3)">🧼<br><strong>تنظيف</strong><br><small>+3</small></div>
+<div data-cut class="choice" onclick="chooseCut(this,'شرائح',5)">🔪<br><strong>شرائح</strong><br><small>+5</small></div>
+<div data-cut class="choice" onclick="chooseCut(this,'فيليه',8)">🍽️<br><strong>فيليه</strong><br><small>+8</small></div>
+<div data-cut class="choice" onclick="chooseCut(this,'للقلي',5)">🍳<br><strong>للقلي</strong><br><small>+5</small></div>
+<div data-cut class="choice" onclick="chooseCut(this,'للمرق',5)">🥘<br><strong>للمرق</strong><br><small>+5</small></div>
+</div></div>
+<div class="card" style="margin-top:14px"><h2>الرأس والعظم</h2><div class="choice-grid"><div class="choice active" onclick="setKeep(true);this.parentElement.querySelectorAll('.choice').forEach(x=>x.classList.remove('active'));this.classList.add('active')">الاحتفاظ بهما</div><div class="choice" onclick="setKeep(false);this.parentElement.querySelectorAll('.choice').forEach(x=>x.classList.remove('active'));this.classList.add('active')">التخلص منهما</div></div></div>
+<div class="card" style="margin-top:14px"><h2>التغليف</h2><div class="choice-grid">
+<div data-pack class="choice active" onclick="choosePack(this,'بدون ثلج',0)">بدون ثلج<br><small>مجانًا</small></div>
+<div data-pack class="choice" onclick="choosePack(this,'مع ثلج',3)">مع ثلج<br><small>+3</small></div>
+<div data-pack class="choice" onclick="choosePack(this,'Cool Box + Ice',8)">Cool Box + Ice<br><small>+8</small></div>
+</div></div></div>
+<div class="card"><h2>ملخص الطلب</h2><p id="prepText"></p><p>المنتجات <strong id="sumSubtotal" style="float:left"></strong></p><p>التجهيز <strong id="sumPrep" style="float:left"></strong></p><p>التغليف <strong id="sumPack" style="float:left"></strong></p><p>التوصيل <strong id="sumDelivery" style="float:left"></strong></p><p>ضريبة القيمة المضافة <strong id="sumVat" style="float:left"></strong></p><hr><div class="price" id="sumTotal"></div><button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="continueToDelivery()">التالي: التوصيل</button></div>
+</div></div></section></body></html>

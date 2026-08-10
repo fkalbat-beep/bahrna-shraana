@@ -1,0 +1,9 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>فحص الإعداد</title><link rel="stylesheet" href="app.css"><script src="config.js"></script></head><body><section class="section"><div class="container card"><h1>فحص إعداد Pilot</h1><div id="result"></div><p><a class="btn btn-primary" href="home.html">فتح الموقع</a></p></div></section><script>
+const c=window.BAHRNA_CONFIG||{};
+const urlOk=c.SUPABASE_URL && !c.SUPABASE_URL.includes("YOUR_");
+const keyOk=c.SUPABASE_ANON_KEY && !c.SUPABASE_ANON_KEY.includes("YOUR_");
+document.getElementById("result").innerHTML=`
+<p>${urlOk?"✅":"🟠"} Project URL: ${urlOk?"تم ضبطه":"لم يتم ضبطه بعد"}</p>
+<p>${keyOk?"✅":"🟠"} Publishable Key: ${keyOk?"تم ضبطه":"لم يتم ضبطه بعد"}</p>
+<p>${urlOk&&keyOk?"✅ الموقع جاهز لاختبار Supabase.":"ℹ️ الموقع سيستمر في Demo Mode حتى إدخال البيانات."}</p>`;
+</script></body></html>

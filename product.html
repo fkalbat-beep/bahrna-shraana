@@ -1,0 +1,33 @@
+<!doctype html><html lang='ar' dir='rtl'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>صفحة المنتج | بحرنا</title><style>
+:root{--navy:#073B4C;--teal:#0E8F8F;--aqua:#E7F8F6;--gold:#C9A227;--ink:#12212B;--muted:#6B7B86;--line:#E6ECEF;--bg:#F7FAFB;--white:#fff;--danger:#D64545;--success:#198754;--shadow:0 10px 30px rgba(7,59,76,.10);--radius:22px}
+*{box-sizing:border-box} body{margin:0;font-family:Arial,'Noto Sans Arabic',sans-serif;background:var(--bg);color:var(--ink)} a{text-decoration:none;color:inherit} button,input,select,textarea{font:inherit}
+.container{width:min(1100px,92%);margin:auto}.topbar{background:var(--navy);color:#fff;font-size:12px;padding:8px 0}.nav{display:flex;justify-content:space-between;align-items:center;padding:13px 0;background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20}
+.brand{font-weight:900;color:var(--navy);font-size:20px}.btn{border:0;border-radius:14px;padding:12px 18px;font-weight:800;cursor:pointer}.btn-primary{background:var(--navy);color:#fff}.btn-teal{background:var(--teal);color:#fff}.btn-ghost{background:#fff;border:1px solid var(--line)}
+.card{background:#fff;border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 8px 20px rgba(7,59,76,.05)}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+h1,h2,h3{color:var(--navy)} .muted{color:var(--muted)} .price{font-size:30px;font-weight:900;color:var(--navy)} .badge{display:inline-block;background:var(--aqua);color:var(--navy);padding:7px 10px;border-radius:999px;font-size:12px;font-weight:800}
+.field{display:grid;gap:6px;margin-bottom:13px}.field input,.field select,.field textarea{padding:13px;border:1px solid var(--line);border-radius:12px;background:#fff}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.section{padding:26px 0}.heroimg{height:330px;border-radius:24px;background:linear-gradient(135deg,#DFF7F4,#F7FFFF);display:grid;place-items:center;font-size:120px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;text-align:center}.kpi strong{display:block;font-size:22px;color:var(--navy)}
+.mobile-bottom{display:none}
+@media(max-width:700px){.grid2,.grid3{grid-template-columns:1fr}.heroimg{height:240px;font-size:90px}.mobile-bottom{display:grid;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--line);grid-template-columns:repeat(5,1fr);padding:7px;z-index:99}.mobile-bottom a{text-align:center;font-size:10px;color:var(--muted)}body{padding-bottom:65px}}
+</style></head>
+<body><div class='topbar'><div class='container'>🇦🇪 BAHRNA | بحرنا — نسخة مراجعة تشغيلية V5</div></div>
+<div class='nav'><div class='container' style='display:flex;justify-content:space-between;align-items:center'><a class='brand' href='index.html'>بحرنا | BAHRNA</a><div class='row'><a href='product.html'>المنتج</a><a href='auction.html'>المزاد</a><a href='register.html'>التسجيل</a></div></div></div>
+
+<section class='section'><div class='container grid2'>
+<div class='heroimg'>🐟</div>
+<div class='card'>
+<span class='badge'>سعر مرجعي — للمراجعة</span>
+<h1>هامور محلي طازج</h1><p class='muted'>الإمارات • مبرد • مورد موثق عند التشغيل</p>
+<div class='price'>AED 49.00 <small style='font-size:14px'>/ كجم</small></div>
+<div class='field'><label>الوزن</label><select id='w' onchange='calc()'><option value='1'>1 كجم</option><option value='2'>2 كجم</option><option value='3'>3 كجم</option><option value='5'>5 كجم</option></select></div>
+<div class='field'><label>التجهيز</label><select><option>كامل</option><option>تنظيف</option><option>تقطيع</option><option>فيليه</option></select></div>
+<div class='row'><strong>الإجمالي:</strong><span id='total' class='price'>AED 49.00</span></div>
+<div class='row' style='margin-top:14px'><a class='btn btn-primary' href='checkout.html'>إتمام الشراء</a><button class='btn btn-ghost'>حفظ</button></div>
+<p class='muted' style='font-size:12px;margin-top:16px'>في النسخة النهائية يظهر وقت الوصول، اسم المورد، المخزون المتاح، تقييم المورد، وحالة سلسلة التبريد.</p>
+</div></div></section>
+<section class='section'><div class='container'><div class='grid3'>
+<div class='kpi'><strong>—</strong><span>عمليات شراء موثقة</span></div><div class='kpi'><strong>—</strong><span>تقييم المنتج</span></div><div class='kpi'><strong>—</strong><span>آخر تحديث للمخزون</span></div>
+</div></div></section>
+<script>function calc(){const w=+document.getElementById('w').value;document.getElementById('total').textContent='AED '+(49*w).toFixed(2)}</script>
+<div class='mobile-bottom'><a href='index.html'>⌂<br>الرئيسية</a><a href='product.html'>🐟<br>المنتج</a><a href='auction.html'>🔴<br>المزاد</a><a href='register.html'>🏢<br>التسجيل</a><a href='checkout.html'>🛒<br>الدفع</a></div>
+</body></html>

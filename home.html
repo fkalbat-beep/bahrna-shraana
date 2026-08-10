@@ -1,0 +1,20 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>بحرنا وشراعنا</title><link rel="stylesheet" href="app.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script defer src="app.js"></script><script defer src="trust_loyalty.js"></script></head><body><div class="topbar"><div class="container">🇦🇪 الإمارات • AED • MVP تجريبي</div></div><header class="header"><div class="container header-row"><a class="brand" href="home.html"><span class="brand-mark">⛵🐟</span><div>بحرنا وشراعنا<br><small>BAHRNA & SHRAANA</small></div></a><div class="search"><input placeholder="ابحث عن سمك، مورد، منتج..."></div><nav class="navlinks"><a href="catalog.html">الأسماك الطازجة</a><a href="auction.html">المزادات</a><a href="register.html">الشركات</a><a href="login.html">حسابي</a></nav></div></header><section class="section"><div class="container"><div class="hero"><span class="badge">Marketplace • Retail • Wholesale • Auctions</span><h1>من <span class="gold">بحرنا</span>... بشراعنا إلى بابك</h1><p>سوق رقمي إماراتي للأسماك والمأكولات البحرية الطازجة.</p><a class="btn btn-gold" href="catalog.html">تسوق الآن</a></div></div></section><section class="section"><div class="container"><h2>📈 أفضل أسعار اليوم — لكل كجم</h2><div id="ticker" class="market-ticker"></div></div></section><section class="section"><div class="container grid4"><div class="kpi"><strong>0</strong>طلبات مكتملة</div><div class="kpi"><strong>0</strong>مزادات مكتملة</div><div class="kpi"><strong>0</strong>موردون معتمدون</div><div class="kpi"><strong>—</strong>تقييم موثق</div></div></section><script>
+document.addEventListener('DOMContentLoaded',async()=>{
+ const offers=await Bahrna.getMarketOffers();
+ const best={};
+ offers.forEach(o=>{ if(!best[o.name] || o.retail<best[o.name].retail) best[o.name]=o; });
+ const rows=Object.values(best).sort((a,b)=>a.retail-b.retail);
+ document.getElementById('ticker').innerHTML=rows.map(o=>`<a class="quote" href="catalog.html"><strong>${o.name}</strong><div class="price" style="font-size:20px">${Number(o.retail).toFixed(2)} AED</div><small>${o.supplier||''} • ${o.origin||''}</small></a>`).join('');
+});
+</script><nav class="mobile-bottom"><a href="home.html">⌂<br>الرئيسية</a><a href="catalog.html">🐟<br>السوق</a><a href="auction.html">🔴<br>المزاد</a><a href="checkout.html">🛒<br>السلة</a><a href="login.html">👤<br>حسابي</a></nav>
+<section class="section"><div class="container">
+<h2>ثقة مبنية على عمليات حقيقية</h2>
+<div class="trust-badges">
+<div class="trust-badge"><strong id="trustOrders">0</strong><span>طلبات مكتملة</span></div>
+<div class="trust-badge"><strong id="trustReviews">0</strong><span>تقييمات موثقة</span></div>
+<div class="trust-badge"><strong id="trustRating">—</strong><span>متوسط التقييم</span></div>
+<div class="trust-badge"><strong id="trustSuppliers">0</strong><span>موردون نشطون</span></div>
+</div>
+</div></section>
+<section class="section"><div class="container"><h2>آراء العملاء</h2><div id="reviewList" class="grid4"></div><p class="muted small">الأرقام والتقييمات أعلاه بيانات Demo لعرض الوظيفة فقط، وستستبدل آليًا بالبيانات الفعلية عند التشغيل.</p></div></section>
+</body></html>
