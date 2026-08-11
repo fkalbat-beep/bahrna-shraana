@@ -4,11 +4,8 @@
    Delivery + Buyer Receipt Confirmation
 ========================================================= */
 
-
 let CurrentOrder = null;
-
 let CurrentUser = null;
-
 
 
 /* =========================================================
@@ -16,137 +13,81 @@ let CurrentUser = null;
 ========================================================= */
 
 function money(value) {
-
-  return "AED " +
-    Number(value || 0).toFixed(2);
+  return "AED " + Number(value || 0).toFixed(2);
 }
-
-
 
 function formatDateTime(value) {
-
-  if (!value) {
-    return "—";
-  }
-
+  if (!value) return "—";
 
   try {
-
-    return new Date(value)
-      .toLocaleString(
-        "ar-AE",
-        {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "2-digit",
-          minute: "2-digit"
-        }
-      );
-
+    return new Date(value).toLocaleString("ar-AE", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit"
+    });
   } catch (e) {
-
     return value;
   }
-
 }
 
-
-
-function statusLabel(
-  status,
-  receiptStatus
-) {
-
+function statusLabel(status, receiptStatus) {
   if (
     status === "delivered" &&
     receiptStatus === "confirmed"
   ) {
-
     return "تم الاستلام";
   }
 
-
   const labels = {
-
-    pending:
-      "بانتظار التأكيد",
-
-    confirmed:
-      "تم التأكيد",
-
-    preparing:
-      "جاري التجهيز",
-
-    out_for_delivery:
-      "خرج للتوصيل",
-
-    delivered:
-      "تم التسليم",
-
-    cancelled:
-      "تم الإلغاء"
-
+    pending: "بانتظار التأكيد",
+    confirmed: "تم التأكيد",
+    preparing: "جاري التجهيز",
+    out_for_delivery: "خرج للتوصيل",
+    delivered: "تم التسليم",
+    cancelled: "تم الإلغاء"
   };
 
-
-  return labels[status] ||
-    status ||
-    "—";
+  return labels[status] || status || "—";
 }
-
-
 
 function paymentStatusLabel(status) {
-
   const labels = {
-
-    unpaid:
-      "غير مدفوع",
-
-    pending:
-      "بانتظار الدفع",
-
-    paid:
-      "مدفوع",
-
-    refunded:
-      "مسترد"
-
+    unpaid: "غير مدفوع",
+    pending: "بانتظار الدفع",
+    paid: "مدفوع",
+    refunded: "مسترد"
   };
 
-
-  return labels[status] ||
-    status ||
-    "غير محدد";
+  return labels[status] || status || "غير محدد";
 }
-
-
 
 function paymentMethodLabel(method) {
-
   const labels = {
-
-    pilot_no_charge:
-      "طلب تجريبي / بدون تحصيل",
-
-    card:
-      "بطاقة بنكية",
-
-    apple_pay:
-      "Apple Pay",
-
-    cash:
-      "نقداً"
-
+    pilot_no_charge: "طلب تجريبي / بدون تحصيل",
+    card: "بطاقة بنكية",
+    apple_pay: "Apple Pay",
+    cash: "نقداً"
   };
 
-
-  return labels[method] ||
-    method ||
-    "غير محدد";
+  return labels[method] || method || "غير محدد";
 }
 
+
+/* =========================================================
+   تحديد صاحب الطلب
+========================================================= */
+
+function getOrderBuyerId(order) {
+  if (!order) return null;
+
+  return (
+    order.buyer_id ||
+    order.user_id ||
+    null
+  );
+}
 
 
 /* =========================================================
@@ -154,18 +95,11 @@ function paymentMethodLabel(method) {
 ========================================================= */
 
 function getOrderNoFromURL() {
-
   const params =
-    new URLSearchParams(
-      window.location.search
-    );
+    new URLSearchParams(window.location.search);
 
-
-  return params.get(
-    "order"
-  );
+  return params.get("order");
 }
-
 
 
 /* =========================================================
@@ -173,33 +107,25 @@ function getOrderNoFromURL() {
 ========================================================= */
 
 async function loadCurrentUser() {
+  CurrentUser = null;
 
   try {
-
     if (
       window.Bahrna &&
-      typeof Bahrna.getCurrentUser ===
-        "function"
+      typeof Bahrna.getCurrentUser === "function"
     ) {
-
       CurrentUser =
         await Bahrna.getCurrentUser();
-
     }
-
   } catch (e) {
-
     console.warn(
       "تعذر قراءة المستخدم الحالي",
       e
     );
-
-    CurrentUser =
-      null;
   }
 
+  return CurrentUser;
 }
-
 
 
 /* =========================================================
@@ -207,115 +133,73 @@ async function loadCurrentUser() {
 ========================================================= */
 
 async function loadOrderDetails() {
-
   const orderNo =
     getOrderNoFromURL();
 
-
   if (!orderNo) {
-
     showError(
       "لم يتم تحديد رقم الطلب في الرابط."
     );
-
     return;
   }
-
 
   if (
     !window.Bahrna ||
     !Bahrna.client
   ) {
-
     showError(
       "الاتصال بقاعدة البيانات غير متاح."
     );
-
     return;
   }
 
-
   try {
-
     await loadCurrentUser();
 
-
-    const {
-      data,
-      error
-    } = await Bahrna.client
-
-      .from("orders")
-
-      .select(`
-        *,
-        order_items (
-          *
-        )
-      `)
-
-      .eq(
-        "order_no",
-        orderNo
-      )
-
-      .single();
-
+    const { data, error } =
+      await Bahrna.client
+        .from("orders")
+        .select(`
+          *,
+          order_items (
+            *
+          )
+        `)
+        .eq("order_no", orderNo)
+        .single();
 
     if (error) {
       throw error;
     }
 
-
     if (!data) {
-
       throw new Error(
         "الطلب غير موجود"
       );
     }
 
+    CurrentOrder = data;
 
-    CurrentOrder =
-      data;
+    renderOrder(data);
 
+    await loadBuyerInfo(data);
 
-    renderOrder(
-      data
-    );
+    await loadSupplierInfo(data);
 
-
-    await loadBuyerInfo(
-      data
-    );
-
-
-    await loadSupplierInfo(
-      data
-    );
-
-
-    renderReceiptSection(
-      data
-    );
-
+    renderReceiptSection(data);
 
   } catch (e) {
-
     console.error(
       "ORDER DETAILS ERROR:",
       e
     );
 
-
     showError(
       "تعذر تحميل تفاصيل الطلب: " +
       (e.message || e)
     );
-
   }
-
 }
-
 
 
 /* =========================================================
@@ -323,18 +207,15 @@ async function loadOrderDetails() {
 ========================================================= */
 
 function renderOrder(order) {
-
   const trackingStatus =
     order.tracking_status ||
     order.status ||
     "pending";
 
-
   setText(
     "orderNo",
     order.order_no
   );
-
 
   setText(
     "orderStatus",
@@ -344,14 +225,12 @@ function renderOrder(order) {
     )
   );
 
-
   setText(
     "orderDate",
     formatDateTime(
       order.created_at
     )
   );
-
 
   setText(
     "paymentMethod",
@@ -360,7 +239,6 @@ function renderOrder(order) {
     )
   );
 
-
   setText(
     "paymentStatus",
     paymentStatusLabel(
@@ -368,73 +246,52 @@ function renderOrder(order) {
     )
   );
 
-
   const address =
-    order.delivery_address ||
-    {};
-
+    order.delivery_address || {};
 
   setText(
     "deliveryEmirate",
     address.emirate || "—"
   );
 
-
   setText(
     "deliveryArea",
     address.area || "—"
   );
-
 
   setText(
     "deliveryAddress",
     address.address || "—"
   );
 
-
   setText(
     "subtotal",
-    money(
-      order.subtotal
-    )
+    money(order.subtotal)
   );
-
 
   setText(
     "deliveryFee",
-    money(
-      order.delivery_fee
-    )
+    money(order.delivery_fee)
   );
-
 
   setText(
     "vat",
-    money(
-      order.vat
-    )
+    money(order.vat)
   );
-
 
   setText(
     "orderTotal",
-    money(
-      order.total
-    )
+    money(order.total)
   );
-
 
   renderItems(
-    order.order_items ||
-    []
+    order.order_items || []
   );
-
 
   renderTimeline(
     trackingStatus,
     order.receipt_status
   );
-
 
   setText(
     "trackingMessage",
@@ -443,9 +300,7 @@ function renderOrder(order) {
       order.receipt_status
     )
   );
-
 }
-
 
 
 /* =========================================================
@@ -453,257 +308,146 @@ function renderOrder(order) {
 ========================================================= */
 
 function renderItems(items) {
-
   const tbody =
     document.getElementById(
       "orderItems"
     );
 
-
-  if (!tbody) {
-    return;
-  }
-
+  if (!tbody) return;
 
   if (!items.length) {
-
     tbody.innerHTML = `
-
       <tr>
-
         <td colspan="4">
           لا توجد منتجات مسجلة على الطلب.
         </td>
-
       </tr>
-
     `;
-
     return;
   }
 
-
   tbody.innerHTML =
-    items
+    items.map(item => `
+      <tr>
 
-      .map(
-        item => `
+        <td>
+          <strong>
+            ${item.product_name || "منتج"}
+          </strong>
+        </td>
 
-          <tr>
+        <td>
+          ${Number(item.qty_kg || 0)}
+          كجم
+        </td>
 
-            <td>
+        <td>
+          ${money(item.unit_price)}
+        </td>
 
-              <strong>
+        <td>
+          <strong>
+            ${money(item.line_total)}
+          </strong>
+        </td>
 
-                ${
-                  item.product_name ||
-                  "منتج"
-                }
-
-              </strong>
-
-            </td>
-
-
-            <td>
-
-              ${
-                Number(
-                  item.qty_kg || 0
-                )
-              }
-              كجم
-
-            </td>
-
-
-            <td>
-
-              ${
-                money(
-                  item.unit_price
-                )
-              }
-
-            </td>
-
-
-            <td>
-
-              <strong>
-
-                ${
-                  money(
-                    item.line_total
-                  )
-                }
-
-              </strong>
-
-            </td>
-
-          </tr>
-
-        `
-      )
-
-      .join("");
-
+      </tr>
+    `).join("");
 }
 
 
-
 /* =========================================================
-   Timeline
+   مراحل الطلب
 ========================================================= */
 
 function renderTimeline(
   status,
   receiptStatus
 ) {
-
-  const flow = [
-
-    "confirmed",
-
-    "preparing",
-
-    "out_for_delivery",
-
-    "delivered",
-
-    "received"
-
-  ];
-
-
   let current = 0;
 
-
-  if (
-    status === "confirmed"
-  ) {
-
+  if (status === "confirmed") {
     current = 0;
-
   }
 
-
-  if (
-    status === "preparing"
-  ) {
-
+  if (status === "preparing") {
     current = 1;
-
   }
-
 
   if (
     status === "out_for_delivery"
   ) {
-
     current = 2;
-
   }
 
-
-  if (
-    status === "delivered"
-  ) {
-
+  if (status === "delivered") {
     current = 3;
-
   }
-
 
   if (
     status === "delivered" &&
     receiptStatus === "confirmed"
   ) {
-
     current = 4;
-
   }
-
 
   document
     .querySelectorAll(
       ".timeline-step"
     )
+    .forEach((step, index) => {
 
-    .forEach(
-      (step, index) => {
+      step.classList.remove(
+        "done",
+        "current"
+      );
 
+      if (index < current) {
+        step.classList.add("done");
+      }
+
+      if (index === current) {
+        step.classList.add(
+          "current"
+        );
+      }
+
+      if (
+        receiptStatus ===
+          "confirmed" &&
+        index <= 4
+      ) {
         step.classList.remove(
-          "done",
           "current"
         );
 
-
-        if (
-          index < current
-        ) {
-
-          step.classList.add(
-            "done"
-          );
-
-        }
-
-
-        if (
-          index === current
-        ) {
-
-          step.classList.add(
-            "current"
-          );
-
-        }
-
-
-        if (
-          receiptStatus === "confirmed" &&
-          index <= 4
-        ) {
-
-          step.classList.remove(
-            "current"
-          );
-
-          step.classList.add(
-            "done"
-          );
-
-        }
-
+        step.classList.add(
+          "done"
+        );
       }
-    );
-
+    });
 }
 
 
-
 /* =========================================================
-   رسالة حالة الطلب
+   رسالة التنفيذ
 ========================================================= */
 
 function trackingMessage(
   status,
   receiptStatus
 ) {
-
   if (
     status === "delivered" &&
     receiptStatus === "confirmed"
   ) {
-
-    return "تم تأكيد استلام الطلب من المشتري بنجاح.";
+    return (
+      "تم تأكيد استلام الطلب " +
+      "من المشتري بنجاح."
+    );
   }
 
-
   const messages = {
-
     pending:
       "تم استلام الطلب وهو بانتظار تأكيد المورد.",
 
@@ -721,125 +465,99 @@ function trackingMessage(
 
     cancelled:
       "تم إلغاء الطلب."
-
   };
 
-
-  return messages[status] ||
-    "جاري متابعة حالة الطلب.";
+  return (
+    messages[status] ||
+    "جاري متابعة حالة الطلب."
+  );
 }
 
 
-
 /* =========================================================
-   قسم تأكيد الاستلام
+   تأكيد الاستلام
 ========================================================= */
 
 function renderReceiptSection(order) {
-
   const box =
     document.getElementById(
       "receiptBox"
     );
-
 
   const button =
     document.getElementById(
       "confirmReceiptBtn"
     );
 
-
   const title =
     document.getElementById(
       "receiptTitle"
     );
-
 
   const message =
     document.getElementById(
       "receiptMessage"
     );
 
-
   const date =
     document.getElementById(
       "receiptDate"
     );
 
-
-  if (!box) {
-    return;
-  }
-
+  if (!box) return;
 
   const trackingStatus =
     order.tracking_status ||
     order.status;
 
-
   /*
-    لا يظهر قسم الاستلام
-    قبل أن يعلن المورد التسليم
+    الاستلام لا يظهر قبل التسليم
   */
 
   if (
-    trackingStatus !== "delivered"
+    trackingStatus !==
+      "delivered"
   ) {
-
-    box.style.display =
-      "none";
-
+    box.style.display = "none";
     return;
   }
 
-
-  box.style.display =
-    "block";
+  box.style.display = "block";
 
 
   /*
-    تم تأكيد الاستلام مسبقاً
+    تم الاستلام مسبقاً
   */
 
   if (
     order.receipt_status ===
       "confirmed"
   ) {
-
     box.classList.add(
       "receipt-success"
     );
 
-
     if (title) {
-
       title.textContent =
         "✅ تم تأكيد الاستلام";
     }
 
-
     if (message) {
-
       message.textContent =
-        "أغلق المشتري مرحلة الاستلام بنجاح.";
+        "تم استلام الطلب وإغلاق مرحلة التسليم بنجاح.";
     }
 
-
     if (button) {
-
       button.style.display =
         "none";
     }
-
 
     if (
       date &&
       order.buyer_received_at
     ) {
-
       date.style.display =
         "block";
-
 
       date.textContent =
         "تاريخ تأكيد الاستلام: " +
@@ -848,150 +566,154 @@ function renderReceiptSection(order) {
         );
     }
 
+    return;
+  }
+
+
+  /*
+    التعديل الجديد:
+    نستخدم buyer_id أو user_id
+  */
+
+  const buyerId =
+    getOrderBuyerId(order);
+
+  const isBuyer =
+    CurrentUser &&
+    buyerId &&
+    String(CurrentUser.id) ===
+      String(buyerId);
+
+
+  /*
+    إذا كان المستخدم هو المشتري
+    يظهر زر التأكيد
+  */
+
+  if (isBuyer) {
+
+    if (title) {
+      title.textContent =
+        "تأكيد استلام الطلب";
+    }
+
+    if (message) {
+      message.textContent =
+        "إذا استلمت المنتجات فعلياً وبالحالة المتفق عليها، اضغط تأكيد الاستلام.";
+    }
+
+    if (button) {
+      button.style.display =
+        "inline-flex";
+
+      button.disabled =
+        false;
+
+      button.textContent =
+        "✓ تأكيد استلام الطلب";
+    }
 
     return;
   }
 
 
   /*
-    إذا لم يكن المستخدم الحالي
-    هو المشتري صاحب الطلب
-    لا نظهر زر التأكيد
+    إذا لم يمكن التعرف على صاحب الطلب
   */
 
-  const isBuyer =
-    CurrentUser &&
-    order.buyer_id &&
-    CurrentUser.id ===
-      order.buyer_id;
-
-
-  if (!isBuyer) {
-
-    if (title) {
-
-      title.textContent =
-        "بانتظار تأكيد المشتري";
-    }
-
-
-    if (message) {
-
-      message.textContent =
-        "تم التسليم من المورد وبانتظار أن يؤكد المشتري استلام الطلب.";
-    }
-
-
-    if (button) {
-
-      button.style.display =
-        "none";
-    }
-
-
-    return;
-  }
-
-
   if (title) {
-
     title.textContent =
-      "تأكيد استلام الطلب";
+      "بانتظار تأكيد المشتري";
   }
-
 
   if (message) {
-
     message.textContent =
-      "إذا استلمت المنتجات فعلياً وبالحالة المتفق عليها، اضغط تأكيد الاستلام.";
+      "تم التسليم من المورد وبانتظار أن يؤكد المشتري استلام الطلب.";
   }
-
 
   if (button) {
-
     button.style.display =
-      "inline-flex";
+      "none";
   }
-
 }
 
 
-
 /* =========================================================
-   المشتري يؤكد الاستلام
+   تنفيذ تأكيد الاستلام
 ========================================================= */
 
 async function confirmBuyerReceipt() {
-
   if (!CurrentOrder) {
-
     alert(
       "تعذر تحديد الطلب"
     );
-
     return;
   }
-
 
   const trackingStatus =
     CurrentOrder.tracking_status ||
     CurrentOrder.status;
 
-
   if (
-    trackingStatus !== "delivered"
+    trackingStatus !==
+      "delivered"
   ) {
-
     alert(
       "لا يمكن تأكيد الاستلام قبل وصول حالة الطلب إلى تم التسليم."
     );
-
     return;
   }
-
 
   if (
     CurrentOrder.receipt_status ===
       "confirmed"
   ) {
-
     alert(
       "تم تأكيد استلام هذا الطلب مسبقاً."
     );
-
     return;
   }
 
 
-  if (
-    !CurrentUser ||
-    CurrentUser.id !==
-      CurrentOrder.buyer_id
-  ) {
+  /*
+    إعادة قراءة المستخدم قبل التأكيد
+  */
 
+  await loadCurrentUser();
+
+  const buyerId =
+    getOrderBuyerId(
+      CurrentOrder
+    );
+
+  if (!CurrentUser) {
+    alert(
+      "يرجى تسجيل الدخول بحساب المشتري أولاً."
+    );
+    return;
+  }
+
+  if (
+    !buyerId ||
+    String(CurrentUser.id) !==
+      String(buyerId)
+  ) {
     alert(
       "تأكيد الاستلام متاح للمشتري صاحب الطلب فقط."
     );
-
     return;
   }
 
 
   const ok =
     confirm(
-
       "هل تؤكد أنك استلمت الطلب " +
       CurrentOrder.order_no +
       "؟\n\n" +
-
       "بعد التأكيد سيتم إغلاق مرحلة التسليم والانتقال للفاتورة."
-
     );
 
-
-  if (!ok) {
-    return;
-  }
+  if (!ok) return;
 
 
   const button =
@@ -999,49 +721,40 @@ async function confirmBuyerReceipt() {
       "confirmReceiptBtn"
     );
 
-
   try {
 
     if (button) {
-
-      button.disabled =
-        true;
+      button.disabled = true;
 
       button.textContent =
         "جاري تأكيد الاستلام...";
     }
 
 
-    const {
-      data,
-      error
-    } = await Bahrna.client
+    /*
+      تحديث الطلب.
+      نستخدم رقم الطلب ومعرفه.
+      الحماية النهائية يفترض أن تكون
+      عبر RLS في Supabase.
+    */
 
-      .from("orders")
+    const { data, error } =
+      await Bahrna.client
+        .from("orders")
+        .update({
+          receipt_status:
+            "confirmed",
 
-      .update({
-
-        receipt_status:
-          "confirmed",
-
-        buyer_received_at:
-          new Date().toISOString()
-
-      })
-
-      .eq(
-        "id",
-        CurrentOrder.id
-      )
-
-      .eq(
-        "buyer_id",
-        CurrentUser.id
-      )
-
-      .select("*")
-
-      .single();
+          buyer_received_at:
+            new Date()
+              .toISOString()
+        })
+        .eq(
+          "id",
+          CurrentOrder.id
+        )
+        .select("*")
+        .single();
 
 
     if (error) {
@@ -1064,26 +777,19 @@ async function confirmBuyerReceipt() {
       e
     );
 
-
     alert(
       "تعذر تأكيد الاستلام: " +
       (e.message || e)
     );
 
-
     if (button) {
-
-      button.disabled =
-        false;
+      button.disabled = false;
 
       button.textContent =
         "✓ تأكيد استلام الطلب";
     }
-
   }
-
 }
-
 
 
 /* =========================================================
@@ -1091,68 +797,46 @@ async function confirmBuyerReceipt() {
 ========================================================= */
 
 async function loadBuyerInfo(order) {
-
   try {
-
     const buyerId =
-      order.buyer_id ||
-      order.user_id;
+      getOrderBuyerId(order);
 
+    if (!buyerId) return;
 
-    if (!buyerId) {
-      return;
-    }
-
-
-    const {
-      data,
-      error
-    } = await Bahrna.client
-
-      .from("profiles")
-
-      .select("*")
-
-      .eq(
-        "id",
-        buyerId
-      )
-
-      .maybeSingle();
-
+    const { data, error } =
+      await Bahrna.client
+        .from("profiles")
+        .select("*")
+        .eq(
+          "id",
+          buyerId
+        )
+        .maybeSingle();
 
     if (
       !error &&
       data
     ) {
-
       const name =
         data.full_name ||
         data.display_name ||
         data.company_name ||
         data.name;
 
-
       if (name) {
-
         setText(
           "buyerName",
           name
         );
       }
-
     }
 
-
   } catch (e) {
-
     console.log(
       "Buyer profile not available"
     );
   }
-
 }
-
 
 
 /* =========================================================
@@ -1160,70 +844,59 @@ async function loadBuyerInfo(order) {
 ========================================================= */
 
 async function loadSupplierInfo(order) {
-
   try {
-
     const firstItem =
       (order.order_items || [])
-      .find(
-        item =>
-          item.product_id
-      );
-
+        .find(
+          item =>
+            item.product_id
+        );
 
     if (!firstItem) {
-
       setText(
         "supplierName",
         "بحرنا وشراعنا"
       );
-
 
       setText(
         "supplierStatus",
         "مورد معتمد"
       );
 
-
       return;
     }
 
 
-    const {
-      data,
-      error
-    } = await Bahrna.client
-
-      .from("products")
-
-      .select(`
-        id,
-        supplier_id,
-        supplier:suppliers (
+    const { data, error } =
+      await Bahrna.client
+        .from("products")
+        .select(`
           id,
-          display_name,
-          verified,
-          emirate
+          supplier_id,
+          supplier:suppliers (
+            id,
+            display_name,
+            verified,
+            emirate
+          )
+        `)
+        .eq(
+          "id",
+          firstItem.product_id
         )
-      `)
-
-      .eq(
-        "id",
-        firstItem.product_id
-      )
-
-      .maybeSingle();
+        .maybeSingle();
 
 
     if (
       error ||
       !data
     ) {
-
-      throw error ||
+      throw (
+        error ||
         new Error(
           "Supplier not found"
-        );
+        )
+      );
     }
 
 
@@ -1245,7 +918,6 @@ async function loadSupplierInfo(order) {
         : "مورد مسجل"
     );
 
-
   } catch (e) {
 
     setText(
@@ -1253,15 +925,12 @@ async function loadSupplierInfo(order) {
       "بحرنا وشراعنا"
     );
 
-
     setText(
       "supplierStatus",
       "مورد مسجل"
     );
   }
-
 }
-
 
 
 /* =========================================================
@@ -1269,70 +938,49 @@ async function loadSupplierInfo(order) {
 ========================================================= */
 
 async function refreshOrder() {
-
   setText(
     "trackingMessage",
     "جاري تحديث حالة الطلب..."
   );
 
-
   await loadOrderDetails();
-
 }
-
 
 
 /* =========================================================
    Helpers
 ========================================================= */
 
-function setText(
-  id,
-  value
-) {
-
+function setText(id, value) {
   const element =
-    document.getElementById(
-      id
-    );
-
+    document.getElementById(id);
 
   if (element) {
-
     element.textContent =
       value ?? "—";
   }
-
 }
 
 
-
 function showError(message) {
-
   const box =
     document.getElementById(
       "orderError"
     );
 
-
   if (box) {
-
     box.style.display =
       "block";
-
 
     box.textContent =
       message;
   }
 
-
   setText(
     "orderNo",
     "تعذر تحميل الطلب"
   );
-
 }
-
 
 
 /* =========================================================
