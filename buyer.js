@@ -1,7 +1,7 @@
 /* =========================================================
    BAHRNA & SHRAANA
    BUSINESS BUYER DASHBOARD
-   RFQ + Supplier Quotes + B2B Orders
+   RFQ + Supplier Quotes + B2B Orders + Invoices
 ========================================================= */
 
 const BuyerData = {
@@ -13,14 +13,17 @@ const BuyerData = {
 
 
 /* =========================================================
-   التنقل بين أقسام لوحة المشتري
+   التنقل
 ========================================================= */
 
 function showBuyerPanel(id, el) {
 
   document
     .querySelectorAll(".buyer-panel")
-    .forEach(panel => panel.classList.remove("active"));
+    .forEach(
+      panel =>
+        panel.classList.remove("active")
+    );
 
   const target =
     document.getElementById(id);
@@ -31,7 +34,10 @@ function showBuyerPanel(id, el) {
 
   document
     .querySelectorAll(".buyer-sidebar a")
-    .forEach(link => link.classList.remove("active"));
+    .forEach(
+      link =>
+        link.classList.remove("active")
+    );
 
   if (el) {
     el.classList.add("active");
@@ -45,8 +51,12 @@ function showBuyerPanel(id, el) {
 
 function money(value) {
 
-  return "AED " +
-    Number(value || 0).toFixed(2);
+  return (
+    "AED " +
+    Number(
+      value || 0
+    ).toFixed(2)
+  );
 }
 
 
@@ -95,9 +105,11 @@ function rfqStatusLabel(status) {
       "ملغي"
   };
 
-  return labels[status] ||
+  return (
+    labels[status] ||
     status ||
-    "—";
+    "—"
+  );
 }
 
 
@@ -118,9 +130,11 @@ function quoteStatusLabel(status) {
       "مسحوب"
   };
 
-  return labels[status] ||
+  return (
+    labels[status] ||
     status ||
-    "—";
+    "—"
+  );
 }
 
 
@@ -147,15 +161,19 @@ function orderStatusLabel(status) {
       "ملغي"
   };
 
-  return labels[status] ||
+  return (
+    labels[status] ||
     status ||
-    "—";
+    "—"
+  );
 }
 
 
 function quoteStatusClass(status) {
 
-  if (status === "accepted") {
+  if (
+    status === "accepted"
+  ) {
     return "status ok";
   }
 
@@ -338,6 +356,9 @@ async function loadBuyerOrders(user) {
       buyer_id,
       status,
       tracking_status,
+      payment_status,
+      payment_method,
+      receipt_status,
       subtotal,
       delivery_fee,
       vat,
@@ -378,7 +399,7 @@ async function loadBuyerOrders(user) {
   );
 
   /*
-    Fallback للنسخ القديمة من الجدول
+    Fallback
   */
 
   const fallback =
@@ -391,6 +412,7 @@ async function loadBuyerOrders(user) {
         order_no,
         status,
         tracking_status,
+        payment_status,
         total,
         created_at,
         order_items (
@@ -426,7 +448,7 @@ async function loadBuyerOrders(user) {
 
 
 /* =========================================================
-   تحميل فواتير المشتري
+   تحميل الفواتير
 ========================================================= */
 
 async function loadBuyerInvoices() {
@@ -457,6 +479,7 @@ async function loadBuyerInvoices() {
       );
 
       BuyerData.invoices = [];
+
       return;
     }
 
@@ -575,9 +598,7 @@ async function renderWholesaleOffers() {
                   ${Number(offer.qty || 0)}
                 )'
               >
-
                 طلب كمية
-
               </button>
 
             </div>
@@ -610,16 +631,19 @@ async function renderWholesaleOffers() {
 
 
 /* =========================================================
-   عدد العروض لكل RFQ
+   عدد عروض RFQ
 ========================================================= */
 
 function getQuoteCountForRFQ(rfqId) {
 
   return BuyerData.quotes
+
     .filter(
       quote =>
-        quote.rfq_id === rfqId
+        quote.rfq_id ===
+        rfqId
     )
+
     .length;
 }
 
@@ -641,6 +665,7 @@ function renderRFQs() {
     );
 
   if (count) {
+
     count.textContent =
       BuyerData.rfqs.length;
   }
@@ -720,9 +745,7 @@ function renderRFQs() {
               <td>
 
                 <span class="status ok">
-
                   ${rfqStatusLabel(rfq.status)}
-
                 </span>
 
               </td>
@@ -763,7 +786,9 @@ function renderRFQs() {
    عرض عروض الموردين
 ========================================================= */
 
-function renderBuyerQuotes(filterRfqId = null) {
+function renderBuyerQuotes(
+  filterRfqId = null
+) {
 
   const rows =
     document.getElementById(
@@ -781,6 +806,7 @@ function renderBuyerQuotes(filterRfqId = null) {
     );
 
   if (count) {
+
     count.textContent =
       BuyerData.quotes.length;
   }
@@ -802,10 +828,6 @@ function renderBuyerQuotes(filterRfqId = null) {
       );
   }
 
-  /*
-    الأرخص أولاً
-  */
-
   quotes.sort(
     (a, b) =>
       Number(a.price_per_kg) -
@@ -819,7 +841,8 @@ function renderBuyerQuotes(filterRfqId = null) {
       const rfq =
         BuyerData.rfqs.find(
           item =>
-            item.id === filterRfqId
+            item.id ===
+            filterRfqId
         );
 
       summary.innerHTML = `
@@ -906,11 +929,21 @@ function renderBuyerQuotes(filterRfqId = null) {
             qty * price;
 
           const deliveryText =
-            Number(quote.delivery_days) === 0
+            Number(
+              quote.delivery_days
+            ) === 0
+
               ? "نفس اليوم"
-              : Number(quote.delivery_days) === 1
+
+              : Number(
+                  quote.delivery_days
+                ) === 1
+
                 ? "خلال يوم"
-                : `${Number(quote.delivery_days)} أيام`;
+
+                : `${Number(
+                    quote.delivery_days
+                  )} أيام`;
 
           return `
 
@@ -972,11 +1005,13 @@ function renderBuyerQuotes(filterRfqId = null) {
               <td>
 
                 <span
-                  class="${quoteStatusClass(quote.status)}"
+                  class="${quoteStatusClass(
+                    quote.status
+                  )}"
                 >
-
-                  ${quoteStatusLabel(quote.status)}
-
+                  ${quoteStatusLabel(
+                    quote.status
+                  )}
                 </span>
 
               </td>
@@ -1003,7 +1038,7 @@ function renderBuyerQuotes(filterRfqId = null) {
 
 
 /* =========================================================
-   فتح عروض RFQ محدد
+   فتح عروض RFQ
 ========================================================= */
 
 function openQuotesForRFQ(rfqId) {
@@ -1019,7 +1054,7 @@ function openQuotesForRFQ(rfqId) {
 
 
 /* =========================================================
-   تفاصيل عرض المورد
+   فتح تفاصيل عرض
 ========================================================= */
 
 function openQuoteDetails(quoteId) {
@@ -1027,7 +1062,8 @@ function openQuoteDetails(quoteId) {
   const quote =
     BuyerData.quotes.find(
       item =>
-        item.id === quoteId
+        item.id ===
+        quoteId
     );
 
   if (!quote) {
@@ -1042,7 +1078,8 @@ function openQuoteDetails(quoteId) {
   const rfq =
     BuyerData.rfqs.find(
       item =>
-        item.id === quote.rfq_id
+        item.id ===
+        quote.rfq_id
     );
 
   const supplierName =
@@ -1083,23 +1120,36 @@ function openQuoteDetails(quoteId) {
       qty + " كجم",
 
     selectedQuotePrice:
-      money(price) + " / كجم",
+      money(price) +
+      " / كجم",
 
     selectedQuoteTotal:
       money(total),
 
     selectedQuoteDelivery:
-      Number(quote.delivery_days) === 0
+      Number(
+        quote.delivery_days
+      ) === 0
+
         ? "نفس اليوم"
-        : Number(quote.delivery_days) === 1
+
+        : Number(
+            quote.delivery_days
+          ) === 1
+
           ? "خلال يوم"
-          : `${Number(quote.delivery_days)} أيام`,
+
+          : `${Number(
+              quote.delivery_days
+            )} أيام`,
 
     selectedQuoteNotes:
       quote.notes || ""
   };
 
-  Object.entries(fields)
+  Object
+    .entries(fields)
+
     .forEach(
       ([id, value]) => {
 
@@ -1107,6 +1157,7 @@ function openQuoteDetails(quoteId) {
           document.getElementById(id);
 
         if (element) {
+
           element.value =
             value;
         }
@@ -1132,7 +1183,7 @@ function openQuoteDetails(quoteId) {
 
 
 /* =========================================================
-   إغلاق تفاصيل العرض
+   إغلاق التفاصيل
 ========================================================= */
 
 function closeQuoteDetails() {
@@ -1143,6 +1194,7 @@ function closeQuoteDetails() {
     );
 
   if (box) {
+
     box.style.display =
       "none";
   }
@@ -1150,17 +1202,13 @@ function closeQuoteDetails() {
 
 
 /* =========================================================
-   العثور على المنتج المرتبط بالمورد
+   البحث عن منتج المورد
 ========================================================= */
 
 async function findSupplierProduct(
   quote,
   rfq
 ) {
-
-  /*
-    أولاً نحاول مطابقة اسم المنتج
-  */
 
   let result =
     await Bahrna.client
@@ -1203,7 +1251,7 @@ async function findSupplierProduct(
   }
 
   /*
-    احتياط: أول منتج نشط للمورد
+    fallback
   */
 
   result =
@@ -1256,11 +1304,6 @@ async function createB2BOrderFromQuote(
   rfq
 ) {
 
-  /*
-    منع تكرار إنشاء الطلب من نفس RFQ
-    على نفس الجهاز
-  */
-
   const storageKey =
     "bahrna_b2b_order_" +
     rfq.id;
@@ -1281,14 +1324,16 @@ async function createB2BOrderFromQuote(
     } catch (e) {
 
       return {
-        order_no: existing
+        order_no:
+          existing
       };
     }
   }
 
   if (
     !window.Bahrna ||
-    typeof Bahrna.createOrder !== "function"
+    typeof Bahrna.createOrder !==
+      "function"
   ) {
 
     throw new Error(
@@ -1348,17 +1393,23 @@ async function createB2BOrderFromQuote(
 
   const totals = {
 
-    subtotal,
+    subtotal:
+      subtotal,
 
-    prep: 0,
+    prep:
+      0,
 
-    pack: 0,
+    pack:
+      0,
 
-    delivery: 0,
+    delivery:
+      0,
 
-    vat: 0,
+    vat:
+      0,
 
-    total: subtotal
+    total:
+      subtotal
   };
 
   const flow = {
@@ -1380,6 +1431,7 @@ async function createB2BOrderFromQuote(
     ],
 
     cut: {
+
       name:
         "طلب مؤسسي RFQ",
 
@@ -1388,6 +1440,7 @@ async function createB2BOrderFromQuote(
     },
 
     packaging: {
+
       name:
         "حسب عرض المورد",
 
@@ -1535,13 +1588,15 @@ async function acceptSupplierQuote() {
   const quote =
     BuyerData.quotes.find(
       item =>
-        item.id === quoteId
+        item.id ===
+        quoteId
     );
 
   const rfq =
     BuyerData.rfqs.find(
       item =>
-        item.id === rfqId
+        item.id ===
+        rfqId
     );
 
   if (
@@ -1557,11 +1612,13 @@ async function acceptSupplierQuote() {
   }
 
   /*
-    العرض مقبول مسبقاً:
-    نحوله إلى طلب B2B فقط
+    عرض مقبول مسبقاً
   */
 
-  if (quote.status === "accepted") {
+  if (
+    quote.status ===
+    "accepted"
+  ) {
 
     const ok =
       confirm(
@@ -1586,7 +1643,8 @@ async function acceptSupplierQuote() {
         .from("rfqs")
 
         .update({
-          status: "closed"
+          status:
+            "closed"
         })
 
         .eq(
@@ -1606,10 +1664,15 @@ async function acceptSupplierQuote() {
         await getBuyerUser();
 
       await Promise.all([
+
         loadBuyerRFQs(user),
+
         loadBuyerQuotes(),
+
         loadBuyerOrders(user),
+
         loadBuyerInvoices()
+
       ]);
 
       renderRFQs();
@@ -1628,7 +1691,10 @@ async function acceptSupplierQuote() {
 
       alert(
         "تعذر إنشاء طلب B2B: " +
-        (e.message || e)
+        (
+          e.message ||
+          e
+        )
       );
     }
 
@@ -1679,7 +1745,7 @@ async function acceptSupplierQuote() {
     }
 
     /*
-      رفض بقية عروض نفس RFQ
+      رفض باقي العروض
     */
 
     const {
@@ -1745,7 +1811,9 @@ async function acceptSupplierQuote() {
     */
 
     const acceptedQuote = {
+
       ...quote,
+
       status:
         "accepted"
     };
@@ -1796,9 +1864,15 @@ async function acceptSupplierQuote() {
       await getBuyerUser();
 
     await Promise.all([
+
       loadBuyerRFQs(user),
+
       loadBuyerQuotes(),
-      loadBuyerOrders(user)
+
+      loadBuyerOrders(user),
+
+      loadBuyerInvoices()
+
     ]);
 
     renderRFQs();
@@ -1820,14 +1894,17 @@ async function acceptSupplierQuote() {
 
     alert(
       "تعذر إكمال العملية: " +
-      (e.message || e)
+      (
+        e.message ||
+        e
+      )
     );
   }
 }
 
 
 /* =========================================================
-   رفض عرض المورد
+   رفض العرض
 ========================================================= */
 
 async function rejectSupplierQuote() {
@@ -1851,11 +1928,13 @@ async function rejectSupplierQuote() {
   const quote =
     BuyerData.quotes.find(
       item =>
-        item.id === quoteId
+        item.id ===
+        quoteId
     );
 
   if (
-    quote?.status === "accepted"
+    quote?.status ===
+    "accepted"
   ) {
 
     alert(
@@ -1914,7 +1993,10 @@ async function rejectSupplierQuote() {
 
     alert(
       "تعذر رفض العرض: " +
-      (e.message || e)
+      (
+        e.message ||
+        e
+      )
     );
   }
 }
@@ -1922,7 +2004,8 @@ async function rejectSupplierQuote() {
 
 /* =========================================================
    عرض طلبات B2B
-   رقم الطلب أصبح رابطًا لصفحة التفاصيل
+   + الفاتورة
+   + حالة الدفع
 ========================================================= */
 
 function renderB2BOrders() {
@@ -2007,27 +2090,41 @@ function renderB2BOrders() {
             );
 
           /*
-            البحث عن الفاتورة المرتبطة بالطلب
+            البحث عن الفاتورة
           */
 
           const invoice =
-            (BuyerData.invoices || [])
-              .find(
-                inv =>
-                  (
-                    inv.order_id &&
-                    order.id &&
-                    String(inv.order_id) ===
-                    String(order.id)
+            (
+              BuyerData.invoices ||
+              []
+            )
+            .find(
+              inv =>
+
+                (
+                  inv.order_id &&
+                  order.id &&
+                  String(
+                    inv.order_id
+                  ) ===
+                  String(
+                    order.id
                   )
-                  ||
-                  (
-                    inv.order_no &&
-                    order.order_no &&
-                    String(inv.order_no) ===
-                    String(order.order_no)
+                )
+
+                ||
+
+                (
+                  inv.order_no &&
+                  order.order_no &&
+                  String(
+                    inv.order_no
+                  ) ===
+                  String(
+                    order.order_no
                   )
-              );
+                )
+            );
 
           const invoiceNo =
             invoice
@@ -2035,84 +2132,134 @@ function renderB2BOrders() {
                   invoice.invoice_no ||
                   invoice.number ||
                   invoice.invoice_number ||
-                  "فاتورة صادرة"
+                  ""
                 )
               : "";
 
           /*
-            ما يظهر للمشتري
+            حالة الفاتورة
           */
 
-          const actionHtml =
-            invoice
+          const invoiceStatus =
+            String(
+              invoice?.status ||
+              ""
+            )
+            .toLowerCase();
 
-              ? `
+          /*
+            نستخدم أيضاً payment_status
+            كتحقق إضافي.
+          */
 
-                  <div style="margin-top:8px">
+          const invoiceIsPaid =
+            invoiceStatus ===
+              "paid"
 
-                    <span
-                      class="status ok"
-                      style="
-                        display:inline-block;
-                        margin-bottom:6px;
-                      "
-                    >
-                      🧾 فاتورة صادرة
-                    </span>
+            ||
 
-                    <br>
+            String(
+              order.payment_status ||
+              ""
+            )
+            .toLowerCase() ===
+              "paid";
 
-                    <a
-                      href="${detailsUrl}"
-                      class="btn btn-primary small"
-                      title="عرض الفاتورة"
-                      style="
-                        display:inline-block;
-                        text-decoration:none;
-                      "
-                    >
-                      عرض الفاتورة
-                    </a>
+          /*
+            محتوى الفاتورة داخل الطلب
+          */
 
-                    ${
-                      invoiceNo
-                        ? `
-                            <div
-                              class="muted"
-                              style="
-                                margin-top:5px;
-                                font-size:12px;
-                              "
-                            >
-                              ${invoiceNo}
-                            </div>
-                          `
-                        : ""
-                    }
+          let actionHtml =
+            "";
 
-                  </div>
+          if (invoice) {
 
-                `
+            actionHtml = `
 
-              : `
+              <div
+                style="
+                  margin-top:8px
+                "
+              >
 
-                  <div style="margin-top:8px">
+                <span
+                  class="status ok"
+                  style="
+                    display:inline-block;
+                    margin-bottom:6px;
+                  "
+                >
 
-                    <a
-                      href="${detailsUrl}"
-                      class="btn btn-primary small"
-                      title="فتح تفاصيل الطلب"
-                      style="
-                        display:inline-block;
-                        text-decoration:none;
-                      "
-                    >
-                      عرض التفاصيل
-                    </a>
+                  ${
+                    invoiceIsPaid
 
-                  </div>
+                      ? "✅ فاتورة مدفوعة"
 
-                `;
+                      : "🧾 فاتورة صادرة"
+                  }
+
+                </span>
+
+                <br>
+
+                <a
+                  href="${detailsUrl}"
+                  class="btn btn-primary small"
+                  title="عرض الفاتورة"
+                  style="
+                    display:inline-block;
+                    text-decoration:none;
+                  "
+                >
+                  عرض الفاتورة
+                </a>
+
+                ${
+                  invoiceNo
+                    ? `
+                      <div
+                        class="muted"
+                        style="
+                          margin-top:5px;
+                          font-size:12px;
+                        "
+                      >
+                        ${invoiceNo}
+                      </div>
+                    `
+                    : ""
+                }
+
+              </div>
+
+            `;
+
+          } else {
+
+            actionHtml = `
+
+              <div
+                style="
+                  margin-top:8px
+                "
+              >
+
+                <a
+                  href="${detailsUrl}"
+                  class="btn btn-primary small"
+                  title="فتح تفاصيل الطلب"
+                  style="
+                    display:inline-block;
+                    text-decoration:none;
+                  "
+                >
+                  عرض التفاصيل
+                </a>
+
+              </div>
+
+            `;
+          }
 
           return `
 
@@ -2179,7 +2326,7 @@ function renderB2BOrders() {
 
 
 /* =========================================================
-   تعبئة نموذج RFQ من عرض الجملة
+   تعبئة RFQ من سعر الجملة
 ========================================================= */
 
 function prefillRFQ(
@@ -2202,6 +2349,7 @@ function prefillRFQ(
     );
 
   if (item) {
+
     item.value =
       name || "";
   }
@@ -2339,6 +2487,7 @@ async function submitRFQ() {
       .single();
 
     if (error) {
+
       throw error;
     }
 
@@ -2348,19 +2497,27 @@ async function submitRFQ() {
     );
 
     if (itemInput) {
-      itemInput.value = "";
+
+      itemInput.value =
+        "";
     }
 
     if (qtyInput) {
-      qtyInput.value = "";
+
+      qtyInput.value =
+        "";
     }
 
     if (dateInput) {
-      dateInput.value = "";
+
+      dateInput.value =
+        "";
     }
 
     if (notesInput) {
-      notesInput.value = "";
+
+      notesInput.value =
+        "";
     }
 
     await loadBuyerRFQs(
@@ -2382,7 +2539,10 @@ async function submitRFQ() {
 
     alert(
       "تعذر إرسال RFQ: " +
-      (e.message || e)
+      (
+        e.message ||
+        e
+      )
     );
   }
 }
@@ -2404,7 +2564,7 @@ async function renderBuyer() {
     }
 
     /*
-      تحميل RFQ
+      RFQ
     */
 
     await loadBuyerRFQs(
@@ -2412,7 +2572,7 @@ async function renderBuyer() {
     );
 
     /*
-      تحميل عروض الموردين
+      العروض
     */
 
     try {
@@ -2430,7 +2590,7 @@ async function renderBuyer() {
     }
 
     /*
-      تحميل طلبات B2B
+      الطلبات
     */
 
     try {
@@ -2450,10 +2610,22 @@ async function renderBuyer() {
     }
 
     /*
-      تحميل الفواتير
+      الفواتير
     */
 
-    await loadBuyerInvoices();
+    try {
+
+      await loadBuyerInvoices();
+
+    } catch (invoiceError) {
+
+      console.error(
+        invoiceError
+      );
+
+      BuyerData.invoices =
+        [];
+    }
 
     /*
       أسعار الجملة
@@ -2471,7 +2643,7 @@ async function renderBuyer() {
     }
 
     /*
-      رسم كل الأقسام
+      العرض
     */
 
     renderRFQs();
@@ -2489,7 +2661,10 @@ async function renderBuyer() {
 
     alert(
       "تعذر تحميل لوحة المشتري: " +
-      (e.message || e)
+      (
+        e.message ||
+        e
+      )
     );
   }
 }
