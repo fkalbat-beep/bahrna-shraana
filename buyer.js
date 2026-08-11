@@ -2911,3 +2911,95 @@ document.addEventListener(
   "DOMContentLoaded",
   renderBuyer
 );
+
+
+/* =========================================================
+   فتح تفاصيل طلبات B2B عند الضغط على رقم الطلب
+========================================================= */
+
+function enableB2BOrderLinks() {
+
+  const rows =
+    document.querySelectorAll("#b2bRows tr");
+
+  rows.forEach(row => {
+
+    const cells =
+      row.querySelectorAll("td");
+
+    cells.forEach(cell => {
+
+      const text =
+        cell.textContent.trim();
+
+      const match =
+        text.match(/ORD-[A-Z0-9]+/);
+
+      if (!match) {
+        return;
+      }
+
+      const orderNo =
+        match[0];
+
+      if (
+        cell.querySelector(
+          'a[href*="b2b-order.html"]'
+        )
+      ) {
+        return;
+      }
+
+      cell.innerHTML =
+        cell.innerHTML.replace(
+          orderNo,
+          `
+          <a
+            href="b2b-order.html?order=${encodeURIComponent(orderNo)}"
+            style="
+              color:#062f5f;
+              font-weight:800;
+              text-decoration:underline;
+              cursor:pointer;
+            "
+          >
+            ${orderNo}
+          </a>
+          `
+        );
+
+    });
+
+  });
+
+}
+
+
+/* تشغيلها بعد اكتمال تحميل لوحة المشتري */
+
+window.addEventListener(
+  "load",
+  () => {
+
+    setTimeout(
+      enableB2BOrderLinks,
+      1000
+    );
+
+  }
+);
+
+
+/* إعادة تشغيلها عند التنقل داخل لوحة المشتري */
+
+document.addEventListener(
+  "click",
+  () => {
+
+    setTimeout(
+      enableB2BOrderLinks,
+      300
+    );
+
+  }
+);
