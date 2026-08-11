@@ -1,9 +1,6 @@
 <!doctype html>
 
-<html
-  lang="ar"
-  dir="rtl"
->
+<html lang="ar" dir="rtl">
 
 <head>
 
@@ -23,32 +20,43 @@
     href="app.css"
   >
 
+  <!-- Supabase -->
   <script
     src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
   ></script>
 
+  <!-- إعدادات المشروع -->
   <script src="config.js"></script>
 
-  <script
-    defer
-    src="app.js"
-  ></script>
+  <!-- يحتوي على Bahrna.client -->
+  <script defer src="app.js"></script>
+
 
   <style>
 
-    .payment-page {
+    body {
+      background:#f4f8fb;
+    }
+
+    .payment-wrapper {
       max-width:1180px;
       margin:0 auto;
     }
 
-    .payment-title {
-      margin:0 0 8px;
-      color:#062f5f;
+    .payment-header {
+      margin-bottom:24px;
     }
 
-    .payment-subtitle {
+    .payment-header h1 {
+      margin:0 0 8px;
+      color:#062f5f;
+      font-size:36px;
+    }
+
+    .payment-header p {
       margin:0;
       color:#6b7f93;
+      font-size:17px;
     }
 
     .payment-grid {
@@ -56,55 +64,88 @@
       grid-template-columns:
         minmax(0,1.15fr)
         minmax(320px,.85fr);
-      gap:22px;
+      gap:24px;
       align-items:start;
-      margin-top:22px;
     }
 
     .payment-card {
-      background:#fff;
-      border:1px solid #dfe7ef;
-      border-radius:18px;
-      padding:24px;
+      background:#ffffff;
+      border:1px solid #dce5ed;
+      border-radius:20px;
+      padding:26px;
     }
 
-    .payment-choice-grid {
+    .payment-card h2 {
+      color:#062f5f;
+      margin-top:0;
+    }
+
+    .invoice-info {
       display:grid;
       grid-template-columns:
-        repeat(
-          2,
-          minmax(0,1fr)
-        );
+        repeat(2,minmax(0,1fr));
+      gap:12px;
+      margin-bottom:22px;
+    }
+
+    .invoice-info-box {
+      background:#f8fbfd;
+      border-radius:12px;
+      padding:14px;
+    }
+
+    .invoice-info-box small {
+      display:block;
+      color:#718598;
+      margin-bottom:6px;
+    }
+
+    .invoice-info-box strong {
+      color:#062f5f;
+      word-break:break-word;
+    }
+
+    .payment-methods {
+      display:grid;
+      grid-template-columns:
+        repeat(2,minmax(0,1fr));
       gap:12px;
       margin-top:18px;
     }
 
-    .payment-choice {
-      border:2px solid #e1e8ef;
-      background:#fff;
-      color:#062f5f;
+    .payment-method {
+      appearance:none;
+      border:2px solid #dfe8ef;
+      background:#ffffff;
       border-radius:14px;
-      padding:18px 14px;
+      padding:18px 12px;
       cursor:pointer;
       font-weight:800;
-      text-align:center;
+      font-size:16px;
+      color:#062f5f;
+      transition:.15s ease;
     }
 
-    .payment-choice:hover {
-      border-color:#aabfd4;
+    .payment-method:hover {
+      border-color:#9cb7cf;
     }
 
-    .payment-choice.active {
+    .payment-method.active {
       border-color:#0a4b88;
-      background:#f0f6fc;
+      background:#edf6fc;
       box-shadow:
-        0 0 0 2px
-        rgba(
-          10,
-          75,
-          136,
-          .08
-        );
+        0 0 0 3px
+        rgba(10,75,136,.08);
+    }
+
+    .demo-notice {
+      margin-top:20px;
+      padding:17px;
+      border-radius:14px;
+      background:#f7fafc;
+      color:#52677c;
+      line-height:1.9;
+      border:1px solid #e2eaf1;
     }
 
     .summary-row {
@@ -112,98 +153,120 @@
       align-items:center;
       justify-content:space-between;
       gap:20px;
-      padding:11px 0;
-      border-bottom:
-        1px solid #edf1f5;
+      padding:13px 0;
+      border-bottom:1px solid #edf1f5;
     }
 
-    .summary-total {
-      margin-top:16px;
-      padding-top:16px;
-      border-top:
-        2px solid #dfe7ef;
-      display:flex;
-      align-items:end;
-      justify-content:space-between;
-      gap:20px;
+    .summary-row span {
+      color:#52677c;
     }
 
-    .summary-total strong {
-      font-size:30px;
+    .summary-row strong {
       color:#062f5f;
     }
 
-    .notice-box {
-      margin-top:18px;
-      padding:16px;
-      border-radius:12px;
-      background:#f7fafc;
-      color:#52677c;
-      line-height:1.8;
+    .total-row {
+      display:flex;
+      justify-content:space-between;
+      align-items:end;
+      gap:20px;
+      padding-top:20px;
+      margin-top:8px;
+      border-top:2px solid #dce5ed;
     }
 
-    .success-box {
-      display:none;
+    .total-row span {
+      font-weight:800;
+      color:#062f5f;
+    }
+
+    .total-row strong {
+      font-size:34px;
+      color:#062f5f;
+    }
+
+    #payInvoiceBtn {
+      width:100%;
       margin-top:22px;
-      padding:22px;
-      border:
-        1px solid #b8e3c8;
-      border-radius:16px;
-      background:#effaf3;
-      color:#146c43;
+      font-size:17px;
+      padding:15px;
+    }
+
+    .loading-box,
+    .error-box,
+    .success-box {
+      max-width:100%;
+      border-radius:18px;
+      padding:24px;
+      margin-top:20px;
+    }
+
+    .loading-box {
+      background:#ffffff;
+      border:1px solid #dce5ed;
+      color:#52677c;
     }
 
     .error-box {
       display:none;
-      margin-top:18px;
-      padding:16px;
-      border:
-        1px solid #efb8b8;
-      border-radius:12px;
       background:#fff3f3;
-      color:#9b1c1c;
+      border:1px solid #efb8b8;
+      color:#941b1b;
     }
 
-    .payment-meta {
-      display:grid;
-      grid-template-columns:
-        repeat(
-          2,
-          minmax(0,1fr)
-        );
+    .success-box {
+      display:none;
+      background:#effaf3;
+      border:1px solid #b9e5c9;
+      color:#146c43;
+    }
+
+    .success-box h2 {
+      margin-top:0;
+      color:#146c43;
+    }
+
+    .success-total {
+      font-size:34px;
+      font-weight:900;
+      margin:18px 0;
+      color:#0f653d;
+    }
+
+    .success-actions {
+      display:flex;
       gap:12px;
+      flex-wrap:wrap;
       margin-top:18px;
     }
 
-    .payment-meta > div {
-      padding:14px;
-      border-radius:12px;
-      background:#f8fbfd;
+    .status-paid {
+      display:inline-block;
+      padding:7px 12px;
+      border-radius:30px;
+      background:#e8f8ee;
+      color:#157347;
+      font-weight:800;
     }
 
-    .payment-meta small {
-      display:block;
-      color:#73879a;
-      margin-bottom:5px;
+    .status-issued {
+      display:inline-block;
+      padding:7px 12px;
+      border-radius:30px;
+      background:#eef5fb;
+      color:#124f83;
+      font-weight:800;
     }
 
-    .payment-meta strong {
-      color:#062f5f;
-    }
-
-    @media (
-      max-width:850px
-    ) {
+    @media(max-width:850px) {
 
       .payment-grid {
-        grid-template-columns:
-          1fr;
+        grid-template-columns:1fr;
       }
 
-      .payment-choice-grid,
-      .payment-meta {
-        grid-template-columns:
-          1fr;
+      .payment-methods,
+      .invoice-info {
+        grid-template-columns:1fr;
       }
 
     }
@@ -212,26 +275,30 @@
 
 </head>
 
+
 <body>
+
+
+  <!-- الشريط العلوي -->
 
   <div class="topbar">
 
     <div class="container">
+
       🇦🇪 الإمارات
       • AED
       • دفع فاتورة الطلب المؤسسي
+
     </div>
 
   </div>
 
+
+  <!-- الهيدر -->
+
   <header class="header">
 
-    <div
-      class="
-        container
-        header-row
-      "
-    >
+    <div class="container header-row">
 
       <a
         class="brand"
@@ -256,6 +323,7 @@
 
       </a>
 
+
       <div
         style="
           margin-right:auto;
@@ -266,18 +334,18 @@
       >
 
         <a
-          class="btn"
           id="backToOrderTop"
+          class="btn"
           href="buyer.html#"
         >
-          العودة للطلب
+          تفاصيل الطلب
         </a>
 
         <a
           class="btn btn-gold"
-          href="catalog.html"
+          href="buyer.html#"
         >
-          السوق
+          لوحة المشتري
         </a>
 
       </div>
@@ -286,14 +354,13 @@
 
   </header>
 
+
   <section class="section">
 
-    <div
-      class="
-        container
-        payment-page
-      "
-    >
+    <div class="container payment-wrapper">
+
+
+      <!-- مراحل العملية -->
 
       <div class="checkout-steps">
 
@@ -313,100 +380,105 @@
           4 الفاتورة
         </div>
 
-        <div
-          class="
-            checkout-step
-            active
-          "
-        >
+        <div class="checkout-step active">
           5 الدفع
         </div>
 
       </div>
 
+
+      <!-- العنوان -->
+
       <div
-        style="
-          margin-top:24px
-        "
+        class="payment-header"
+        style="margin-top:28px"
       >
 
-        <h1 class="payment-title">
+        <h1>
           دفع الفاتورة
         </h1>
 
-        <p class="payment-subtitle">
-          راجع بيانات الفاتورة
-          واختر طريقة الدفع
-          ثم أكد العملية.
+        <p>
+          دفع الفاتورة الصادرة للطلب المؤسسي
+          دون إنشاء طلب جديد.
         </p>
 
       </div>
 
+
+      <!-- تحميل -->
+
       <div
-        id="pageError"
+        id="loadingBox"
+        class="loading-box"
+      >
+        جاري تحميل بيانات الطلب والفاتورة...
+      </div>
+
+
+      <!-- الخطأ -->
+
+      <div
+        id="errorBox"
         class="error-box"
       ></div>
 
+
+      <!-- الصفحة الرئيسية للدفع -->
+
       <div
-        id="paymentContent"
+        id="paymentArea"
         class="payment-grid"
-        style="
-          display:none
-        "
+        style="display:none"
       >
+
+
+        <!-- طريقة الدفع -->
 
         <div class="payment-card">
 
-          <h2
-            style="
-              margin-top:0;
-              color:#062f5f
-            "
-          >
+          <h2>
             طريقة الدفع
           </h2>
 
           <p class="muted">
-            اختر وسيلة الدفع
-            المستخدمة في هذه
-            العملية التجريبية.
+            اختر طريقة الدفع لتسجيل العملية
+            على الفاتورة الحالية.
           </p>
 
-          <div
-            class="payment-choice-grid"
-            id="paymentChoices"
-          >
+
+          <div class="payment-methods">
 
             <button
               type="button"
-              class="
-                payment-choice
-                active
-              "
+              class="payment-method active"
               data-method="card"
             >
               💳 بطاقة بنكية
             </button>
 
+
             <button
               type="button"
-              class="payment-choice"
+              class="payment-method"
               data-method="apple_pay"
             >
                Apple Pay
             </button>
 
+
             <button
               type="button"
-              class="payment-choice"
+              class="payment-method"
               data-method="bank_transfer"
             >
               🏦 تحويل بنكي
             </button>
 
+
             <button
               type="button"
-              class="payment-choice"
+              class="payment-method"
               data-method="tabby"
             >
               Tabby
@@ -414,58 +486,58 @@
 
           </div>
 
-          <div class="notice-box">
+
+          <div class="demo-notice">
 
             <strong>
-              🔒 بيئة تجريبية
+              🔒 بيئة دفع تجريبية
             </strong>
 
             <br>
 
-            هذه الصفحة لا تتصل
-            حالياً ببوابة دفع حقيقية
-            ولا تطلب بيانات بطاقة.
+            لن يتم طلب أو حفظ بيانات بطاقة بنكية.
 
-            عند تأكيد الدفع سيتم فقط
-            تحديث حالة الفاتورة
-            والطلب في Supabase إلى
+            <br>
+
+            الضغط على
+            <strong>تأكيد دفع الفاتورة</strong>
+            سيقوم فقط بتحديث نفس الفاتورة إلى
+            <strong>مدفوعة</strong>
+            وتحديث حالة الدفع على نفس الطلب.
+
+            <br>
 
             <strong>
-              مدفوع
+              لن يتم إنشاء طلب جديد.
             </strong>
-
-            لاختبار دورة العمل كاملة.
 
           </div>
 
+
           <button
-            class="btn btn-gold"
             id="payInvoiceBtn"
             type="button"
-            style="
-              width:100%;
-              margin-top:18px
-            "
+            class="btn btn-gold"
           >
-            تأكيد الدفع التجريبي
+            💳 تأكيد دفع الفاتورة
           </button>
 
         </div>
 
+
+        <!-- ملخص الفاتورة -->
+
         <div class="payment-card">
 
-          <h2
-            style="
-              margin-top:0;
-              color:#062f5f
-            "
-          >
+          <h2>
             ملخص الفاتورة
           </h2>
 
-          <div class="payment-meta">
 
-            <div>
+          <div class="invoice-info">
+
+
+            <div class="invoice-info-box">
 
               <small>
                 رقم الطلب
@@ -477,7 +549,8 @@
 
             </div>
 
-            <div>
+
+            <div class="invoice-info-box">
 
               <small>
                 رقم الفاتورة
@@ -489,7 +562,8 @@
 
             </div>
 
-            <div>
+
+            <div class="invoice-info-box">
 
               <small>
                 حالة الفاتورة
@@ -501,7 +575,8 @@
 
             </div>
 
-            <div>
+
+            <div class="invoice-info-box">
 
               <small>
                 تاريخ الاستحقاق
@@ -513,115 +588,165 @@
 
             </div>
 
-          </div>
-
-          <div
-            style="
-              margin-top:18px
-            "
-          >
-
-            <div class="summary-row">
-
-              <span>
-                قيمة المنتجات
-              </span>
-
-              <strong id="sumSubtotal">
-                AED 0.00
-              </strong>
-
-            </div>
-
-            <div class="summary-row">
-
-              <span>
-                التوصيل
-              </span>
-
-              <strong id="sumDelivery">
-                AED 0.00
-              </strong>
-
-            </div>
-
-            <div class="summary-row">
-
-              <span>
-                الضريبة
-              </span>
-
-              <strong id="sumVat">
-                AED 0.00
-              </strong>
-
-            </div>
 
           </div>
 
-          <div class="summary-total">
+
+          <div class="summary-row">
 
             <span>
-              الإجمالي
+              قيمة المنتجات
             </span>
 
-            <strong id="sumTotal">
+            <strong id="subtotal">
               AED 0.00
             </strong>
 
           </div>
 
+
+          <div class="summary-row">
+
+            <span>
+              التوصيل
+            </span>
+
+            <strong id="deliveryFee">
+              AED 0.00
+            </strong>
+
+          </div>
+
+
+          <div class="summary-row">
+
+            <span>
+              الضريبة VAT
+            </span>
+
+            <strong id="vat">
+              AED 0.00
+            </strong>
+
+          </div>
+
+
+          <div class="total-row">
+
+            <span>
+              إجمالي الفاتورة
+            </span>
+
+            <strong id="invoiceTotal">
+              AED 0.00
+            </strong>
+
+          </div>
+
+
+        </div>
+
+
+      </div>
+
+
+      <!-- نجاح الدفع -->
+
+      <div
+        id="successBox"
+        class="success-box"
+      >
+
+        <h2>
+          ✅ تم دفع الفاتورة بنجاح
+        </h2>
+
+        <p>
+          تم تسجيل عملية الدفع على نفس
+          الفاتورة والطلب دون إنشاء طلب جديد.
+        </p>
+
+        <div>
+
+          رقم الطلب:
+
+          <strong id="successOrderNo">
+            —
+          </strong>
+
+        </div>
+
+        <div style="margin-top:7px">
+
+          رقم الفاتورة:
+
+          <strong id="successInvoiceNo">
+            —
+          </strong>
+
+        </div>
+
+        <div class="success-total">
+
+          <span id="successTotal">
+            AED 0.00
+          </span>
+
+        </div>
+
+        <span class="status-paid">
+          ✓ الفاتورة مدفوعة
+        </span>
+
+
+        <div class="success-actions">
+
+          <a
+            id="successOrderLink"
+            class="btn btn-primary"
+            href="#"
+          >
+            العودة إلى تفاصيل الطلب
+          </a>
+
+          <a
+            class="btn btn-gold"
+            href="buyer.html#"
+          >
+            العودة إلى لوحة المشتري
+          </a>
+
         </div>
 
       </div>
 
-      <div
-        id="paidSuccess"
-        class="success-box"
-      >
-
-        <h2
-          style="
-            margin-top:0
-          "
-        >
-          ✅ تم دفع الفاتورة
-        </h2>
-
-        <p
-          id="paidSuccessText"
-          style="
-            margin-bottom:16px
-          "
-        ></p>
-
-        <a
-          id="backToOrderBtn"
-          class="btn btn-primary"
-          href="buyer.html#"
-        >
-          العودة إلى تفاصيل الطلب
-        </a>
-
-      </div>
 
     </div>
 
   </section>
 
+
   <script>
 
-    let PaymentOrder =
-      null;
 
-    let PaymentInvoice =
-      null;
+    /* =====================================================
+       متغيرات الدفع
+    ===================================================== */
 
-    let PaymentUser =
-      null;
 
-    let SelectedPaymentMethod =
-      "card";
+    let CurrentOrder = null;
+
+    let CurrentInvoice = null;
+
+    let CurrentUser = null;
+
+    let SelectedPaymentMethod = "card";
+
+
+
+    /* =====================================================
+       أدوات
+    ===================================================== */
 
 
     function money(value) {
@@ -629,39 +754,34 @@
       return (
         "AED " +
         Number(
-          value ||
-          0
-        ).toFixed(
-          2
-        )
+          value || 0
+        ).toFixed(2)
       );
 
     }
 
 
+
     function formatDate(value) {
 
       if (!value) {
+
         return "—";
+
       }
+
 
       try {
 
-        return new Date(
-          value
-        ).toLocaleDateString(
-          "ar-AE",
-          {
-            year:
-              "numeric",
-
-            month:
-              "long",
-
-            day:
-              "numeric"
-          }
-        );
+        return new Date(value)
+          .toLocaleDateString(
+            "ar-AE",
+            {
+              year:"numeric",
+              month:"long",
+              day:"numeric"
+            }
+          );
 
       } catch (e) {
 
@@ -672,25 +792,21 @@
     }
 
 
-    function setText(
-      id,
-      value
-    ) {
 
-      const element =
-        document.getElementById(
-          id
-        );
+    function setText(id,value) {
 
-      if (element) {
+      const el =
+        document.getElementById(id);
 
-        element.textContent =
-          value ??
-          "—";
+      if (el) {
+
+        el.textContent =
+          value ?? "—";
 
       }
 
     }
+
 
 
     function getParam(name) {
@@ -700,26 +816,28 @@
           window.location.search
         );
 
-      return params.get(
-        name
-      );
+      return params.get(name);
 
     }
+
 
 
     function getBuyerId(order) {
 
       if (!order) {
+
         return null;
+
       }
 
       return (
-        order.user_id ||
         order.buyer_id ||
+        order.user_id ||
         null
       );
 
     }
+
 
 
     function invoiceStatusLabel(status) {
@@ -752,6 +870,12 @@
     }
 
 
+
+    /* =====================================================
+       المستخدم الحالي
+    ===================================================== */
+
+
     async function getCurrentUser() {
 
       try {
@@ -768,6 +892,7 @@
 
         }
 
+
         if (
           window.Bahrna &&
           Bahrna.client &&
@@ -779,6 +904,7 @@
           } =
             await Bahrna.client.auth.getUser();
 
+
           return (
             data?.user ||
             null
@@ -786,45 +912,70 @@
 
         }
 
+
       } catch (e) {
 
-        console.warn(
-          "PAYMENT USER ERROR",
+        console.error(
+          "USER ERROR:",
           e
         );
 
       }
+
 
       return null;
 
     }
 
 
+
+    /* =====================================================
+       عرض الخطأ
+    ===================================================== */
+
+
     function showError(message) {
 
-      const box =
+      const loading =
         document.getElementById(
-          "pageError"
+          "loadingBox"
         );
 
-      const content =
+
+      const payment =
         document.getElementById(
-          "paymentContent"
+          "paymentArea"
         );
 
-      if (content) {
 
-        content.style.display =
+      const error =
+        document.getElementById(
+          "errorBox"
+        );
+
+
+      if (loading) {
+
+        loading.style.display =
           "none";
 
       }
 
-      if (box) {
 
-        box.style.display =
+      if (payment) {
+
+        payment.style.display =
+          "none";
+
+      }
+
+
+      if (error) {
+
+        error.style.display =
           "block";
 
-        box.textContent =
+        error.textContent =
           message;
 
       }
@@ -832,29 +983,61 @@
     }
 
 
+
+    /* =====================================================
+       حالة مدفوعة
+    ===================================================== */
+
+
     function showPaidState() {
 
-      const content =
+      const loading =
         document.getElementById(
-          "paymentContent"
+          "loadingBox"
         );
+
+
+      const payment =
+        document.getElementById(
+          "paymentArea"
+        );
+
+
+      const error =
+        document.getElementById(
+          "errorBox"
+        );
+
 
       const success =
         document.getElementById(
-          "paidSuccess"
+          "successBox"
         );
 
-      const text =
-        document.getElementById(
-          "paidSuccessText"
-        );
 
-      if (content) {
+      if (loading) {
 
-        content.style.display =
+        loading.style.display =
           "none";
 
       }
+
+
+      if (payment) {
+
+        payment.style.display =
+          "none";
+
+      }
+
+
+      if (error) {
+
+        error.style.display =
+          "none";
+
+      }
+
 
       if (success) {
 
@@ -863,139 +1046,81 @@
 
       }
 
-      if (text) {
 
-        text.textContent =
-          "الفاتورة " +
-          (
-            PaymentInvoice
-              ?.invoice_no ||
-            ""
-          ) +
-          " للطلب " +
-          (
-            PaymentOrder
-              ?.order_no ||
-            ""
-          ) +
-          " مسجلة الآن بحالة مدفوعة.";
+      setText(
+        "successOrderNo",
+        CurrentOrder?.order_no
+      );
+
+
+      setText(
+        "successInvoiceNo",
+        CurrentInvoice?.invoice_no
+      );
+
+
+      setText(
+        "successTotal",
+        money(
+          CurrentInvoice?.total
+        )
+      );
+
+
+      const link =
+        document.getElementById(
+          "successOrderLink"
+        );
+
+
+      if (
+        link &&
+        CurrentOrder
+      ) {
+
+        link.href =
+          "b2b-order.html?order=" +
+          encodeURIComponent(
+            CurrentOrder.order_no
+          );
 
       }
 
     }
 
 
-    function renderPaymentData() {
 
-      if (
-        !PaymentOrder ||
-        !PaymentInvoice
-      ) {
-
-        return;
-
-      }
+    /* =====================================================
+       رسم الصفحة
+    ===================================================== */
 
 
-      setText(
-        "orderNo",
-        PaymentOrder.order_no
-      );
+    function renderPayment() {
 
-
-      setText(
-        "invoiceNo",
-        PaymentInvoice.invoice_no
-      );
-
-
-      setText(
-        "invoiceStatus",
-        invoiceStatusLabel(
-          PaymentInvoice.status
-        )
-      );
-
-
-      setText(
-        "dueDate",
-        formatDate(
-          PaymentInvoice.due_date
-        )
-      );
-
-
-      setText(
-        "sumSubtotal",
-        money(
-          PaymentInvoice.subtotal
-        )
-      );
-
-
-      setText(
-        "sumDelivery",
-        money(
-          PaymentInvoice.delivery_fee
-        )
-      );
-
-
-      setText(
-        "sumVat",
-        money(
-          PaymentInvoice.vat
-        )
-      );
-
-
-      setText(
-        "sumTotal",
-        money(
-          PaymentInvoice.total
-        )
-      );
-
-
-      const detailsUrl =
-        "b2b-order.html?order=" +
-        encodeURIComponent(
-          PaymentOrder.order_no
-        );
-
-
-      const topLink =
+      const loading =
         document.getElementById(
-          "backToOrderTop"
+          "loadingBox"
         );
 
 
-      const backLink =
+      const payment =
         document.getElementById(
-          "backToOrderBtn"
+          "paymentArea"
         );
 
 
-      if (topLink) {
+      if (loading) {
 
-        topLink.href =
-          detailsUrl;
-
-      }
-
-
-      if (backLink) {
-
-        backLink.href =
-          detailsUrl;
+        loading.style.display =
+          "none";
 
       }
 
 
       if (
-        PaymentInvoice.status ===
+        CurrentInvoice.status ===
           "paid" ||
-        PaymentOrder.payment_status ===
+        CurrentOrder.payment_status ===
           "paid"
       ) {
 
@@ -1006,23 +1131,105 @@
       }
 
 
-      const content =
-        document.getElementById(
-          "paymentContent"
+      if (payment) {
+
+        payment.style.display =
+          "grid";
+
+      }
+
+
+      setText(
+        "orderNo",
+        CurrentOrder.order_no
+      );
+
+
+      setText(
+        "invoiceNo",
+        CurrentInvoice.invoice_no
+      );
+
+
+      setText(
+        "invoiceStatus",
+        invoiceStatusLabel(
+          CurrentInvoice.status
+        )
+      );
+
+
+      setText(
+        "dueDate",
+        formatDate(
+          CurrentInvoice.due_date
+        )
+      );
+
+
+      setText(
+        "subtotal",
+        money(
+          CurrentInvoice.subtotal
+        )
+      );
+
+
+      setText(
+        "deliveryFee",
+        money(
+          CurrentInvoice.delivery_fee
+        )
+      );
+
+
+      setText(
+        "vat",
+        money(
+          CurrentInvoice.vat
+        )
+      );
+
+
+      setText(
+        "invoiceTotal",
+        money(
+          CurrentInvoice.total
+        )
+      );
+
+
+      const detailsUrl =
+        "b2b-order.html?order=" +
+        encodeURIComponent(
+          CurrentOrder.order_no
         );
 
 
-      if (content) {
+      const back =
+        document.getElementById(
+          "backToOrderTop"
+        );
 
-        content.style.display =
-          "grid";
+
+      if (back) {
+
+        back.href =
+          detailsUrl;
 
       }
 
     }
 
 
-    async function loadPaymentPage() {
+
+    /* =====================================================
+       تحميل الطلب والفاتورة
+    ===================================================== */
+
+
+    async function loadPaymentData() {
+
 
       const orderNo =
         getParam(
@@ -1030,7 +1237,7 @@
         );
 
 
-      const requestedInvoiceNo =
+      const invoiceNo =
         getParam(
           "invoice"
         );
@@ -1039,7 +1246,18 @@
       if (!orderNo) {
 
         showError(
-          "لم يتم تحديد رقم الطلب في رابط الدفع."
+          "لم يتم تحديد رقم الطلب."
+        );
+
+        return;
+
+      }
+
+
+      if (!invoiceNo) {
+
+        showError(
+          "لم يتم تحديد رقم الفاتورة."
         );
 
         return;
@@ -1053,7 +1271,7 @@
       ) {
 
         showError(
-          "الاتصال بقاعدة البيانات غير متاح."
+          "تعذر الاتصال بقاعدة البيانات."
         );
 
         return;
@@ -1063,26 +1281,29 @@
 
       try {
 
-        PaymentUser =
+
+        CurrentUser =
           await getCurrentUser();
 
 
-        if (!PaymentUser) {
+        if (!CurrentUser) {
 
           throw new Error(
-            "يرجى تسجيل الدخول بحساب المشتري أولاً."
+            "يرجى تسجيل الدخول بحساب المشتري."
           );
 
         }
 
 
+
+        /* -----------------------------------------------
+           قراءة نفس الطلب فقط
+        ----------------------------------------------- */
+
+
         const {
-          data:
-            order,
-
-          error:
-            orderError
-
+          data:order,
+          error:orderError
         } =
           await Bahrna.client
 
@@ -1102,6 +1323,7 @@
             .single();
 
 
+
         if (orderError) {
 
           throw orderError;
@@ -1112,10 +1334,16 @@
         if (!order) {
 
           throw new Error(
-            "الطلب غير موجود."
+            "لم يتم العثور على الطلب."
           );
 
         }
+
+
+
+        /* -----------------------------------------------
+           التحقق من صاحب الطلب
+        ----------------------------------------------- */
 
 
         const buyerId =
@@ -1127,10 +1355,10 @@
         if (
           !buyerId ||
           String(
-            PaymentUser.id
+            buyerId
           ) !==
           String(
-            buyerId
+            CurrentUser.id
           )
         ) {
 
@@ -1139,6 +1367,12 @@
           );
 
         }
+
+
+
+        /* -----------------------------------------------
+           يجب أن يكون الاستلام مؤكداً
+        ----------------------------------------------- */
 
 
         if (
@@ -1153,8 +1387,17 @@
         }
 
 
-        let invoiceQuery =
-          Bahrna.client
+
+        /* -----------------------------------------------
+           قراءة نفس الفاتورة فقط
+        ----------------------------------------------- */
+
+
+        const {
+          data:invoice,
+          error:invoiceError
+        } =
+          await Bahrna.client
 
             .from(
               "invoices"
@@ -1165,34 +1408,17 @@
             )
 
             .eq(
+              "invoice_no",
+              invoiceNo
+            )
+
+            .eq(
               "order_id",
               order.id
-            );
+            )
 
+            .single();
 
-        if (
-          requestedInvoiceNo
-        ) {
-
-          invoiceQuery =
-            invoiceQuery.eq(
-              "invoice_no",
-              requestedInvoiceNo
-            );
-
-        }
-
-
-        const {
-          data:
-            invoice,
-
-          error:
-            invoiceError
-
-        } =
-          await invoiceQuery
-            .maybeSingle();
 
 
         if (invoiceError) {
@@ -1205,10 +1431,16 @@
         if (!invoice) {
 
           throw new Error(
-            "لم يتم العثور على فاتورة صادرة لهذا الطلب."
+            "لم يتم العثور على الفاتورة."
           );
 
         }
+
+
+
+        /* -----------------------------------------------
+           حالات الفاتورة المسموح دفعها
+        ----------------------------------------------- */
 
 
         if (
@@ -1223,33 +1455,35 @@
         ) {
 
           throw new Error(
-            "الفاتورة ليست في حالة تسمح بالدفع حالياً."
+            "حالة الفاتورة لا تسمح بالدفع."
           );
 
         }
 
 
-        PaymentOrder =
+
+        CurrentOrder =
           order;
 
 
-        PaymentInvoice =
+        CurrentInvoice =
           invoice;
 
 
-        renderPaymentData();
+        renderPayment();
 
 
       } catch (e) {
 
+
         console.error(
-          "PAYMENT LOAD ERROR:",
+          "LOAD PAYMENT ERROR:",
           e
         );
 
 
         showError(
-          "تعذر تحميل صفحة الدفع: " +
+          "تعذر تحميل الدفع: " +
           (
             e.message ||
             e
@@ -1261,15 +1495,22 @@
     }
 
 
-    async function confirmPilotPayment() {
+
+    /* =====================================================
+       تأكيد الدفع
+    ===================================================== */
+
+
+    async function confirmInvoicePayment() {
+
 
       if (
-        !PaymentOrder ||
-        !PaymentInvoice
+        !CurrentOrder ||
+        !CurrentInvoice
       ) {
 
         alert(
-          "تعذر تحديد الفاتورة أو الطلب."
+          "تعذر تحديد الطلب أو الفاتورة."
         );
 
         return;
@@ -1277,10 +1518,11 @@
       }
 
 
+
       if (
-        PaymentInvoice.status ===
+        CurrentInvoice.status ===
           "paid" ||
-        PaymentOrder.payment_status ===
+        CurrentOrder.payment_status ===
           "paid"
       ) {
 
@@ -1295,16 +1537,21 @@
       }
 
 
+
       const ok =
         confirm(
           "هل تريد تأكيد دفع الفاتورة " +
-          PaymentInvoice.invoice_no +
-          " بقيمة " +
-          money(
-            PaymentInvoice.total
-          ) +
+          CurrentInvoice.invoice_no +
           "؟\n\n" +
-          "هذه عملية تجريبية ولا يتم خصم مبلغ حقيقي."
+          "رقم الطلب: " +
+          CurrentOrder.order_no +
+          "\n" +
+          "القيمة: " +
+          money(
+            CurrentInvoice.total
+          ) +
+          "\n\n" +
+          "هذه عملية دفع تجريبية ولا يتم خصم مبلغ حقيقي."
         );
 
 
@@ -1315,6 +1562,7 @@
       }
 
 
+
       const button =
         document.getElementById(
           "payInvoiceBtn"
@@ -1322,6 +1570,7 @@
 
 
       try {
+
 
         if (button) {
 
@@ -1334,9 +1583,14 @@
         }
 
 
+
+        /* -----------------------------------------------
+           تحديث نفس الفاتورة
+        ----------------------------------------------- */
+
+
         const {
-          error:
-            invoiceUpdateError
+          error:invoiceError
         } =
           await Bahrna.client
 
@@ -1345,31 +1599,37 @@
             )
 
             .update({
+
               status:
                 "paid"
+
             })
 
             .eq(
               "id",
-              PaymentInvoice.id
+              CurrentInvoice.id
             );
 
 
-        if (
-          invoiceUpdateError
-        ) {
+
+        if (invoiceError) {
 
           throw new Error(
-            "تعذر تحديث الفاتورة إلى مدفوعة: " +
-            invoiceUpdateError.message
+            "تعذر تحديث الفاتورة: " +
+            invoiceError.message
           );
 
         }
 
 
+
+        /* -----------------------------------------------
+           تحديث نفس الطلب
+        ----------------------------------------------- */
+
+
         const {
-          error:
-            orderUpdateError
+          error:orderError
         } =
           await Bahrna.client
 
@@ -1389,13 +1649,19 @@
 
             .eq(
               "id",
-              PaymentOrder.id
+              CurrentOrder.id
             );
 
 
-        if (
-          orderUpdateError
-        ) {
+
+        if (orderError) {
+
+
+          /*
+            إعادة الفاتورة إلى صادرة
+            إذا فشل تحديث الطلب
+          */
+
 
           try {
 
@@ -1406,21 +1672,24 @@
               )
 
               .update({
+
                 status:
                   "issued"
+
               })
 
               .eq(
                 "id",
-                PaymentInvoice.id
+                CurrentInvoice.id
               );
+
 
           } catch (
             rollbackError
           ) {
 
             console.warn(
-              "PAYMENT ROLLBACK ERROR",
+              "ROLLBACK ERROR:",
               rollbackError
             );
 
@@ -1429,26 +1698,38 @@
 
           throw new Error(
             "تعذر تحديث حالة الدفع على الطلب: " +
-            orderUpdateError.message
+            orderError.message
           );
 
         }
 
 
-        PaymentInvoice.status =
+
+        /* -----------------------------------------------
+           تحديث الذاكرة المحلية
+        ----------------------------------------------- */
+
+
+        CurrentInvoice.status =
           "paid";
 
 
-        PaymentOrder.payment_status =
+        CurrentOrder.payment_status =
           "paid";
 
 
-        PaymentOrder.payment_method =
+        CurrentOrder.payment_method =
           SelectedPaymentMethod;
 
 
+
+        /* -----------------------------------------------
+           النجاح
+        ----------------------------------------------- */
+
+
         alert(
-          "✅ تم تسجيل دفع الفاتورة بنجاح"
+          "✅ تم دفع الفاتورة بنجاح"
         );
 
 
@@ -1457,14 +1738,15 @@
 
       } catch (e) {
 
+
         console.error(
-          "PAYMENT CONFIRM ERROR:",
+          "PAYMENT ERROR:",
           e
         );
 
 
         alert(
-          "تعذر تأكيد الدفع: " +
+          "تعذر إتمام الدفع: " +
           (
             e.message ||
             e
@@ -1478,7 +1760,7 @@
             false;
 
           button.textContent =
-            "تأكيد الدفع التجريبي";
+            "💳 تأكيد دفع الفاتورة";
 
         }
 
@@ -1487,32 +1769,40 @@
     }
 
 
-    function setupPaymentChoices() {
+
+    /* =====================================================
+       طرق الدفع
+    ===================================================== */
+
+
+    function setupPaymentMethods() {
+
 
       document
-
         .querySelectorAll(
-          ".payment-choice"
+          ".payment-method"
         )
-
         .forEach(
           button => {
+
 
             button.addEventListener(
               "click",
               () => {
 
+
                 document
-
                   .querySelectorAll(
-                    ".payment-choice"
+                    ".payment-method"
                   )
-
                   .forEach(
-                    item =>
+                    item => {
+
                       item.classList.remove(
                         "active"
-                      )
+                      );
+
+                    }
                   );
 
 
@@ -1525,11 +1815,14 @@
                   button.dataset.method ||
                   "card";
 
+
               }
             );
 
+
           }
         );
+
 
 
       const payButton =
@@ -1542,7 +1835,7 @@
 
         payButton.addEventListener(
           "click",
-          confirmPilotPayment
+          confirmInvoicePayment
         );
 
       }
@@ -1550,18 +1843,59 @@
     }
 
 
+
+    /* =====================================================
+       التشغيل
+    ===================================================== */
+
+
     document.addEventListener(
       "DOMContentLoaded",
       async () => {
 
-        setupPaymentChoices();
 
-        await loadPaymentPage();
+        setupPaymentMethods();
+
+
+        /*
+          ننتظر لحظة بسيطة حتى يكون
+          app.js قد جهز Bahrna.client
+        */
+
+
+        let attempts = 0;
+
+
+        while (
+          (
+            !window.Bahrna ||
+            !Bahrna.client
+          ) &&
+          attempts < 40
+        ) {
+
+          await new Promise(
+            resolve =>
+              setTimeout(
+                resolve,
+                100
+              )
+          );
+
+          attempts++;
+
+        }
+
+
+        await loadPaymentData();
+
 
       }
     );
 
+
   </script>
+
 
 </body>
 
