@@ -1,11 +1,13 @@
 /* =========================================================
    BAHRNA & SHRAANA
    B2B ORDER DETAILS
-   Delivery + Buyer Receipt Confirmation
+   Delivery + Buyer Receipt + Supplier Invoice
 ========================================================= */
 
 let CurrentOrder = null;
 let CurrentUser = null;
+let CurrentSupplier = null;
+let CurrentInvoice = null;
 
 
 /* =========================================================
@@ -16,23 +18,58 @@ function money(value) {
   return "AED " + Number(value || 0).toFixed(2);
 }
 
+
 function formatDateTime(value) {
+
   if (!value) return "—";
 
   try {
-    return new Date(value).toLocaleString("ar-AE", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit"
-    });
+
+    return new Date(value).toLocaleString(
+      "ar-AE",
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      }
+    );
+
   } catch (e) {
+
     return value;
   }
 }
 
-function statusLabel(status, receiptStatus) {
+
+function formatDate(value) {
+
+  if (!value) return "—";
+
+  try {
+
+    return new Date(value).toLocaleDateString(
+      "ar-AE",
+      {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      }
+    );
+
+  } catch (e) {
+
+    return value;
+  }
+}
+
+
+function statusLabel(
+  status,
+  receiptStatus
+) {
+
   if (
     status === "delivered" &&
     receiptStatus === "confirmed"
@@ -41,50 +78,127 @@ function statusLabel(status, receiptStatus) {
   }
 
   const labels = {
-    pending: "بانتظار التأكيد",
-    confirmed: "تم التأكيد",
-    preparing: "جاري التجهيز",
-    out_for_delivery: "خرج للتوصيل",
-    delivered: "تم التسليم",
-    cancelled: "تم الإلغاء"
+
+    pending:
+      "بانتظار التأكيد",
+
+    confirmed:
+      "تم التأكيد",
+
+    preparing:
+      "جاري التجهيز",
+
+    out_for_delivery:
+      "خرج للتوصيل",
+
+    delivered:
+      "تم التسليم",
+
+    cancelled:
+      "تم الإلغاء"
   };
 
-  return labels[status] || status || "—";
+  return labels[status] ||
+    status ||
+    "—";
 }
+
 
 function paymentStatusLabel(status) {
+
   const labels = {
-    unpaid: "غير مدفوع",
-    pending: "بانتظار الدفع",
-    paid: "مدفوع",
-    refunded: "مسترد"
+
+    unpaid:
+      "غير مدفوع",
+
+    pending:
+      "بانتظار الدفع",
+
+    paid:
+      "مدفوع",
+
+    refunded:
+      "مسترد"
   };
 
-  return labels[status] || status || "غير محدد";
+  return labels[status] ||
+    status ||
+    "غير مدفوع";
 }
+
 
 function paymentMethodLabel(method) {
+
   const labels = {
-    pilot_no_charge: "طلب تجريبي / بدون تحصيل",
-    card: "بطاقة بنكية",
-    apple_pay: "Apple Pay",
-    cash: "نقداً"
+
+    pilot_no_charge:
+      "طلب تجريبي / بدون تحصيل",
+
+    card:
+      "بطاقة بنكية",
+
+    apple_pay:
+      "Apple Pay",
+
+    cash:
+      "نقداً",
+
+    bank_transfer:
+      "تحويل بنكي"
   };
 
-  return labels[method] || method || "غير محدد";
+  return labels[method] ||
+    method ||
+    "غير محدد";
 }
 
 
-/* =========================================================
-   تحديد صاحب الطلب
-========================================================= */
+function invoiceStatusLabel(status) {
+
+  const labels = {
+
+    draft:
+      "مسودة",
+
+    issued:
+      "صادرة",
+
+    approved:
+      "معتمدة",
+
+    paid:
+      "مدفوعة",
+
+    cancelled:
+      "ملغاة"
+  };
+
+  return labels[status] ||
+    status ||
+    "—";
+}
+
+
+function setText(id, value) {
+
+  const element =
+    document.getElementById(id);
+
+  if (element) {
+
+    element.textContent =
+      value ?? "—";
+  }
+}
+
 
 function getOrderBuyerId(order) {
+
   if (!order) return null;
 
   return (
-    order.buyer_id ||
     order.user_id ||
+    order.buyer_id ||
     null
   );
 }
@@ -95,8 +209,11 @@ function getOrderBuyerId(order) {
 ========================================================= */
 
 function getOrderNoFromURL() {
+
   const params =
-    new URLSearchParams(window.location.search);
+    new URLSearchParams(
+      window.location.search
+    );
 
   return params.get("order");
 }
@@ -107,17 +224,23 @@ function getOrderNoFromURL() {
 ========================================================= */
 
 async function loadCurrentUser() {
+
   CurrentUser = null;
 
   try {
+
     if (
       window.Bahrna &&
-      typeof Bahrna.getCurrentUser === "function"
+      typeof Bahrna.getCurrentUser ===
+        "function"
     ) {
+
       CurrentUser =
         await Bahrna.getCurrentUser();
     }
+
   } catch (e) {
+
     console.warn(
       "تعذر قراءة المستخدم الحالي",
       e
@@ -133,13 +256,16 @@ async function loadCurrentUser() {
 ========================================================= */
 
 async function loadOrderDetails() {
+
   const orderNo =
     getOrderNoFromURL();
 
   if (!orderNo) {
+
     showError(
       "لم يتم تحديد رقم الطلب في الرابط."
     );
+
     return;
   }
 
@@ -147,38 +273,52 @@ async function loadOrderDetails() {
     !window.Bahrna ||
     !Bahrna.client
   ) {
+
     showError(
       "الاتصال بقاعدة البيانات غير متاح."
     );
+
     return;
   }
 
   try {
+
     await loadCurrentUser();
 
-    const { data, error } =
-      await Bahrna.client
-        .from("orders")
-        .select(`
-          *,
-          order_items (
-            *
-          )
-        `)
-        .eq("order_no", orderNo)
-        .single();
+    const {
+      data,
+      error
+    } = await Bahrna.client
+
+      .from("orders")
+
+      .select(`
+        *,
+        order_items (
+          *
+        )
+      `)
+
+      .eq(
+        "order_no",
+        orderNo
+      )
+
+      .single();
 
     if (error) {
       throw error;
     }
 
     if (!data) {
+
       throw new Error(
         "الطلب غير موجود"
       );
     }
 
-    CurrentOrder = data;
+    CurrentOrder =
+      data;
 
     renderOrder(data);
 
@@ -188,7 +328,10 @@ async function loadOrderDetails() {
 
     renderReceiptSection(data);
 
+    await loadInvoice(data);
+
   } catch (e) {
+
     console.error(
       "ORDER DETAILS ERROR:",
       e
@@ -207,6 +350,7 @@ async function loadOrderDetails() {
 ========================================================= */
 
 function renderOrder(order) {
+
   const trackingStatus =
     order.tracking_status ||
     order.status ||
@@ -247,7 +391,8 @@ function renderOrder(order) {
   );
 
   const address =
-    order.delivery_address || {};
+    order.delivery_address ||
+    {};
 
   setText(
     "deliveryEmirate",
@@ -308,6 +453,7 @@ function renderOrder(order) {
 ========================================================= */
 
 function renderItems(items) {
+
   const tbody =
     document.getElementById(
       "orderItems"
@@ -316,43 +462,61 @@ function renderItems(items) {
   if (!tbody) return;
 
   if (!items.length) {
+
     tbody.innerHTML = `
+
       <tr>
+
         <td colspan="4">
           لا توجد منتجات مسجلة على الطلب.
         </td>
+
       </tr>
+
     `;
+
     return;
   }
 
   tbody.innerHTML =
-    items.map(item => `
-      <tr>
+    items.map(
+      item => `
 
-        <td>
-          <strong>
-            ${item.product_name || "منتج"}
-          </strong>
-        </td>
+        <tr>
 
-        <td>
-          ${Number(item.qty_kg || 0)}
-          كجم
-        </td>
+          <td>
 
-        <td>
-          ${money(item.unit_price)}
-        </td>
+            <strong>
+              ${item.product_name || "منتج"}
+            </strong>
 
-        <td>
-          <strong>
-            ${money(item.line_total)}
-          </strong>
-        </td>
+          </td>
 
-      </tr>
-    `).join("");
+          <td>
+
+            ${Number(item.qty_kg || 0)}
+            كجم
+
+          </td>
+
+          <td>
+
+            ${money(item.unit_price)}
+
+          </td>
+
+          <td>
+
+            <strong>
+              ${money(item.line_total)}
+            </strong>
+
+          </td>
+
+        </tr>
+
+      `
+    ).join("");
 }
 
 
@@ -364,6 +528,7 @@ function renderTimeline(
   status,
   receiptStatus
 ) {
+
   let current = 0;
 
   if (status === "confirmed") {
@@ -395,37 +560,45 @@ function renderTimeline(
     .querySelectorAll(
       ".timeline-step"
     )
-    .forEach((step, index) => {
 
-      step.classList.remove(
-        "done",
-        "current"
-      );
+    .forEach(
+      (step, index) => {
 
-      if (index < current) {
-        step.classList.add("done");
-      }
-
-      if (index === current) {
-        step.classList.add(
-          "current"
-        );
-      }
-
-      if (
-        receiptStatus ===
-          "confirmed" &&
-        index <= 4
-      ) {
         step.classList.remove(
+          "done",
           "current"
         );
 
-        step.classList.add(
-          "done"
-        );
+        if (index < current) {
+
+          step.classList.add(
+            "done"
+          );
+        }
+
+        if (index === current) {
+
+          step.classList.add(
+            "current"
+          );
+        }
+
+        if (
+          receiptStatus ===
+            "confirmed" &&
+          index <= 4
+        ) {
+
+          step.classList.remove(
+            "current"
+          );
+
+          step.classList.add(
+            "done"
+          );
+        }
       }
-    });
+    );
 }
 
 
@@ -437,10 +610,12 @@ function trackingMessage(
   status,
   receiptStatus
 ) {
+
   if (
     status === "delivered" &&
     receiptStatus === "confirmed"
   ) {
+
     return (
       "تم تأكيد استلام الطلب " +
       "من المشتري بنجاح."
@@ -448,6 +623,7 @@ function trackingMessage(
   }
 
   const messages = {
+
     pending:
       "تم استلام الطلب وهو بانتظار تأكيد المورد.",
 
@@ -475,10 +651,11 @@ function trackingMessage(
 
 
 /* =========================================================
-   تأكيد الاستلام
+   تأكيد استلام المشتري
 ========================================================= */
 
 function renderReceiptSection(order) {
+
   const box =
     document.getElementById(
       "receiptBox"
@@ -510,44 +687,42 @@ function renderReceiptSection(order) {
     order.tracking_status ||
     order.status;
 
-  /*
-    الاستلام لا يظهر قبل التسليم
-  */
-
   if (
-    trackingStatus !==
-      "delivered"
+    trackingStatus !== "delivered"
   ) {
-    box.style.display = "none";
+
+    box.style.display =
+      "none";
+
     return;
   }
 
-  box.style.display = "block";
-
-
-  /*
-    تم الاستلام مسبقاً
-  */
+  box.style.display =
+    "block";
 
   if (
     order.receipt_status ===
       "confirmed"
   ) {
+
     box.classList.add(
       "receipt-success"
     );
 
     if (title) {
+
       title.textContent =
         "✅ تم تأكيد الاستلام";
     }
 
     if (message) {
+
       message.textContent =
         "تم استلام الطلب وإغلاق مرحلة التسليم بنجاح.";
     }
 
     if (button) {
+
       button.style.display =
         "none";
     }
@@ -556,6 +731,7 @@ function renderReceiptSection(order) {
       date &&
       order.buyer_received_at
     ) {
+
       date.style.display =
         "block";
 
@@ -569,12 +745,6 @@ function renderReceiptSection(order) {
     return;
   }
 
-
-  /*
-    التعديل الجديد:
-    نستخدم buyer_id أو user_id
-  */
-
   const buyerId =
     getOrderBuyerId(order);
 
@@ -584,25 +754,22 @@ function renderReceiptSection(order) {
     String(CurrentUser.id) ===
       String(buyerId);
 
-
-  /*
-    إذا كان المستخدم هو المشتري
-    يظهر زر التأكيد
-  */
-
   if (isBuyer) {
 
     if (title) {
+
       title.textContent =
         "تأكيد استلام الطلب";
     }
 
     if (message) {
+
       message.textContent =
         "إذا استلمت المنتجات فعلياً وبالحالة المتفق عليها، اضغط تأكيد الاستلام.";
     }
 
     if (button) {
+
       button.style.display =
         "inline-flex";
 
@@ -616,22 +783,20 @@ function renderReceiptSection(order) {
     return;
   }
 
-
-  /*
-    إذا لم يمكن التعرف على صاحب الطلب
-  */
-
   if (title) {
+
     title.textContent =
       "بانتظار تأكيد المشتري";
   }
 
   if (message) {
+
     message.textContent =
       "تم التسليم من المورد وبانتظار أن يؤكد المشتري استلام الطلب.";
   }
 
   if (button) {
+
     button.style.display =
       "none";
   }
@@ -643,10 +808,13 @@ function renderReceiptSection(order) {
 ========================================================= */
 
 async function confirmBuyerReceipt() {
+
   if (!CurrentOrder) {
+
     alert(
       "تعذر تحديد الطلب"
     );
+
     return;
   }
 
@@ -655,12 +823,13 @@ async function confirmBuyerReceipt() {
     CurrentOrder.status;
 
   if (
-    trackingStatus !==
-      "delivered"
+    trackingStatus !== "delivered"
   ) {
+
     alert(
       "لا يمكن تأكيد الاستلام قبل وصول حالة الطلب إلى تم التسليم."
     );
+
     return;
   }
 
@@ -668,16 +837,13 @@ async function confirmBuyerReceipt() {
     CurrentOrder.receipt_status ===
       "confirmed"
   ) {
+
     alert(
       "تم تأكيد استلام هذا الطلب مسبقاً."
     );
+
     return;
   }
-
-
-  /*
-    إعادة قراءة المستخدم قبل التأكيد
-  */
 
   await loadCurrentUser();
 
@@ -687,9 +853,11 @@ async function confirmBuyerReceipt() {
     );
 
   if (!CurrentUser) {
+
     alert(
       "يرجى تسجيل الدخول بحساب المشتري أولاً."
     );
+
     return;
   }
 
@@ -698,12 +866,13 @@ async function confirmBuyerReceipt() {
     String(CurrentUser.id) !==
       String(buyerId)
   ) {
+
     alert(
       "تأكيد الاستلام متاح للمشتري صاحب الطلب فقط."
     );
+
     return;
   }
-
 
   const ok =
     confirm(
@@ -715,7 +884,6 @@ async function confirmBuyerReceipt() {
 
   if (!ok) return;
 
-
   const button =
     document.getElementById(
       "confirmReceiptBtn"
@@ -724,51 +892,44 @@ async function confirmBuyerReceipt() {
   try {
 
     if (button) {
-      button.disabled = true;
+
+      button.disabled =
+        true;
 
       button.textContent =
         "جاري تأكيد الاستلام...";
     }
 
+    const {
+      error
+    } = await Bahrna.client
 
-    /*
-      تحديث الطلب.
-      نستخدم رقم الطلب ومعرفه.
-      الحماية النهائية يفترض أن تكون
-      عبر RLS في Supabase.
-    */
+      .from("orders")
 
-    const { data, error } =
-      await Bahrna.client
-        .from("orders")
-        .update({
-          receipt_status:
-            "confirmed",
+      .update({
 
-          buyer_received_at:
-            new Date()
-              .toISOString()
-        })
-        .eq(
-          "id",
-          CurrentOrder.id
-        )
-        .select("*")
-        .single();
+        receipt_status:
+          "confirmed",
 
+        buyer_received_at:
+          new Date().toISOString()
+
+      })
+
+      .eq(
+        "id",
+        CurrentOrder.id
+      );
 
     if (error) {
       throw error;
     }
 
-
     alert(
       "✅ تم تأكيد استلام الطلب بنجاح"
     );
 
-
     await loadOrderDetails();
-
 
   } catch (e) {
 
@@ -783,7 +944,9 @@ async function confirmBuyerReceipt() {
     );
 
     if (button) {
-      button.disabled = false;
+
+      button.disabled =
+        false;
 
       button.textContent =
         "✓ تأكيد استلام الطلب";
@@ -797,26 +960,35 @@ async function confirmBuyerReceipt() {
 ========================================================= */
 
 async function loadBuyerInfo(order) {
+
   try {
+
     const buyerId =
       getOrderBuyerId(order);
 
     if (!buyerId) return;
 
-    const { data, error } =
-      await Bahrna.client
-        .from("profiles")
-        .select("*")
-        .eq(
-          "id",
-          buyerId
-        )
-        .maybeSingle();
+    const {
+      data,
+      error
+    } = await Bahrna.client
+
+      .from("profiles")
+
+      .select("*")
+
+      .eq(
+        "id",
+        buyerId
+      )
+
+      .maybeSingle();
 
     if (
       !error &&
       data
     ) {
+
       const name =
         data.full_name ||
         data.display_name ||
@@ -824,6 +996,7 @@ async function loadBuyerInfo(order) {
         data.name;
 
       if (name) {
+
         setText(
           "buyerName",
           name
@@ -832,6 +1005,7 @@ async function loadBuyerInfo(order) {
     }
 
   } catch (e) {
+
     console.log(
       "Buyer profile not available"
     );
@@ -844,15 +1018,20 @@ async function loadBuyerInfo(order) {
 ========================================================= */
 
 async function loadSupplierInfo(order) {
+
+  CurrentSupplier = null;
+
   try {
+
     const firstItem =
       (order.order_items || [])
-        .find(
-          item =>
-            item.product_id
-        );
+      .find(
+        item =>
+          item.product_id
+      );
 
     if (!firstItem) {
+
       setText(
         "supplierName",
         "بحرنا وشراعنا"
@@ -860,37 +1039,45 @@ async function loadSupplierInfo(order) {
 
       setText(
         "supplierStatus",
-        "مورد معتمد"
+        "مورد مسجل"
       );
+
+      renderInvoiceSection();
 
       return;
     }
 
+    const {
+      data,
+      error
+    } = await Bahrna.client
 
-    const { data, error } =
-      await Bahrna.client
-        .from("products")
-        .select(`
+      .from("products")
+
+      .select(`
+        id,
+        supplier_id,
+        supplier:suppliers (
           id,
-          supplier_id,
-          supplier:suppliers (
-            id,
-            display_name,
-            verified,
-            emirate
-          )
-        `)
-        .eq(
-          "id",
-          firstItem.product_id
+          owner_id,
+          display_name,
+          verified,
+          emirate
         )
-        .maybeSingle();
+      `)
 
+      .eq(
+        "id",
+        firstItem.product_id
+      )
+
+      .maybeSingle();
 
     if (
       error ||
       !data
     ) {
+
       throw (
         error ||
         new Error(
@@ -899,26 +1086,31 @@ async function loadSupplierInfo(order) {
       );
     }
 
-
-    const supplier =
-      data.supplier;
-
+    CurrentSupplier =
+      data.supplier ||
+      null;
 
     setText(
       "supplierName",
-      supplier?.display_name ||
+      CurrentSupplier?.display_name ||
       "بحرنا وشراعنا"
     );
 
-
     setText(
       "supplierStatus",
-      supplier?.verified
+      CurrentSupplier?.verified
         ? "✓ مورد موثق"
         : "مورد مسجل"
     );
 
+    renderInvoiceSection();
+
   } catch (e) {
+
+    console.warn(
+      "تعذر تحميل المورد",
+      e
+    );
 
     setText(
       "supplierName",
@@ -929,15 +1121,702 @@ async function loadSupplierInfo(order) {
       "supplierStatus",
       "مورد مسجل"
     );
+
+    renderInvoiceSection();
   }
 }
 
 
 /* =========================================================
-   تحديث الصفحة
+   تحميل الفاتورة
+========================================================= */
+
+async function loadInvoice(order) {
+
+  CurrentInvoice = null;
+
+  try {
+
+    const {
+      data,
+      error
+    } = await Bahrna.client
+
+      .from("invoices")
+
+      .select("*")
+
+      .eq(
+        "order_id",
+        order.id
+      )
+
+      .maybeSingle();
+
+    if (error) {
+
+      console.warn(
+        "تعذر قراءة الفاتورة:",
+        error
+      );
+
+    } else {
+
+      CurrentInvoice =
+        data || null;
+    }
+
+  } catch (e) {
+
+    console.warn(
+      "Invoice load error",
+      e
+    );
+  }
+
+  renderInvoiceSection();
+}
+
+
+/* =========================================================
+   إنشاء واجهة الفاتورة ديناميكياً
+========================================================= */
+
+function ensureInvoiceSection() {
+
+  let box =
+    document.getElementById(
+      "invoiceSection"
+    );
+
+  if (box) return box;
+
+  const receiptBox =
+    document.getElementById(
+      "receiptBox"
+    );
+
+  if (!receiptBox) return null;
+
+  box =
+    document.createElement("div");
+
+  box.id =
+    "invoiceSection";
+
+  box.style.cssText = `
+    margin-top:20px;
+    padding:22px;
+    border:1px solid #dfe7ef;
+    border-radius:16px;
+    background:#ffffff;
+  `;
+
+  receiptBox.insertAdjacentElement(
+    "afterend",
+    box
+  );
+
+  return box;
+}
+
+
+/* =========================================================
+   عرض مرحلة الفاتورة
+========================================================= */
+
+function renderInvoiceSection() {
+
+  const box =
+    ensureInvoiceSection();
+
+  if (!box) return;
+
+  if (!CurrentOrder) {
+
+    box.style.display =
+      "none";
+
+    return;
+  }
+
+  if (
+    CurrentOrder.receipt_status !==
+      "confirmed"
+  ) {
+
+    box.style.display =
+      "none";
+
+    return;
+  }
+
+  box.style.display =
+    "block";
+
+  const buyerId =
+    getOrderBuyerId(
+      CurrentOrder
+    );
+
+  const isBuyer =
+    CurrentUser &&
+    buyerId &&
+    String(CurrentUser.id) ===
+      String(buyerId);
+
+  const isSupplier =
+    CurrentUser &&
+    CurrentSupplier?.owner_id &&
+    String(CurrentUser.id) ===
+      String(CurrentSupplier.owner_id);
+
+
+  /* -----------------------------------------
+     الفاتورة موجودة بالفعل
+  ----------------------------------------- */
+
+  if (CurrentInvoice) {
+
+    box.innerHTML = `
+
+      <div
+        style="
+          display:flex;
+          justify-content:space-between;
+          align-items:flex-start;
+          gap:20px;
+          flex-wrap:wrap;
+        "
+      >
+
+        <div>
+
+          <h2
+            style="
+              margin-top:0;
+              color:#062f5f;
+            "
+          >
+            🧾 الفاتورة
+          </h2>
+
+          <p class="muted">
+            الفاتورة المرتبطة بهذا الطلب.
+          </p>
+
+        </div>
+
+        <span class="status ok">
+
+          ${invoiceStatusLabel(
+            CurrentInvoice.status
+          )}
+
+        </span>
+
+      </div>
+
+
+      <div
+        style="
+          display:grid;
+          grid-template-columns:
+            repeat(2,minmax(0,1fr));
+          gap:14px;
+          margin-top:16px;
+        "
+      >
+
+        <div>
+
+          <div class="muted">
+            رقم الفاتورة
+          </div>
+
+          <strong>
+            ${CurrentInvoice.invoice_no}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <div class="muted">
+            رقم الطلب
+          </div>
+
+          <strong>
+            ${CurrentInvoice.order_no}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <div class="muted">
+            تاريخ الإصدار
+          </div>
+
+          <strong>
+            ${formatDateTime(
+              CurrentInvoice.issued_at
+            )}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <div class="muted">
+            تاريخ الاستحقاق
+          </div>
+
+          <strong>
+            ${formatDate(
+              CurrentInvoice.due_date
+            )}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <div class="muted">
+            قيمة المنتجات
+          </div>
+
+          <strong>
+            ${money(
+              CurrentInvoice.subtotal
+            )}
+          </strong>
+
+        </div>
+
+
+        <div>
+
+          <div class="muted">
+            الضريبة
+          </div>
+
+          <strong>
+            ${money(
+              CurrentInvoice.vat
+            )}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <div
+        style="
+          margin-top:18px;
+          padding-top:16px;
+          border-top:1px solid #dfe7ef;
+        "
+      >
+
+        <div class="muted">
+          إجمالي الفاتورة
+        </div>
+
+        <div
+          style="
+            font-size:30px;
+            font-weight:800;
+            color:#062f5f;
+          "
+        >
+          ${money(
+            CurrentInvoice.total
+          )}
+        </div>
+
+      </div>
+
+
+      ${
+        isBuyer
+          ? `
+            <p
+              style="
+                margin-top:18px;
+                color:#52677c;
+              "
+            >
+              تم إصدار الفاتورة من المورد
+              وهي متاحة الآن للمشتري.
+            </p>
+          `
+          : ""
+      }
+
+    `;
+
+    return;
+  }
+
+
+  /* -----------------------------------------
+     لا توجد فاتورة بعد
+  ----------------------------------------- */
+
+  if (isSupplier) {
+
+    box.innerHTML = `
+
+      <h2
+        style="
+          margin-top:0;
+          color:#062f5f;
+        "
+      >
+        🧾 إصدار فاتورة
+      </h2>
+
+      <p class="muted">
+
+        تم تأكيد استلام الطلب من المشتري.
+        يمكنك الآن إصدار الفاتورة المرتبطة
+        بالطلب
+
+        <strong>
+          ${CurrentOrder.order_no}
+        </strong>.
+
+      </p>
+
+
+      <div
+        style="
+          margin:18px 0;
+          padding:16px;
+          border-radius:12px;
+          background:#f7fafc;
+        "
+      >
+
+        <div class="muted">
+          قيمة الفاتورة
+        </div>
+
+        <div
+          style="
+            font-size:28px;
+            font-weight:800;
+            color:#062f5f;
+          "
+        >
+
+          ${money(
+            CurrentOrder.total
+          )}
+
+        </div>
+
+      </div>
+
+
+      <button
+        class="btn btn-primary"
+        onclick="issueSupplierInvoice()"
+      >
+
+        إصدار الفاتورة
+
+      </button>
+
+    `;
+
+    return;
+  }
+
+
+  if (isBuyer) {
+
+    box.innerHTML = `
+
+      <h2
+        style="
+          margin-top:0;
+          color:#062f5f;
+        "
+      >
+        🧾 الفاتورة
+      </h2>
+
+      <p class="muted">
+
+        تم تأكيد استلام الطلب.
+        بانتظار المورد لإصدار الفاتورة.
+
+      </p>
+
+    `;
+
+    return;
+  }
+
+
+  box.innerHTML = `
+
+    <h2
+      style="
+        margin-top:0;
+        color:#062f5f;
+      "
+    >
+      🧾 الفاتورة
+    </h2>
+
+    <p class="muted">
+
+      تم تأكيد استلام الطلب.
+      بانتظار إصدار الفاتورة.
+
+    </p>
+
+  `;
+}
+
+
+/* =========================================================
+   إنشاء رقم فاتورة
+========================================================= */
+
+function generateInvoiceNo() {
+
+  const now =
+    new Date();
+
+  const date =
+    now
+      .toISOString()
+      .slice(0,10)
+      .replaceAll("-", "");
+
+  let random;
+
+  try {
+
+    random =
+      crypto
+        .randomUUID()
+        .replaceAll("-", "")
+        .slice(0,8)
+        .toUpperCase();
+
+  } catch (e) {
+
+    random =
+      Math.random()
+        .toString(36)
+        .slice(2,10)
+        .toUpperCase();
+  }
+
+  return (
+    "INV-" +
+    date +
+    "-" +
+    random
+  );
+}
+
+
+/* =========================================================
+   المورد يصدر الفاتورة
+========================================================= */
+
+async function issueSupplierInvoice() {
+
+  if (!CurrentOrder) {
+
+    alert(
+      "تعذر تحديد الطلب"
+    );
+
+    return;
+  }
+
+  if (
+    CurrentOrder.receipt_status !==
+      "confirmed"
+  ) {
+
+    alert(
+      "لا يمكن إصدار الفاتورة قبل تأكيد المشتري استلام الطلب."
+    );
+
+    return;
+  }
+
+  await loadCurrentUser();
+
+  if (
+    !CurrentUser ||
+    !CurrentSupplier?.owner_id ||
+    String(CurrentUser.id) !==
+      String(CurrentSupplier.owner_id)
+  ) {
+
+    alert(
+      "إصدار الفاتورة متاح للمورد صاحب الطلب فقط."
+    );
+
+    return;
+  }
+
+  if (CurrentInvoice) {
+
+    alert(
+      "تم إصدار فاتورة لهذا الطلب مسبقاً."
+    );
+
+    return;
+  }
+
+  const ok =
+    confirm(
+      "هل تريد إصدار فاتورة للطلب " +
+      CurrentOrder.order_no +
+      " بقيمة " +
+      money(CurrentOrder.total) +
+      "؟"
+    );
+
+  if (!ok) return;
+
+  try {
+
+    const dueDate =
+      new Date();
+
+    dueDate.setDate(
+      dueDate.getDate() + 7
+    );
+
+    const buyerId =
+      getOrderBuyerId(
+        CurrentOrder
+      );
+
+    const invoiceData = {
+
+      invoice_no:
+        generateInvoiceNo(),
+
+      order_id:
+        CurrentOrder.id,
+
+      order_no:
+        CurrentOrder.order_no,
+
+      supplier_id:
+        CurrentSupplier.id,
+
+      buyer_user_id:
+        buyerId,
+
+      subtotal:
+        Number(
+          CurrentOrder.subtotal ||
+          CurrentOrder.total ||
+          0
+        ),
+
+      delivery_fee:
+        Number(
+          CurrentOrder.delivery_fee ||
+          0
+        ),
+
+      vat:
+        Number(
+          CurrentOrder.vat ||
+          0
+        ),
+
+      total:
+        Number(
+          CurrentOrder.total ||
+          0
+        ),
+
+      status:
+        "issued",
+
+      issued_at:
+        new Date().toISOString(),
+
+      due_date:
+        dueDate
+          .toISOString()
+          .slice(0,10),
+
+      notes:
+        "فاتورة طلب شراء مؤسسي B2B"
+    };
+
+    const {
+      data,
+      error
+    } = await Bahrna.client
+
+      .from("invoices")
+
+      .insert(
+        invoiceData
+      )
+
+      .select("*")
+
+      .single();
+
+    if (error) {
+      throw error;
+    }
+
+    CurrentInvoice =
+      data;
+
+    alert(
+      "✅ تم إصدار الفاتورة بنجاح\n\n" +
+      "رقم الفاتورة: " +
+      data.invoice_no
+    );
+
+    renderInvoiceSection();
+
+  } catch (e) {
+
+    console.error(
+      "ISSUE INVOICE ERROR:",
+      e
+    );
+
+    alert(
+      "تعذر إصدار الفاتورة: " +
+      (e.message || e)
+    );
+  }
+}
+
+
+/* =========================================================
+   تحديث الحالة
 ========================================================= */
 
 async function refreshOrder() {
+
   setText(
     "trackingMessage",
     "جاري تحديث حالة الطلب..."
@@ -948,27 +1827,18 @@ async function refreshOrder() {
 
 
 /* =========================================================
-   Helpers
+   عرض الخطأ
 ========================================================= */
 
-function setText(id, value) {
-  const element =
-    document.getElementById(id);
-
-  if (element) {
-    element.textContent =
-      value ?? "—";
-  }
-}
-
-
 function showError(message) {
+
   const box =
     document.getElementById(
       "orderError"
     );
 
   if (box) {
+
     box.style.display =
       "block";
 
@@ -984,7 +1854,7 @@ function showError(message) {
 
 
 /* =========================================================
-   Start
+   تشغيل الصفحة
 ========================================================= */
 
 document.addEventListener(
