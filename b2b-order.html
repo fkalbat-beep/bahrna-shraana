@@ -1,0 +1,702 @@
+<!doctype html>
+
+<html lang="ar" dir="rtl">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1">
+
+  <title>
+    تفاصيل الطلب | بحرنا وشراعنا
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="app.css">
+
+  <style>
+
+    .order-details-grid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+      margin-top:18px;
+    }
+
+    .order-info-box {
+      border:1px solid #dfe7ef;
+      border-radius:16px;
+      padding:18px;
+      background:#fff;
+    }
+
+    .order-info-box h3 {
+      margin-top:0;
+      color:var(--navy);
+    }
+
+    .order-line {
+      display:flex;
+      justify-content:space-between;
+      gap:20px;
+      padding:9px 0;
+      border-bottom:1px solid #edf1f5;
+    }
+
+    .order-line:last-child {
+      border-bottom:0;
+    }
+
+    .order-timeline {
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      position:relative;
+      margin:30px 0;
+      text-align:center;
+    }
+
+    .order-timeline:before {
+      content:"";
+      position:absolute;
+      right:8%;
+      left:8%;
+      top:20px;
+      height:3px;
+      background:#dfe7ef;
+      z-index:0;
+    }
+
+    .timeline-step {
+      position:relative;
+      z-index:1;
+    }
+
+    .timeline-dot {
+      width:42px;
+      height:42px;
+      border-radius:50%;
+      background:#e8eef4;
+      color:#0b315c;
+      margin:0 auto 8px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:700;
+    }
+
+    .timeline-step.done .timeline-dot {
+      background:#15945c;
+      color:#fff;
+    }
+
+    .timeline-step.current .timeline-dot {
+      background:#e4a72f;
+      color:#fff;
+    }
+
+    .order-total {
+      font-size:30px;
+      font-weight:800;
+      color:var(--navy);
+    }
+
+    @media(max-width:800px) {
+
+      .order-details-grid {
+        grid-template-columns:1fr;
+      }
+
+      .order-timeline {
+        grid-template-columns:1fr 1fr;
+        gap:24px;
+      }
+
+      .order-timeline:before {
+        display:none;
+      }
+
+    }
+
+  </style>
+
+</head>
+
+
+<body>
+
+
+<div class="topbar">
+
+  <div class="container">
+
+    🇦🇪 الإمارات • AED • تفاصيل الطلب
+
+  </div>
+
+</div>
+
+
+<header class="header">
+
+  <div class="container header-row">
+
+    <a
+      class="brand"
+      href="home.html">
+
+      <span class="brand-mark">
+        ⛵🐟
+      </span>
+
+      <div>
+
+        بحرنا وشراعنا
+
+        <br>
+
+        <small>
+          ORDER DETAILS
+        </small>
+
+      </div>
+
+    </a>
+
+
+    <div style="margin-right:auto;display:flex;gap:8px">
+
+      <a
+        class="btn"
+        href="buyer.html">
+
+        لوحة المشتري
+
+      </a>
+
+      <a
+        class="btn btn-gold"
+        href="supplier.html">
+
+        لوحة المورد
+
+      </a>
+
+    </div>
+
+  </div>
+
+</header>
+
+
+
+<section class="section">
+
+<div class="container">
+
+
+<div class="card">
+
+
+<div
+  style="display:flex;
+         justify-content:space-between;
+         align-items:flex-start;
+         gap:20px;
+         flex-wrap:wrap">
+
+
+  <div>
+
+    <p class="muted">
+      رقم الطلب
+    </p>
+
+    <h1
+      id="orderNo"
+      style="margin-top:0;color:var(--navy)">
+
+      جاري التحميل...
+
+    </h1>
+
+  </div>
+
+
+  <div style="text-align:left">
+
+    <p class="muted">
+      حالة الطلب
+    </p>
+
+    <span
+      id="orderStatus"
+      class="status ok">
+
+      —
+
+    </span>
+
+  </div>
+
+
+</div>
+
+
+
+<div class="order-timeline">
+
+  <div
+    class="timeline-step"
+    data-status="confirmed">
+
+    <div class="timeline-dot">
+      1
+    </div>
+
+    <div>
+      تم التأكيد
+    </div>
+
+  </div>
+
+
+  <div
+    class="timeline-step"
+    data-status="preparing">
+
+    <div class="timeline-dot">
+      2
+    </div>
+
+    <div>
+      جاري التجهيز
+    </div>
+
+  </div>
+
+
+  <div
+    class="timeline-step"
+    data-status="out_for_delivery">
+
+    <div class="timeline-dot">
+      3
+    </div>
+
+    <div>
+      خرج للتوصيل
+    </div>
+
+  </div>
+
+
+  <div
+    class="timeline-step"
+    data-status="delivered">
+
+    <div class="timeline-dot">
+      4
+    </div>
+
+    <div>
+      تم التسليم
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<div class="order-details-grid">
+
+
+<div class="order-info-box">
+
+  <h3>
+    معلومات الطلب
+  </h3>
+
+
+  <div class="order-line">
+
+    <span class="muted">
+      تاريخ الطلب
+    </span>
+
+    <strong id="orderDate">
+      —
+    </strong>
+
+  </div>
+
+
+  <div class="order-line">
+
+    <span class="muted">
+      نوع الطلب
+    </span>
+
+    <strong>
+      طلب شراء مؤسسي B2B
+    </strong>
+
+  </div>
+
+
+  <div class="order-line">
+
+    <span class="muted">
+      طريقة الدفع
+    </span>
+
+    <strong id="paymentMethod">
+      —
+    </strong>
+
+  </div>
+
+
+  <div class="order-line">
+
+    <span class="muted">
+      حالة الدفع
+    </span>
+
+    <strong id="paymentStatus">
+      —
+    </strong>
+
+  </div>
+
+</div>
+
+
+
+<div class="order-info-box">
+
+  <h3>
+    بيانات التوريد
+  </h3>
+
+
+  <div class="order-line">
+
+    <span class="muted">
+      الإمارة
+    </span>
+
+    <strong id="deliveryEmirate">
+      —
+    </strong>
+
+  </div>
+
+
+  <div class="order-line">
+
+    <span class="muted">
+      المنطقة
+    </span>
+
+    <strong id="deliveryArea">
+      —
+    </strong>
+
+  </div>
+
+
+  <div class="order-line">
+
+    <span class="muted">
+      عنوان / مرجع التسليم
+    </span>
+
+    <strong id="deliveryAddress">
+      —
+    </strong>
+
+  </div>
+
+</div>
+
+
+
+<div class="order-info-box">
+
+  <h3>
+    المشتري
+  </h3>
+
+
+  <div class="order-line">
+
+    <span class="muted">
+      الحساب
+    </span>
+
+    <strong id="buyerName">
+      مشتري مؤسسي
+    </strong>
+
+  </div>
+
+
+  <div class="order-line">
+
+    <span class="muted">
+      نوع الحساب
+    </span>
+
+    <strong>
+      شركات / مطاعم / فنادق
+    </strong>
+
+  </div>
+
+</div>
+
+
+
+<div class="order-info-box">
+
+  <h3>
+    المورد
+  </h3>
+
+
+  <div class="order-line">
+
+    <span class="muted">
+      اسم المورد
+    </span>
+
+    <strong id="supplierName">
+      جاري التحقق...
+    </strong>
+
+  </div>
+
+
+  <div class="order-line">
+
+    <span class="muted">
+      حالة المورد
+    </span>
+
+    <strong id="supplierStatus">
+      —
+    </strong>
+
+  </div>
+
+</div>
+
+
+</div>
+
+
+
+<div
+  class="order-info-box"
+  style="margin-top:18px">
+
+<h3>
+  المنتجات
+</h3>
+
+
+<div style="overflow:auto">
+
+<table class="table">
+
+<thead>
+
+<tr>
+
+  <th>
+    المنتج
+  </th>
+
+  <th>
+    الكمية
+  </th>
+
+  <th>
+    السعر / كجم
+  </th>
+
+  <th>
+    الإجمالي
+  </th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="orderItems">
+
+<tr>
+
+  <td colspan="4">
+    جاري تحميل المنتجات...
+  </td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+
+<div
+  class="order-details-grid">
+
+
+<div class="order-info-box">
+
+  <h3>
+    ملخص المبلغ
+  </h3>
+
+
+  <div class="order-line">
+
+    <span>
+      قيمة المنتجات
+    </span>
+
+    <strong id="subtotal">
+      AED 0.00
+    </strong>
+
+  </div>
+
+
+  <div class="order-line">
+
+    <span>
+      التوصيل
+    </span>
+
+    <strong id="deliveryFee">
+      AED 0.00
+    </strong>
+
+  </div>
+
+
+  <div class="order-line">
+
+    <span>
+      الضريبة
+    </span>
+
+    <strong id="vat">
+      AED 0.00
+    </strong>
+
+  </div>
+
+
+  <div
+    class="order-line"
+    style="border-top:2px solid #dfe7ef;
+           margin-top:8px;
+           padding-top:16px">
+
+    <strong>
+      الإجمالي
+    </strong>
+
+    <div
+      id="orderTotal"
+      class="order-total">
+
+      AED 0.00
+
+    </div>
+
+  </div>
+
+</div>
+
+
+
+<div class="order-info-box">
+
+  <h3>
+    حالة التنفيذ
+  </h3>
+
+
+  <p
+    id="trackingMessage"
+    class="muted">
+
+    جاري تحميل حالة الطلب...
+
+  </p>
+
+
+  <div style="margin-top:20px">
+
+    <button
+      class="btn btn-primary"
+      onclick="refreshOrder()">
+
+      تحديث الحالة
+
+    </button>
+
+  </div>
+
+</div>
+
+
+</div>
+
+
+<div
+  id="orderError"
+  style="display:none;
+         margin-top:20px;
+         padding:16px;
+         border-radius:12px;
+         background:#fff3f3">
+
+</div>
+
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<script
+  src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+</script>
+
+<script src="config.js"></script>
+
+<script src="app.js"></script>
+
+<script src="b2b-order.js"></script>
+
+
+</body>
+
+</html>
