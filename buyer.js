@@ -7,7 +7,8 @@
 const BuyerData = {
   rfqs: [],
   quotes: [],
-  orders: []
+  orders: [],
+  invoices: []
 };
 
 
@@ -421,6 +422,56 @@ async function loadBuyerOrders(user) {
 
   BuyerData.orders =
     fallback.data || [];
+}
+
+
+/* =========================================================
+   تحميل فواتير المشتري
+========================================================= */
+
+async function loadBuyerInvoices() {
+
+  try {
+
+    const {
+      data,
+      error
+    } = await Bahrna.client
+
+      .from("invoices")
+
+      .select("*")
+
+      .order(
+        "created_at",
+        {
+          ascending: false
+        }
+      );
+
+    if (error) {
+
+      console.warn(
+        "تعذر تحميل الفواتير:",
+        error
+      );
+
+      BuyerData.invoices = [];
+      return;
+    }
+
+    BuyerData.invoices =
+      data || [];
+
+  } catch (e) {
+
+    console.warn(
+      "تعذر تحميل الفواتير:",
+      e
+    );
+
+    BuyerData.invoices = [];
+  }
 }
 
 
@@ -1557,7 +1608,8 @@ async function acceptSupplierQuote() {
       await Promise.all([
         loadBuyerRFQs(user),
         loadBuyerQuotes(),
-        loadBuyerOrders(user)
+        loadBuyerOrders(user),
+        loadBuyerInvoices()
       ]);
 
       renderRFQs();
@@ -1948,16 +2000,119 @@ function renderB2BOrders() {
             order.status ||
             "pending";
 
-          /*
-            الرابط الجديد:
-            الضغط على رقم الطلب يفتح التفاصيل
-          */
-
           const detailsUrl =
             "b2b-order.html?order=" +
             encodeURIComponent(
               order.order_no
             );
+
+          /*
+            البحث عن الفاتورة المرتبطة بالطلب
+          */
+
+          const invoice =
+            (BuyerData.invoices || [])
+              .find(
+                inv =>
+                  (
+                    inv.order_id &&
+                    order.id &&
+                    String(inv.order_id) ===
+                    String(order.id)
+                  )
+                  ||
+                  (
+                    inv.order_no &&
+                    order.order_no &&
+                    String(inv.order_no) ===
+                    String(order.order_no)
+                  )
+              );
+
+          const invoiceNo =
+            invoice
+              ? (
+                  invoice.invoice_no ||
+                  invoice.number ||
+                  invoice.invoice_number ||
+                  "فاتورة صادرة"
+                )
+              : "";
+
+          /*
+            ما يظهر للمشتري
+          */
+
+          const actionHtml =
+            invoice
+
+              ? `
+
+                  <div style="margin-top:8px">
+
+                    <span
+                      class="status ok"
+                      style="
+                        display:inline-block;
+                        margin-bottom:6px;
+                      "
+                    >
+                      🧾 فاتورة صادرة
+                    </span>
+
+                    <br>
+
+                    <a
+                      href="${detailsUrl}"
+                      class="btn btn-primary small"
+                      title="عرض الفاتورة"
+                      style="
+                        display:inline-block;
+                        text-decoration:none;
+                      "
+                    >
+                      عرض الفاتورة
+                    </a>
+
+                    ${
+                      invoiceNo
+                        ? `
+                            <div
+                              class="muted"
+                              style="
+                                margin-top:5px;
+                                font-size:12px;
+                              "
+                            >
+                              ${invoiceNo}
+                            </div>
+                          `
+                        : ""
+                    }
+
+                  </div>
+
+                `
+
+              : `
+
+                  <div style="margin-top:8px">
+
+                    <a
+                      href="${detailsUrl}"
+                      class="btn btn-primary small"
+                      title="فتح تفاصيل الطلب"
+                      style="
+                        display:inline-block;
+                        text-decoration:none;
+                      "
+                    >
+                      عرض التفاصيل
+                    </a>
+
+                  </div>
+
+                `;
 
           return `
 
@@ -2008,6 +2163,8 @@ function renderB2BOrders() {
                   ${orderStatusLabel(status)}
 
                 </span>
+
+                ${actionHtml}
 
               </td>
 
@@ -2291,6 +2448,12 @@ async function renderBuyer() {
       BuyerData.orders =
         [];
     }
+
+    /*
+      تحميل الفواتير
+    */
+
+    await loadBuyerInvoices();
 
     /*
       أسعار الجملة
