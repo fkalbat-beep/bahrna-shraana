@@ -1,1 +1,324 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>الحساب</title><link rel="stylesheet" href="app.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script defer src="app.js"></script></head><body><div class="topbar"><div class="container">🇦🇪 الإمارات • AED • MVP تجريبي</div></div><header class="header"><div class="container header-row"><a class="brand" href="home.html"><span class="brand-mark">⛵🐟</span><div>بحرنا وشراعنا<br><small>BAHRNA & SHRAANA</small></div></a><div class="search"><input placeholder="ابحث عن سمك، مورد، منتج..."></div><nav class="navlinks"><a href="catalog.html">الأسماك الطازجة</a><a href="auction.html">المزادات</a><a href="register.html">الشركات</a><a href="login.html">حسابي</a></nav></div></header><section class="section"><div class="container grid2"><div class="card"><h2>تسجيل الدخول</h2><div class="field"><label>البريد</label><input id="liEmail" type="email"></div><div class="field"><label>كلمة المرور</label><input id="liPass" type="password"></div><button class="btn btn-primary" onclick="login()">دخول</button></div><div class="card"><h2>إنشاء حساب مجاني</h2><div class="field"><label>الاسم</label><input id="suName"></div><div class="field"><label>البريد</label><input id="suEmail" type="email"></div><div class="field"><label>كلمة المرور</label><input id="suPass" type="password"></div><button class="btn btn-gold" onclick="signup()">إنشاء الحساب</button><p id="msg" class="muted"></p></div></div></section><script>async function signup(){try{await Bahrna.signUp(suEmail.value,suPass.value,suName.value);msg.textContent='تم إنشاء الحساب. تحقق من بريدك إذا كان التأكيد مفعلاً.'}catch(e){msg.textContent=e.message}}async function login(){try{await Bahrna.signIn(liEmail.value,liPass.value);const r=localStorage.getItem('bahrna_return_after_login')||'home.html';localStorage.removeItem('bahrna_return_after_login');location.href=r}catch(e){alert(e.message)}}</script><nav class="mobile-bottom"><a href="home.html">⌂<br>الرئيسية</a><a href="catalog.html">🐟<br>السوق</a><a href="auction.html">🔴<br>المزاد</a><a href="checkout.html">🛒<br>السلة</a><a href="login.html">👤<br>حسابي</a></nav></body></html>
+<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>الحساب | بحرنا وشراعنا</title>
+
+  <link rel="stylesheet" href="app.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
+  <script defer src="app.js"></script>
+</head>
+
+<body>
+
+  <!-- الشريط العلوي -->
+  <div class="topbar">
+    <div class="container">
+      🇦🇪 الإمارات • AED • MVP تجريبي
+    </div>
+  </div>
+
+  <!-- رأس الموقع -->
+  <header class="header">
+    <div class="container header-row">
+
+      <a class="brand" href="home.html">
+        <span class="brand-mark">⛵🐟</span>
+
+        <div>
+          بحرنا وشراعنا
+          <br>
+          <small>BAHRNA & SHRAANA</small>
+        </div>
+      </a>
+
+      <div class="search">
+        <input placeholder="ابحث عن سمك، مورد، منتج...">
+      </div>
+
+      <nav class="navlinks">
+        <a href="catalog.html">الأسماك الطازجة</a>
+        <a href="auction.html">المزادات</a>
+        <a href="register.html">الشركات</a>
+        <a href="login.html">حسابي</a>
+      </nav>
+
+    </div>
+  </header>
+
+  <!-- تسجيل الدخول وإنشاء الحساب -->
+  <section class="section">
+    <div class="container grid2">
+
+      <!-- تسجيل الدخول -->
+      <div class="card">
+
+        <h2>تسجيل الدخول</h2>
+
+        <div class="field">
+          <label>البريد</label>
+          <input id="liEmail" type="email">
+        </div>
+
+        <div class="field">
+          <label>كلمة المرور</label>
+          <input id="liPass" type="password">
+        </div>
+
+        <button
+          class="btn btn-primary"
+          type="button"
+          onclick="login()">
+          دخول
+        </button>
+
+        <p id="loginMsg" class="muted"></p>
+
+      </div>
+
+      <!-- إنشاء حساب -->
+      <div class="card">
+
+        <h2>إنشاء حساب مجاني</h2>
+
+        <div class="field">
+          <label>الاسم</label>
+          <input id="suName">
+        </div>
+
+        <div class="field">
+          <label>البريد</label>
+          <input id="suEmail" type="email">
+        </div>
+
+        <div class="field">
+          <label>كلمة المرور</label>
+          <input id="suPass" type="password">
+        </div>
+
+        <button
+          class="btn btn-gold"
+          type="button"
+          onclick="signup()">
+          إنشاء الحساب
+        </button>
+
+        <p id="msg" class="muted"></p>
+
+      </div>
+
+    </div>
+  </section>
+
+  <script>
+
+    /* ========================================
+       إنشاء حساب جديد
+    ======================================== */
+
+    async function signup() {
+
+      try {
+
+        msg.textContent = "جاري إنشاء الحساب...";
+
+        await Bahrna.signUp(
+          suEmail.value,
+          suPass.value,
+          suName.value
+        );
+
+        msg.textContent =
+          "تم إنشاء الحساب. تحقق من بريدك إذا كان التأكيد مفعلاً.";
+
+      } catch (e) {
+
+        console.error(e);
+
+        msg.textContent =
+          e.message || "تعذر إنشاء الحساب.";
+
+      }
+
+    }
+
+
+    /* ========================================
+       تسجيل الدخول وتوجيه المستخدم حسب دوره
+    ======================================== */
+
+    async function login() {
+
+      const loginMsg =
+        document.getElementById("loginMsg");
+
+      try {
+
+        loginMsg.textContent =
+          "جاري تسجيل الدخول...";
+
+        /* تسجيل الدخول في Supabase */
+
+        await Bahrna.signIn(
+          liEmail.value,
+          liPass.value
+        );
+
+
+        /* الحصول على المستخدم الحالي */
+
+        const user =
+          await Bahrna.getCurrentUser();
+
+        if (!user) {
+          throw new Error(
+            "تعذر التحقق من المستخدم بعد تسجيل الدخول."
+          );
+        }
+
+
+        /* قراءة نوع الحساب من profiles */
+
+        const { data: profile, error } =
+          await Bahrna.client
+            .from("profiles")
+            .select("role, full_name")
+            .eq("id", user.id)
+            .single();
+
+
+        if (error) {
+          console.error(error);
+
+          throw new Error(
+            "تم تسجيل الدخول، ولكن تعذر قراءة نوع الحساب."
+          );
+        }
+
+
+        const role =
+          profile?.role || "customer";
+
+
+        loginMsg.textContent =
+          "تم تسجيل الدخول بنجاح...";
+
+
+        /* حذف مسار العودة القديم */
+
+        const returnAfterLogin =
+          localStorage.getItem(
+            "bahrna_return_after_login"
+          );
+
+        localStorage.removeItem(
+          "bahrna_return_after_login"
+        );
+
+
+        /* ==================================
+           التوجيه حسب نوع الحساب
+        ================================== */
+
+        if (role === "supplier") {
+
+          window.location.href =
+            "supplier.html";
+
+          return;
+        }
+
+
+        if (role === "admin") {
+
+          window.location.href =
+            "admin.html";
+
+          return;
+        }
+
+
+        if (role === "company") {
+
+          window.location.href =
+            "buyer.html";
+
+          return;
+        }
+
+
+        /* العميل */
+
+        if (returnAfterLogin) {
+
+          window.location.href =
+            returnAfterLogin;
+
+        } else {
+
+          window.location.href =
+            "home.html";
+
+        }
+
+
+      } catch (e) {
+
+        console.error(e);
+
+        loginMsg.textContent = "";
+
+        alert(
+          e.message ||
+          "تعذر تسجيل الدخول."
+        );
+
+      }
+
+    }
+
+  </script>
+
+
+  <!-- القائمة السفلية للجوال -->
+  <nav class="mobile-bottom">
+
+    <a href="home.html">
+      ⌂
+      <br>
+      الرئيسية
+    </a>
+
+    <a href="catalog.html">
+      🐟
+      <br>
+      السوق
+    </a>
+
+    <a href="auction.html">
+      🔴
+      <br>
+      المزاد
+    </a>
+
+    <a href="checkout.html">
+      🛒
+      <br>
+      السلة
+    </a>
+
+    <a href="login.html">
+      👤
+      <br>
+      حسابي
+    </a>
+
+  </nav>
+
+</body>
+</html>
