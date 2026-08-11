@@ -14,21 +14,27 @@
 
 <div class="topbar">
   <div class="container">
-    لوحة مورد تجريبية • البيانات الحالية Demo
+    لوحة المورد • بحرنا وشراعنا
   </div>
 </div>
 
+
 <header class="header">
+
   <div class="container header-row">
 
     <a class="brand" href="home.html">
-      <span class="brand-mark">⛵🐟</span>
+
+      <span class="brand-mark">
+        ⛵🐟
+      </span>
 
       <div>
         بحرنا وشراعنا
         <br>
         <small>SUPPLIER DASHBOARD</small>
       </div>
+
     </a>
 
     <div style="margin-right:auto">
@@ -36,14 +42,23 @@
     </div>
 
   </div>
+
 </header>
 
 
 <div class="supplier-shell">
 
+
+<!-- =========================================
+     القائمة الجانبية
+========================================= -->
+
 <aside class="supplier-sidebar">
 
-  <h3>المورد</h3>
+  <h3>
+    المورد
+  </h3>
+
 
   <a
     class="active"
@@ -52,11 +67,13 @@
     الرئيسية
   </a>
 
+
   <a
     href="#"
     onclick="showSupplierPanel('offersPanel',this)">
     عروضي
   </a>
+
 
   <a
     href="#"
@@ -64,11 +81,20 @@
     إضافة صيد اليوم
   </a>
 
+
+  <a
+    href="#"
+    onclick="showSupplierPanel('rfqPanel',this)">
+    طلبات RFQ
+  </a>
+
+
   <a
     href="#"
     onclick="showSupplierPanel('ordersPanel',this)">
     الطلبات
   </a>
+
 
   <a
     href="#"
@@ -79,38 +105,58 @@
 </aside>
 
 
+
+<!-- =========================================
+     المحتوى الرئيسي
+========================================= -->
+
 <main class="supplier-main">
+
 
 <div class="admin-top">
 
   <div>
-    <h1 style="margin:0;color:var(--navy)">
+
+    <h1
+      style="margin:0;color:var(--navy)">
       لوحة المورد
     </h1>
 
     <p class="muted">
-      إدارة صيد اليوم والأسعار والكميات والطلبات.
+      إدارة صيد اليوم والأسعار والكميات والطلبات وعروض الأسعار.
     </p>
+
   </div>
 
+
   <div class="admin-actions">
+
     <a
       class="btn btn-gold"
       href="home.html">
       عرض السوق
     </a>
+
   </div>
 
 </div>
 
 
+
+<!-- =========================================
+     الرئيسية
+========================================= -->
+
 <section
   id="overviewPanel"
   class="supplier-panel active">
 
+
 <div class="grid4">
 
+
   <div class="stat-card">
+
     <span class="muted">
       عروض نشطة
     </span>
@@ -120,10 +166,12 @@
       class="big">
       0
     </div>
+
   </div>
 
 
   <div class="stat-card">
+
     <span class="muted">
       إجمالي المخزون
     </span>
@@ -133,10 +181,12 @@
       class="big">
       0 كجم
     </div>
+
   </div>
 
 
   <div class="stat-card">
+
     <span class="muted">
       طلبات حالية
     </span>
@@ -146,12 +196,14 @@
       class="big">
       0
     </div>
+
   </div>
 
 
   <div class="stat-card">
+
     <span class="muted">
-      GMV تجريبي
+      إجمالي المبيعات
     </span>
 
     <div
@@ -159,14 +211,18 @@
       class="big">
       AED 0
     </div>
+
   </div>
 
+
 </div>
+
 
 
 <div
   class="grid2"
   style="margin-top:16px">
+
 
   <div class="card">
 
@@ -175,15 +231,15 @@
     </h2>
 
     <p>
-      🟢 لديك عروض نشطة في السوق.
+      🟢 راجع عروض الصيد النشطة والكميات المتوفرة.
     </p>
 
     <p>
-      🟠 تأكد من تحديث الكمية والسعر قبل الساعة 8 صباحًا.
+      🟠 حدّث الأسعار والكميات قبل بدء فترة الذروة.
     </p>
 
     <p>
-      🔵 عند تفعيل المزاد ستظهر الكمية في قسم شراعنا Auctions.
+      🔵 تابع طلبات RFQ الجديدة من المطاعم والفنادق والشركات.
     </p>
 
   </div>
@@ -196,58 +252,113 @@
     </h2>
 
     <p class="muted">
+
       بحرنا يعرض السعر لكل كجم.
-      عند وجود أكثر من مورد لنفس النوع،
-      تظهر أفضل الأسعار تلقائيًا في لوحة السوق.
+
+      عند وجود أكثر من مورد لنفس المنتج،
+      يمكن للعميل مقارنة الأسعار والتوفر.
+
+      أما المشتري المؤسسي فيستطيع إرسال RFQ
+      واستقبال عروض أسعار الموردين.
+
     </p>
 
   </div>
+
 
 </div>
 
 </section>
 
 
+
+<!-- =========================================
+     عروضي الحالية
+========================================= -->
+
 <section
   id="offersPanel"
   class="supplier-panel">
 
+
 <div class="card">
+
 
 <h2>
   عروضي الحالية
 </h2>
+
 
 <table class="table">
 
 <thead>
 
 <tr>
-  <th>المنتج</th>
-  <th>الكمية</th>
-  <th>Retail</th>
-  <th>Wholesale</th>
-  <th>مزاد</th>
-  <th>الحالة</th>
-  <th>إجراء</th>
+
+  <th>
+    المنتج
+  </th>
+
+  <th>
+    الكمية
+  </th>
+
+  <th>
+    Retail
+  </th>
+
+  <th>
+    Wholesale
+  </th>
+
+  <th>
+    مزاد
+  </th>
+
+  <th>
+    الحالة
+  </th>
+
+  <th>
+    إجراء
+  </th>
+
 </tr>
 
 </thead>
 
-<tbody id="offerRows"></tbody>
+
+<tbody id="offerRows">
+
+<tr>
+  <td colspan="7">
+    جاري تحميل العروض...
+  </td>
+</tr>
+
+</tbody>
+
 
 </table>
+
 
 </div>
 
 </section>
 
 
+
+<!-- =========================================
+     إضافة صيد اليوم
+========================================= -->
+
 <section
   id="newOfferPanel"
   class="supplier-panel">
 
+
 <div class="card">
+
 
 <h2>
   إضافة صيد اليوم
@@ -255,6 +366,7 @@
 
 
 <div class="form-grid">
+
 
 <div class="field">
 
@@ -278,7 +390,8 @@
   <input
     id="qtyKg"
     type="number"
-    step="0.1">
+    step="0.1"
+    min="0">
 
 </div>
 
@@ -292,7 +405,8 @@
   <input
     id="retailPrice"
     type="number"
-    step="0.01">
+    step="0.01"
+    min="0">
 
 </div>
 
@@ -306,7 +420,8 @@
   <input
     id="wholesalePrice"
     type="number"
-    step="0.01">
+    step="0.01"
+    min="0">
 
 </div>
 
@@ -330,15 +445,27 @@
     المنشأ
   </label>
 
-  <select>
-    <option>الإمارات</option>
-    <option>الخليج العربي</option>
-    <option>مستورد</option>
+  <select id="offerOrigin">
+
+    <option value="الإمارات">
+      الإمارات
+    </option>
+
+    <option value="الخليج العربي">
+      الخليج العربي
+    </option>
+
+    <option value="مستورد">
+      مستورد
+    </option>
+
   </select>
 
 </div>
 
+
 </div>
+
 
 
 <label>
@@ -350,11 +477,13 @@
   class="offer-type"
   style="margin:10px 0 16px">
 
+
   <div
     class="offer-chip active"
     onclick="toggleMode(this,'retail')">
     Retail
   </div>
+
 
   <div
     class="offer-chip"
@@ -362,13 +491,16 @@
     Wholesale
   </div>
 
+
   <div
     class="offer-chip"
     onclick="toggleMode(this,'auction')">
     Auction
   </div>
 
+
 </div>
+
 
 
 <div class="upload-box">
@@ -382,7 +514,7 @@
   </strong>
 
   <p class="muted small">
-    في الربط الفعلي سترفع الصور إلى Storage المجاني في Supabase.
+    سيتم ربط رفع الصور بـ Supabase Storage في مرحلة لاحقة.
   </p>
 
   <input
@@ -392,6 +524,7 @@
 </div>
 
 
+
 <div class="field">
 
   <label>
@@ -399,11 +532,12 @@
   </label>
 
   <textarea
+    id="offerNotes"
     rows="3"
-    placeholder="الحجم، طريقة الحفظ، تفاصيل إضافية...">
-  </textarea>
+    placeholder="الحجم، طريقة الحفظ، تفاصيل إضافية..."></textarea>
 
 </div>
+
 
 
 <button
@@ -412,54 +546,329 @@
   نشر العرض
 </button>
 
+
 </div>
 
 </section>
 
 
+
+<!-- =========================================
+     طلبات RFQ
+========================================= -->
+
 <section
-  id="ordersPanel"
+  id="rfqPanel"
   class="supplier-panel">
+
 
 <div class="card">
 
+
 <h2>
-  طلبات المورد
+  طلبات عروض الأسعار RFQ
 </h2>
+
+
+<p class="muted">
+  الطلبات المفتوحة من المطاعم والفنادق وشركات التموين والمشترين المؤسسيين.
+</p>
+
+
 
 <table class="table">
 
 <thead>
 
 <tr>
-  <th>رقم الطلب</th>
-  <th>المنتج</th>
-  <th>القيمة</th>
-  <th>الحالة</th>
+
+  <th>
+    رقم RFQ
+  </th>
+
+  <th>
+    المنتج
+  </th>
+
+  <th>
+    الكمية
+  </th>
+
+  <th>
+    الإمارة
+  </th>
+
+  <th>
+    موعد التسليم
+  </th>
+
+  <th>
+    الحالة
+  </th>
+
+  <th>
+    الإجراء
+  </th>
+
 </tr>
 
 </thead>
 
-<tbody id="supplierOrderRows"></tbody>
+
+<tbody id="supplierRfqRows">
+
+<tr>
+
+  <td colspan="7">
+    جاري تحميل طلبات عروض الأسعار...
+  </td>
+
+</tr>
+
+</tbody>
+
 
 </table>
+
+
+</div>
+
+
+
+<!-- =========================================
+     نموذج تقديم عرض المورد
+========================================= -->
+
+<div
+  id="rfqQuoteBox"
+  class="card"
+  style="margin-top:16px;display:none">
+
+
+<h2>
+  تقديم عرض سعر
+</h2>
+
+
+<input
+  type="hidden"
+  id="quoteRfqId">
+
+
+<div class="form-grid">
+
+
+<div class="field">
+
+  <label>
+    رقم RFQ
+  </label>
+
+  <input
+    id="quoteRfqNo"
+    readonly>
+
+</div>
+
+
+<div class="field">
+
+  <label>
+    المنتج
+  </label>
+
+  <input
+    id="quoteProduct"
+    readonly>
+
+</div>
+
+
+<div class="field">
+
+  <label>
+    الكمية المطلوبة
+  </label>
+
+  <input
+    id="quoteRequestedQty"
+    readonly>
+
+</div>
+
+
+<div class="field">
+
+  <label>
+    الكمية المتوفرة لديك كجم
+  </label>
+
+  <input
+    id="quoteAvailableQty"
+    type="number"
+    step="0.1"
+    min="0"
+    placeholder="مثال: 50">
+
+</div>
+
+
+<div class="field">
+
+  <label>
+    السعر لكل كجم AED
+  </label>
+
+  <input
+    id="quoteUnitPrice"
+    type="number"
+    step="0.01"
+    min="0"
+    placeholder="مثال: 42.00">
+
+</div>
+
+
+<div class="field">
+
+  <label>
+    مدة التوصيل بالأيام
+  </label>
+
+  <input
+    id="quoteDeliveryDays"
+    type="number"
+    step="1"
+    min="0"
+    placeholder="مثال: 1">
+
+</div>
+
+
+</div>
+
+
+
+<div class="field">
+
+  <label>
+    ملاحظات المورد
+  </label>
+
+  <textarea
+    id="quoteNotes"
+    rows="3"
+    placeholder="المقاس، التنظيف، التغليف، شروط التوريد أو أي تفاصيل إضافية..."></textarea>
+
+</div>
+
+
+
+<button
+  class="btn btn-primary"
+  onclick="submitSupplierQuote()">
+  إرسال عرض السعر
+</button>
+
+
+<button
+  class="btn"
+  style="margin-right:8px"
+  onclick="closeQuoteBox()">
+  إلغاء
+</button>
+
+
+</div>
+
+
+</section>
+
+
+
+<!-- =========================================
+     طلبات المورد
+========================================= -->
+
+<section
+  id="ordersPanel"
+  class="supplier-panel">
+
+
+<div class="card">
+
+
+<h2>
+  طلبات المورد
+</h2>
+
+
+<table class="table">
+
+<thead>
+
+<tr>
+
+  <th>
+    رقم الطلب
+  </th>
+
+  <th>
+    المنتج
+  </th>
+
+  <th>
+    القيمة
+  </th>
+
+  <th>
+    الحالة
+  </th>
+
+</tr>
+
+</thead>
+
+
+<tbody id="supplierOrderRows">
+
+<tr>
+  <td colspan="4">
+    جاري تحميل الطلبات...
+  </td>
+</tr>
+
+</tbody>
+
+
+</table>
+
 
 </div>
 
 </section>
 
 
+
+<!-- =========================================
+     بيانات المورد
+========================================= -->
+
 <section
   id="profilePanel"
   class="supplier-panel">
 
+
 <div class="card">
+
 
 <h2>
   بيانات المورد
 </h2>
 
+
 <div class="form-grid">
+
 
 <div class="field">
 
@@ -467,7 +876,9 @@
     اسم المنشأة
   </label>
 
-  <input value="مورد تجريبي">
+  <input
+    id="supplierProfileName"
+    readonly>
 
 </div>
 
@@ -478,11 +889,9 @@
     الإمارة
   </label>
 
-  <select>
-    <option>دبي</option>
-    <option>أبوظبي</option>
-    <option>الشارقة</option>
-  </select>
+  <input
+    id="supplierProfileEmirate"
+    readonly>
 
 </div>
 
@@ -490,32 +899,29 @@
 <div class="field">
 
   <label>
-    رقم الرخصة
+    حالة التحقق
   </label>
 
-  <input value="CN-DEMO-001">
+  <input
+    id="supplierProfileVerified"
+    readonly>
 
 </div>
 
-
-<div class="field">
-
-  <label>
-    TRN
-  </label>
-
-  <input value="100000000000001">
-
-</div>
 
 </div>
 
 
 <p>
-  <span class="status ok">
-    حساب موثق — Demo
+
+  <span
+    id="supplierVerificationBadge"
+    class="status wait">
+    جاري تحميل بيانات المورد...
   </span>
+
 </p>
+
 
 </div>
 
@@ -527,18 +933,23 @@
 </div>
 
 
-<!-- Supabase Library -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<!-- بيانات الاتصال بالمشروع -->
+<!-- =========================================
+     Supabase
+========================================= -->
+
+<script
+  src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+</script>
+
+
 <script src="config.js"></script>
 
-<!-- وظائف بحرنا وشراعنا العامة وإنشاء Bahrna.client -->
 <script src="app.js"></script>
 
-<!-- وظائف لوحة المورد -->
 <script src="supplier.js"></script>
 
 
 </body>
+
 </html>
