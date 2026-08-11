@@ -1,41 +1,62 @@
 /* =========================================================
    BAHRNA & SHRAANA
    BUSINESS BUYER DASHBOARD
-   Wholesale + RFQ + Supplier Quotes
+
+   Wholesale
+   RFQ
+   Supplier Quotes
+   B2B Orders
 ========================================================= */
 
 
 const BuyerData = {
+
   rfqs: [],
+
   quotes: [],
+
   orders: []
+
 };
 
 
 /* =========================================================
-   التنقل بين أقسام لوحة المشتري
+   التنقل
 ========================================================= */
 
 function showBuyerPanel(id, el) {
 
   document
     .querySelectorAll(".buyer-panel")
-    .forEach(x => x.classList.remove("active"));
+    .forEach(
+      x => x.classList.remove("active")
+    );
+
 
   const panel =
     document.getElementById(id);
 
+
   if (panel) {
+
     panel.classList.add("active");
+
   }
+
 
   document
     .querySelectorAll(".buyer-sidebar a")
-    .forEach(a => a.classList.remove("active"));
+    .forEach(
+      a => a.classList.remove("active")
+    );
+
 
   if (el) {
+
     el.classList.add("active");
+
   }
+
 }
 
 
@@ -44,15 +65,21 @@ function showBuyerPanel(id, el) {
 ========================================================= */
 
 function money(n) {
-  return "AED " + Number(n || 0).toFixed(2);
+
+  return "AED " +
+    Number(n || 0).toFixed(2);
+
 }
 
 
 function formatDate(value) {
 
   if (!value) {
+
     return "—";
+
   }
+
 
   try {
 
@@ -69,7 +96,9 @@ function formatDate(value) {
   } catch (e) {
 
     return value;
+
   }
+
 }
 
 
@@ -84,16 +113,19 @@ function rfqStatusLabel(status) {
       "وردت عروض",
 
     awarded:
-      "تم اختيار مورد",
+      "تم اختيار المورد",
 
     closed:
-      "مغلق",
+      "تم التحويل إلى طلب",
 
     cancelled:
       "ملغي"
+
   };
 
+
   return labels[status] || status;
+
 }
 
 
@@ -112,26 +144,66 @@ function quoteStatusLabel(status) {
 
     withdrawn:
       "مسحوب"
+
   };
 
+
   return labels[status] || status;
+
+}
+
+
+function orderStatusLabel(status) {
+
+  const labels = {
+
+    pending:
+      "بانتظار التأكيد",
+
+    confirmed:
+      "تم التأكيد",
+
+    preparing:
+      "جاري التجهيز",
+
+    out_for_delivery:
+      "خرج للتوصيل",
+
+    delivered:
+      "تم التسليم",
+
+    cancelled:
+      "ملغي"
+
+  };
+
+
+  return labels[status] || status;
+
 }
 
 
 function quoteStatusClass(status) {
 
   if (status === "accepted") {
+
     return "status ok";
+
   }
+
 
   if (
     status === "rejected" ||
     status === "withdrawn"
   ) {
+
     return "status wait";
+
   }
 
+
   return "status ok";
+
 }
 
 
@@ -149,6 +221,7 @@ async function getBuyerUser() {
     throw new Error(
       "قاعدة البيانات غير متصلة"
     );
+
   }
 
 
@@ -163,23 +236,28 @@ async function getBuyerUser() {
       "buyer.html"
     );
 
+
     alert(
       "يرجى تسجيل الدخول لاستخدام حساب المشتري المؤسسي"
     );
 
+
     location.href =
       "login.html";
 
+
     return null;
+
   }
 
 
   return user;
+
 }
 
 
 /* =========================================================
-   تحميل RFQ الخاصة بالمشتري
+   تحميل RFQ
 ========================================================= */
 
 async function loadBuyerRFQs(user) {
@@ -230,12 +308,15 @@ async function loadBuyerRFQs(user) {
       error
     );
 
+
     throw error;
+
   }
 
 
   BuyerData.rfqs =
     data || [];
+
 }
 
 
@@ -290,12 +371,138 @@ async function loadBuyerQuotes() {
       error
     );
 
+
     throw error;
+
   }
 
 
   BuyerData.quotes =
     data || [];
+
+}
+
+
+/* =========================================================
+   تحميل طلبات المشتري
+========================================================= */
+
+async function loadBuyerOrders(user) {
+
+  const sb =
+    Bahrna.client;
+
+
+  const {
+    data,
+    error
+  } = await sb
+
+    .from("orders")
+
+    .select(`
+      id,
+      order_no,
+      buyer_id,
+      status,
+      tracking_status,
+      subtotal,
+      delivery_fee,
+      vat,
+      total,
+      created_at,
+      order_items (
+        product_id,
+        product_name,
+        qty_kg,
+        unit_price,
+        line_total
+      )
+    `)
+
+    .eq(
+      "buyer_id",
+      user.id
+    )
+
+    .order(
+      "created_at",
+      {
+        ascending: false
+      }
+    );
+
+
+  if (error) {
+
+    console.error(
+      "خطأ تحميل طلبات المشتري:",
+      error
+    );
+
+
+    /*
+      في حال كان بعض الحقول الاختيارية
+      غير موجود في نسخة الجدول الحالية،
+      نعيد المحاولة بالحقول الأساسية.
+    */
+
+    const fallback =
+      await sb
+
+        .from("orders")
+
+        .select(`
+          id,
+          order_no,
+          status,
+          tracking_status,
+          total,
+          created_at,
+          order_items (
+            product_name,
+            qty_kg,
+            unit_price,
+            line_total
+          )
+        `)
+
+        .order(
+          "created_at",
+          {
+            ascending: false
+          }
+        );
+
+
+    if (fallback.error) {
+
+      console.error(
+        "تعذر تحميل الطلبات:",
+        fallback.error
+      );
+
+
+      BuyerData.orders = [];
+
+
+      return;
+
+    }
+
+
+    BuyerData.orders =
+      fallback.data || [];
+
+
+    return;
+
+  }
+
+
+  BuyerData.orders =
+    data || [];
+
 }
 
 
@@ -312,7 +519,9 @@ async function renderWholesaleOffers() {
 
 
   if (!wrap) {
+
     return;
+
   }
 
 
@@ -353,7 +562,9 @@ async function renderWholesaleOffers() {
 
       `;
 
+
       return;
+
     }
 
 
@@ -366,22 +577,30 @@ async function renderWholesaleOffers() {
             <div class="card">
 
               <span class="badge">
+
                 ${o.supplier || "مورد موثق"}
+
               </span>
 
+
               <h3>
+
                 ${o.name}
+
               </h3>
+
 
               <div class="price">
 
-                AED ${Number(o.wholesale).toFixed(2)}
+                AED
+                ${Number(o.wholesale).toFixed(2)}
 
                 <small>
                   / كجم
                 </small>
 
               </div>
+
 
               <p class="muted">
 
@@ -395,6 +614,7 @@ async function renderWholesaleOffers() {
                 ${Number(o.retail || 0).toFixed(2)}
 
               </p>
+
 
               <button
                 class="btn btn-primary"
@@ -434,7 +654,9 @@ async function renderWholesaleOffers() {
       </div>
 
     `;
+
   }
+
 }
 
 
@@ -450,11 +672,12 @@ function getQuoteCountForRFQ(rfqId) {
         q.rfq_id === rfqId
     )
     .length;
+
 }
 
 
 /* =========================================================
-   عرض قائمة RFQ
+   عرض RFQ
 ========================================================= */
 
 function renderRFQs() {
@@ -475,11 +698,14 @@ function renderRFQs() {
 
     count.textContent =
       BuyerData.rfqs.length;
+
   }
 
 
   if (!rows) {
+
     return;
+
   }
 
 
@@ -490,14 +716,18 @@ function renderRFQs() {
       <tr>
 
         <td colspan="6">
+
           لا توجد طلبات عروض أسعار حتى الآن.
+
         </td>
 
       </tr>
 
     `;
 
+
     return;
+
   }
 
 
@@ -527,13 +757,17 @@ function renderRFQs() {
 
 
               <td>
+
                 ${r.item_name}
+
               </td>
 
 
               <td>
+
                 ${Number(r.quantity_kg)}
                 كجم
+
               </td>
 
 
@@ -545,12 +779,16 @@ function renderRFQs() {
                   r.delivery_date
 
                     ? `
-                        <br>
 
-                        <small>
-                          ${formatDate(r.delivery_date)}
-                        </small>
-                      `
+                      <br>
+
+                      <small>
+
+                        ${formatDate(r.delivery_date)}
+
+                      </small>
+
+                    `
 
                     : ""
                 }
@@ -561,7 +799,9 @@ function renderRFQs() {
               <td>
 
                 <span class="status ok">
+
                   ${rfqStatusLabel(r.status)}
+
                 </span>
 
               </td>
@@ -573,21 +813,27 @@ function renderRFQs() {
                   quoteCount > 0
 
                     ? `
-                        <button
-                          class="btn btn-primary small"
-                          onclick="openQuotesForRFQ('${r.id}')">
 
-                          ${quoteCount}
-                          عرض
+                      <button
+                        class="btn btn-primary small"
+                        onclick="openQuotesForRFQ('${r.id}')">
 
-                        </button>
-                      `
+                        ${quoteCount}
+                        عرض
+
+                      </button>
+
+                    `
 
                     : `
-                        <span class="muted">
-                          لا توجد عروض
-                        </span>
-                      `
+
+                      <span class="muted">
+
+                        لا توجد عروض
+
+                      </span>
+
+                    `
                 }
 
               </td>
@@ -595,18 +841,22 @@ function renderRFQs() {
             </tr>
 
           `;
+
         }
       )
 
       .join("");
+
 }
 
 
 /* =========================================================
-   عرض كل عروض الموردين
+   عرض عروض الموردين
 ========================================================= */
 
-function renderBuyerQuotes(filterRfqId = null) {
+function renderBuyerQuotes(
+  filterRfqId = null
+) {
 
   const rows =
     document.getElementById(
@@ -630,11 +880,14 @@ function renderBuyerQuotes(filterRfqId = null) {
 
     count.textContent =
       BuyerData.quotes.length;
+
   }
 
 
   if (!rows) {
+
     return;
+
   }
 
 
@@ -650,13 +903,9 @@ function renderBuyerQuotes(filterRfqId = null) {
           q.rfq_id ===
           filterRfqId
       );
+
   }
 
-
-  /*
-    ترتيب الأسعار من الأقل إلى الأعلى
-    داخل القائمة
-  */
 
   quotes.sort(
     (a, b) =>
@@ -680,11 +929,13 @@ function renderBuyerQuotes(filterRfqId = null) {
       summary.innerHTML = `
 
         <strong>
+
           ${
             rfq
               ? rfq.rfq_no
               : ""
           }
+
         </strong>
 
         ${
@@ -696,7 +947,12 @@ function renderBuyerQuotes(filterRfqId = null) {
         •
 
         عدد العروض:
-        ${quotes.length}
+
+        <strong>
+
+          ${quotes.length}
+
+        </strong>
 
       `;
 
@@ -705,12 +961,17 @@ function renderBuyerQuotes(filterRfqId = null) {
       summary.innerHTML = `
 
         إجمالي عروض الموردين:
+
         <strong>
+
           ${BuyerData.quotes.length}
+
         </strong>
 
       `;
+
     }
+
   }
 
 
@@ -721,14 +982,18 @@ function renderBuyerQuotes(filterRfqId = null) {
       <tr>
 
         <td colspan="9">
+
           لا توجد عروض موردين حالياً.
+
         </td>
 
       </tr>
 
     `;
 
+
     return;
+
   }
 
 
@@ -774,14 +1039,18 @@ function renderBuyerQuotes(filterRfqId = null) {
               <td>
 
                 <strong>
+
                   ${rfq?.rfq_no || "—"}
+
                 </strong>
 
               </td>
 
 
               <td>
+
                 ${rfq?.item_name || "—"}
+
               </td>
 
 
@@ -793,11 +1062,16 @@ function renderBuyerQuotes(filterRfqId = null) {
                   q.supplier?.verified
 
                     ? `
-                        <br>
-                        <small>
-                          ✓ مورد موثق
-                        </small>
-                      `
+
+                      <br>
+
+                      <small>
+
+                        ✓ مورد موثق
+
+                      </small>
+
+                    `
 
                     : ""
                 }
@@ -806,15 +1080,19 @@ function renderBuyerQuotes(filterRfqId = null) {
 
 
               <td>
+
                 ${qty}
                 كجم
+
               </td>
 
 
               <td>
 
                 <strong>
+
                   ${money(price)}
+
                 </strong>
 
               </td>
@@ -823,7 +1101,9 @@ function renderBuyerQuotes(filterRfqId = null) {
               <td>
 
                 <strong>
+
                   ${money(total)}
+
                 </strong>
 
               </td>
@@ -873,18 +1153,22 @@ function renderBuyerQuotes(filterRfqId = null) {
             </tr>
 
           `;
+
         }
       )
 
       .join("");
+
 }
 
 
 /* =========================================================
-   فتح عروض RFQ محدد
+   فتح عروض RFQ
 ========================================================= */
 
-function openQuotesForRFQ(rfqId) {
+function openQuotesForRFQ(
+  rfqId
+) {
 
   showBuyerPanel(
     "quotesPanel"
@@ -894,14 +1178,17 @@ function openQuotesForRFQ(rfqId) {
   renderBuyerQuotes(
     rfqId
   );
+
 }
 
 
 /* =========================================================
-   فتح تفاصيل عرض مورد
+   تفاصيل العرض
 ========================================================= */
 
-function openQuoteDetails(quoteId) {
+function openQuoteDetails(
+  quoteId
+) {
 
   const quote =
     BuyerData.quotes.find(
@@ -916,7 +1203,9 @@ function openQuoteDetails(quoteId) {
       "تعذر العثور على العرض"
     );
 
+
     return;
+
   }
 
 
@@ -1019,15 +1308,23 @@ function openQuoteDetails(quoteId) {
     )
     .value =
 
-      Number(quote.delivery_days) === 0
+      Number(
+        quote.delivery_days
+      ) === 0
 
         ? "نفس اليوم"
 
-        : Number(quote.delivery_days) === 1
+        : Number(
+            quote.delivery_days
+          ) === 1
 
           ? "خلال يوم"
 
-          : `${Number(quote.delivery_days)} أيام`;
+          : `${
+              Number(
+                quote.delivery_days
+              )
+            } أيام`;
 
 
   document
@@ -1051,15 +1348,22 @@ function openQuoteDetails(quoteId) {
 
 
     box.scrollIntoView({
-      behavior: "smooth",
-      block: "start"
+
+      behavior:
+        "smooth",
+
+      block:
+        "start"
+
     });
+
   }
+
 }
 
 
 /* =========================================================
-   إغلاق تفاصيل العرض
+   إغلاق التفاصيل
 ========================================================= */
 
 function closeQuoteDetails() {
@@ -1074,7 +1378,448 @@ function closeQuoteDetails() {
 
     box.style.display =
       "none";
+
   }
+
+}
+
+
+/* =========================================================
+   البحث عن منتج المورد المقبول
+========================================================= */
+
+async function findSupplierProduct(
+  quote,
+  rfq
+) {
+
+  const sb =
+    Bahrna.client;
+
+
+  /*
+    نحاول أولاً المطابقة الدقيقة
+    بين المورد + اسم المنتج.
+  */
+
+  let result =
+    await sb
+
+      .from("products")
+
+      .select(`
+        id,
+        supplier_id,
+        name_ar,
+        stock_kg,
+        price_per_kg,
+        wholesale_price_per_kg,
+        active
+      `)
+
+      .eq(
+        "supplier_id",
+        quote.supplier_id
+      )
+
+      .eq(
+        "name_ar",
+        rfq.item_name
+      )
+
+      .eq(
+        "active",
+        true
+      )
+
+      .limit(1);
+
+
+  if (
+    !result.error &&
+    result.data &&
+    result.data.length
+  ) {
+
+    return result.data[0];
+
+  }
+
+
+  /*
+    إذا لم نجد الاسم حرفياً،
+    نأخذ أول منتج نشط لذلك المورد.
+    هذا احتياط للنسخة التجريبية فقط.
+  */
+
+  result =
+    await sb
+
+      .from("products")
+
+      .select(`
+        id,
+        supplier_id,
+        name_ar,
+        stock_kg,
+        price_per_kg,
+        wholesale_price_per_kg,
+        active
+      `)
+
+      .eq(
+        "supplier_id",
+        quote.supplier_id
+      )
+
+      .eq(
+        "active",
+        true
+      )
+
+      .limit(1);
+
+
+  if (
+    result.error ||
+    !result.data ||
+    !result.data.length
+  ) {
+
+    throw new Error(
+      "تعذر العثور على منتج مرتبط بهذا المورد لإنشاء الطلب"
+    );
+
+  }
+
+
+  return result.data[0];
+
+}
+
+
+/* =========================================================
+   إنشاء طلب B2B من العرض المقبول
+========================================================= */
+
+async function createB2BOrderFromQuote(
+  quote,
+  rfq
+) {
+
+  /*
+    منع التكرار في النسخة التجريبية.
+  */
+
+  const storageKey =
+    "bahrna_b2b_order_" +
+    rfq.id;
+
+
+  const existing =
+    localStorage.getItem(
+      storageKey
+    );
+
+
+  if (existing) {
+
+    try {
+
+      return JSON.parse(
+        existing
+      );
+
+    } catch (e) {
+
+      return {
+        order_no:
+          existing
+      };
+
+    }
+
+  }
+
+
+  if (
+    !window.Bahrna ||
+    typeof Bahrna.createOrder !==
+      "function"
+  ) {
+
+    throw new Error(
+      "وظيفة إنشاء الطلب Bahrna.createOrder غير متاحة"
+    );
+
+  }
+
+
+  const product =
+    await findSupplierProduct(
+      quote,
+      rfq
+    );
+
+
+  const requestedQty =
+    Number(
+      rfq.quantity_kg || 0
+    );
+
+
+  const availableQty =
+    Number(
+      quote.available_qty_kg || 0
+    );
+
+
+  /*
+    لا نسمح بإنشاء طلب بكمية
+    أعلى من التي عرضها المورد.
+  */
+
+  const qty =
+    Math.min(
+      requestedQty,
+      availableQty
+    );
+
+
+  if (
+    !Number.isFinite(qty) ||
+    qty <= 0
+  ) {
+
+    throw new Error(
+      "كمية العرض غير صحيحة"
+    );
+
+  }
+
+
+  const unitPrice =
+    Number(
+      quote.price_per_kg || 0
+    );
+
+
+  if (
+    !Number.isFinite(unitPrice) ||
+    unitPrice <= 0
+  ) {
+
+    throw new Error(
+      "سعر العرض غير صحيح"
+    );
+
+  }
+
+
+  const subtotal =
+    qty *
+    unitPrice;
+
+
+  /*
+    طلب RFQ مؤسسي:
+    السعر المقبول هو السعر النهائي
+    للمنتج في هذه المرحلة التجريبية.
+
+    لا نضيف رسوم تجهيز أو توصيل
+    أو VAT تلقائياً هنا حتى لا
+    نغيّر السعر الذي تم اعتماده.
+  */
+
+  const totals = {
+
+    subtotal:
+      subtotal,
+
+    prep:
+      0,
+
+    pack:
+      0,
+
+    delivery:
+      0,
+
+    vat:
+      0,
+
+    total:
+      subtotal
+
+  };
+
+
+  const flow = {
+
+    cart: [
+
+      {
+
+        id:
+          product.id,
+
+        name:
+          rfq.item_name,
+
+        price:
+          unitPrice,
+
+        qty:
+          qty
+
+      }
+
+    ],
+
+
+    cut: {
+
+      name:
+        "طلب مؤسسي RFQ",
+
+      fee:
+        0
+
+    },
+
+
+    packaging: {
+
+      name:
+        "حسب عرض المورد",
+
+      fee:
+        0
+
+    },
+
+
+    keepHeadBones:
+      true,
+
+
+    address: {
+
+      emirate:
+        rfq.delivery_emirate ||
+        "",
+
+      area:
+        "طلب مؤسسي",
+
+      address:
+        rfq.rfq_no
+
+    },
+
+
+    slot:
+      rfq.delivery_date ||
+      "",
+
+
+    deliveryFee:
+      0,
+
+
+    vatRate:
+      0,
+
+
+    rfqId:
+      rfq.id,
+
+
+    rfqNo:
+      rfq.rfq_no,
+
+
+    quoteId:
+      quote.id
+
+  };
+
+
+  const dbOrder =
+    await Bahrna.createOrder(
+      flow,
+      totals
+    );
+
+
+  if (
+    !dbOrder ||
+    !dbOrder.id
+  ) {
+
+    throw new Error(
+      "لم يتم إنشاء الطلب في قاعدة البيانات"
+    );
+
+  }
+
+
+  const localOrder = {
+
+    id:
+      dbOrder.id,
+
+    order_no:
+      dbOrder.order_no,
+
+    rfq_id:
+      rfq.id,
+
+    rfq_no:
+      rfq.rfq_no,
+
+    quote_id:
+      quote.id,
+
+    supplier_id:
+      quote.supplier_id,
+
+    product:
+      rfq.item_name,
+
+    qty:
+      qty,
+
+    unit_price:
+      unitPrice,
+
+    total:
+      Number(
+        dbOrder.total ??
+        totals.total
+      ),
+
+    status:
+      dbOrder.status ||
+      "pending",
+
+    created_at:
+      dbOrder.created_at ||
+      new Date().toISOString()
+
+  };
+
+
+  localStorage.setItem(
+    storageKey,
+    JSON.stringify(
+      localOrder
+    )
+  );
+
+
+  return localOrder;
+
 }
 
 
@@ -1109,7 +1854,9 @@ async function acceptSupplierQuote() {
       "لم يتم تحديد العرض"
     );
 
+
     return;
+
   }
 
 
@@ -1127,23 +1874,158 @@ async function acceptSupplierQuote() {
     );
 
 
+  if (
+    !quote ||
+    !rfq
+  ) {
+
+    alert(
+      "بيانات العرض أو RFQ غير مكتملة"
+    );
+
+
+    return;
+
+  }
+
+
   const supplierName =
-    quote?.supplier?.display_name ||
+    quote.supplier?.display_name ||
     "المورد";
+
+
+  /*
+    إذا كان العرض مقبولاً مسبقاً،
+    فهذا مفيد للـRFQ الذي قمنا
+    بقبوله قبل تركيب هذه النسخة.
+    سننشئ الطلب دون إعادة عملية الترسية.
+  */
+
+  if (
+    quote.status === "accepted"
+  ) {
+
+    const okExisting =
+      confirm(
+        "العرض مقبول بالفعل.\n\n" +
+        "هل تريد الآن تحويله إلى طلب شراء B2B؟"
+      );
+
+
+    if (!okExisting) {
+
+      return;
+
+    }
+
+
+    try {
+
+      const order =
+        await createB2BOrderFromQuote(
+          quote,
+          rfq
+        );
+
+
+      const sb =
+        Bahrna.client;
+
+
+      await sb
+
+        .from("rfqs")
+
+        .update({
+
+          status:
+            "closed"
+
+        })
+
+        .eq(
+          "id",
+          rfq.id
+        );
+
+
+      alert(
+        "✅ تم إنشاء طلب الشراء المؤسسي بنجاح\n\n" +
+        "رقم الطلب: " +
+        order.order_no
+      );
+
+
+      closeQuoteDetails();
+
+
+      const user =
+        await getBuyerUser();
+
+
+      await Promise.all([
+
+        loadBuyerRFQs(user),
+
+        loadBuyerQuotes(),
+
+        loadBuyerOrders(user)
+
+      ]);
+
+
+      renderRFQs();
+
+      renderBuyerQuotes();
+
+      renderB2BOrders();
+
+
+      showBuyerPanel(
+        "ordersPanel"
+      );
+
+
+      return;
+
+
+    } catch (e) {
+
+      console.error(
+        "خطأ إنشاء B2B:",
+        e
+      );
+
+
+      alert(
+        "تعذر إنشاء طلب B2B: " +
+        (e.message || e)
+      );
+
+
+      return;
+
+    }
+
+  }
 
 
   const ok =
     confirm(
+
       "هل تريد قبول عرض " +
       supplierName +
       " على " +
-      (rfq?.rfq_no || "RFQ") +
-      "؟"
+      rfq.rfq_no +
+      " وتحويله إلى طلب شراء؟"
+
     );
 
 
   if (!ok) {
+
     return;
+
   }
 
 
@@ -1153,9 +2035,9 @@ async function acceptSupplierQuote() {
       Bahrna.client;
 
 
-    /*
-      1) قبول العرض المختار
-    */
+    /* =====================================
+       1) قبول العرض
+    ===================================== */
 
     const {
       error: acceptError
@@ -1164,8 +2046,10 @@ async function acceptSupplierQuote() {
       .from("rfq_quotes")
 
       .update({
+
         status:
           "accepted"
+
       })
 
       .eq(
@@ -1175,13 +2059,15 @@ async function acceptSupplierQuote() {
 
 
     if (acceptError) {
+
       throw acceptError;
+
     }
 
 
-    /*
-      2) رفض بقية العروض على نفس RFQ
-    */
+    /* =====================================
+       2) رفض باقي العروض
+    ===================================== */
 
     const {
       error: rejectOthersError
@@ -1190,8 +2076,10 @@ async function acceptSupplierQuote() {
       .from("rfq_quotes")
 
       .update({
+
         status:
           "rejected"
+
       })
 
       .eq(
@@ -1213,25 +2101,28 @@ async function acceptSupplierQuote() {
     if (rejectOthersError) {
 
       console.warn(
-        "تعذر تحديث بقية العروض:",
+        "تعذر رفض بقية العروض:",
         rejectOthersError
       );
+
     }
 
 
-    /*
-      3) تحديث حالة RFQ
-    */
+    /* =====================================
+       3) تحديث RFQ إلى awarded
+    ===================================== */
 
     const {
-      error: rfqError
+      error: rfqAwardError
     } = await sb
 
       .from("rfqs")
 
       .update({
+
         status:
           "awarded"
+
       })
 
       .eq(
@@ -1240,17 +2131,73 @@ async function acceptSupplierQuote() {
       );
 
 
-    if (rfqError) {
+    if (rfqAwardError) {
+
+      throw rfqAwardError;
+
+    }
+
+
+    /* =====================================
+       4) إنشاء الطلب B2B
+    ===================================== */
+
+    const acceptedQuote = {
+
+      ...quote,
+
+      status:
+        "accepted"
+
+    };
+
+
+    const order =
+      await createB2BOrderFromQuote(
+        acceptedQuote,
+        rfq
+      );
+
+
+    /* =====================================
+       5) إغلاق RFQ بعد إنشاء الطلب
+    ===================================== */
+
+    const {
+      error: closeRfqError
+    } = await sb
+
+      .from("rfqs")
+
+      .update({
+
+        status:
+          "closed"
+
+      })
+
+      .eq(
+        "id",
+        rfqId
+      );
+
+
+    if (closeRfqError) {
 
       console.warn(
-        "تم قبول العرض ولكن تعذر تحديث حالة RFQ:",
-        rfqError
+        "تم إنشاء الطلب ولكن تعذر إغلاق RFQ:",
+        closeRfqError
       );
+
     }
 
 
     alert(
-      "✅ تم قبول عرض المورد بنجاح"
+
+      "✅ تم قبول عرض المورد وإنشاء طلب الشراء بنجاح\n\n" +
+      "رقم الطلب: " +
+      order.order_no
+
     );
 
 
@@ -1265,7 +2212,9 @@ async function acceptSupplierQuote() {
 
       loadBuyerRFQs(user),
 
-      loadBuyerQuotes()
+      loadBuyerQuotes(),
+
+      loadBuyerOrders(user)
 
     ]);
 
@@ -1274,25 +2223,36 @@ async function acceptSupplierQuote() {
 
     renderBuyerQuotes();
 
+    renderB2BOrders();
+
+
+    showBuyerPanel(
+      "ordersPanel"
+    );
+
 
   } catch (e) {
 
     console.error(
-      "خطأ قبول العرض:",
+      "خطأ قبول العرض / إنشاء الطلب:",
       e
     );
 
 
     alert(
-      "تعذر قبول العرض: " +
+
+      "تعذر إكمال العملية: " +
       (e.message || e)
+
     );
+
   }
+
 }
 
 
 /* =========================================================
-   رفض عرض المورد
+   رفض العرض
 ========================================================= */
 
 async function rejectSupplierQuote() {
@@ -1311,7 +2271,30 @@ async function rejectSupplierQuote() {
       "لم يتم تحديد العرض"
     );
 
+
     return;
+
+  }
+
+
+  const quote =
+    BuyerData.quotes.find(
+      q =>
+        q.id === quoteId
+    );
+
+
+  if (
+    quote?.status === "accepted"
+  ) {
+
+    alert(
+      "لا يمكن رفض عرض تم قبوله بالفعل."
+    );
+
+
+    return;
+
   }
 
 
@@ -1322,7 +2305,9 @@ async function rejectSupplierQuote() {
 
 
   if (!ok) {
+
     return;
+
   }
 
 
@@ -1339,8 +2324,10 @@ async function rejectSupplierQuote() {
       .from("rfq_quotes")
 
       .update({
+
         status:
           "rejected"
+
       })
 
       .eq(
@@ -1350,7 +2337,9 @@ async function rejectSupplierQuote() {
 
 
     if (error) {
+
       throw error;
+
     }
 
 
@@ -1382,15 +2371,169 @@ async function rejectSupplierQuote() {
       "تعذر رفض العرض: " +
       (e.message || e)
     );
+
   }
+
 }
 
 
 /* =========================================================
-   تعبئة نموذج RFQ من السوق
+   عرض طلبات B2B
 ========================================================= */
 
-function prefillRFQ(name, qty) {
+function renderB2BOrders() {
+
+  const rows =
+    document.getElementById(
+      "b2bRows"
+    );
+
+
+  const count =
+    document.getElementById(
+      "b2bOrderCount"
+    );
+
+
+  if (count) {
+
+    count.textContent =
+      BuyerData.orders.length;
+
+  }
+
+
+  if (!rows) {
+
+    return;
+
+  }
+
+
+  if (!BuyerData.orders.length) {
+
+    rows.innerHTML = `
+
+      <tr>
+
+        <td colspan="4">
+
+          لا توجد طلبات شراء مؤسسية حالياً.
+
+        </td>
+
+      </tr>
+
+    `;
+
+
+    return;
+
+  }
+
+
+  rows.innerHTML =
+    BuyerData.orders
+
+      .map(
+        order => {
+
+          const items =
+            order.order_items ||
+            [];
+
+
+          const products =
+            items.length
+
+              ? items
+
+                  .map(
+                    item =>
+                      `${
+                        item.product_name ||
+                        "منتج"
+                      } ${
+                        Number(
+                          item.qty_kg || 0
+                        )
+                      } كجم`
+                  )
+
+                  .join("، ")
+
+              : "—";
+
+
+          const status =
+            order.tracking_status ||
+            order.status ||
+            "pending";
+
+
+          return `
+
+            <tr>
+
+              <td>
+
+                <strong>
+
+                  ${order.order_no}
+
+                </strong>
+
+              </td>
+
+
+              <td>
+
+                ${products}
+
+              </td>
+
+
+              <td>
+
+                <strong>
+
+                  ${money(order.total)}
+
+                </strong>
+
+              </td>
+
+
+              <td>
+
+                <span class="status ok">
+
+                  ${orderStatusLabel(status)}
+
+                </span>
+
+              </td>
+
+            </tr>
+
+          `;
+
+        }
+      )
+
+      .join("");
+
+}
+
+
+/* =========================================================
+   تعبئة RFQ من سعر الجملة
+========================================================= */
+
+function prefillRFQ(
+  name,
+  qty
+) {
 
   showBuyerPanel(
     "newRfqPanel"
@@ -1413,6 +2556,7 @@ function prefillRFQ(name, qty) {
 
     item.value =
       name || "";
+
   }
 
 
@@ -1423,7 +2567,9 @@ function prefillRFQ(name, qty) {
         Number(qty || 0),
         50
       );
+
   }
+
 }
 
 
@@ -1440,7 +2586,9 @@ async function submitRFQ() {
 
 
     if (!user) {
+
       return;
+
     }
 
 
@@ -1489,7 +2637,8 @@ async function submitRFQ() {
 
 
     const deliveryDate =
-      dateInput?.value || null;
+      dateInput?.value ||
+      null;
 
 
     const notes =
@@ -1508,7 +2657,9 @@ async function submitRFQ() {
         "أكمل المنتج والكمية والإمارة"
       );
 
+
       return;
+
     }
 
 
@@ -1567,33 +2718,49 @@ async function submitRFQ() {
 
 
     if (error) {
+
       throw error;
+
     }
 
 
     alert(
+
       "✅ تم إرسال طلب عرض السعر بنجاح\n" +
       data.rfq_no
+
     );
 
 
     if (itemInput) {
-      itemInput.value = "";
+
+      itemInput.value =
+        "";
+
     }
 
 
     if (qtyInput) {
-      qtyInput.value = "";
+
+      qtyInput.value =
+        "";
+
     }
 
 
     if (dateInput) {
-      dateInput.value = "";
+
+      dateInput.value =
+        "";
+
     }
 
 
     if (notesInput) {
-      notesInput.value = "";
+
+      notesInput.value =
+        "";
+
     }
 
 
@@ -1619,66 +2786,14 @@ async function submitRFQ() {
 
 
     alert(
+
       "تعذر إرسال RFQ: " +
       (e.message || e)
-    );
-  }
-}
 
-
-/* =========================================================
-   طلبات الجملة
-   المرحلة التالية بعد قبول العرض
-========================================================= */
-
-function renderB2BOrders() {
-
-  const rows =
-    document.getElementById(
-      "b2bRows"
     );
 
-
-  const count =
-    document.getElementById(
-      "b2bOrderCount"
-    );
-
-
-  if (count) {
-
-    count.textContent =
-      BuyerData.orders.length;
   }
 
-
-  if (!rows) {
-    return;
-  }
-
-
-  if (!BuyerData.orders.length) {
-
-    rows.innerHTML = `
-
-      <tr>
-
-        <td colspan="4">
-
-          لا توجد طلبات جملة حالياً.
-
-          سيتم في المرحلة التالية
-          تحويل العرض المقبول
-          إلى طلب شراء مؤسسي.
-
-        </td>
-
-      </tr>
-
-    `;
-
-    return;
-  }
 }
 
 
@@ -1695,9 +2810,15 @@ async function renderBuyer() {
 
 
     if (!user) {
+
       return;
+
     }
 
+
+    /*
+      RFQ
+    */
 
     await loadBuyerRFQs(
       user
@@ -1705,8 +2826,7 @@ async function renderBuyer() {
 
 
     /*
-      لا نريد أن يؤدي خطأ عروض الموردين
-      إلى تعطيل بقية لوحة المشتري.
+      عروض الموردين
     */
 
     try {
@@ -1720,12 +2840,45 @@ async function renderBuyer() {
       );
 
 
-      BuyerData.quotes = [];
+      BuyerData.quotes =
+        [];
+
     }
 
 
+    /*
+      طلبات المشتري
+    */
+
+    try {
+
+      await loadBuyerOrders(
+        user
+      );
+
+    } catch (orderError) {
+
+      console.error(
+        orderError
+      );
+
+
+      BuyerData.orders =
+        [];
+
+    }
+
+
+    /*
+      أسعار الجملة
+    */
+
     await renderWholesaleOffers();
 
+
+    /*
+      العرض
+    */
 
     renderRFQs();
 
@@ -1743,16 +2896,16 @@ async function renderBuyer() {
 
 
     alert(
+
       "تعذر تحميل لوحة المشتري: " +
       (e.message || e)
+
     );
+
   }
+
 }
 
-
-/* =========================================================
-   بدء التشغيل
-========================================================= */
 
 document.addEventListener(
   "DOMContentLoaded",
