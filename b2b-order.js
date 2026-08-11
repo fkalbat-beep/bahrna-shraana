@@ -1,7 +1,7 @@
 /* =========================================================
    BAHRNA & SHRAANA
    B2B ORDER DETAILS
-   Delivery + Buyer Receipt + Supplier Invoice
+   Delivery + Buyer Receipt + Supplier Invoice + Payment
 ========================================================= */
 
 let CurrentOrder = null;
@@ -9,22 +9,14 @@ let CurrentUser = null;
 let CurrentSupplier = null;
 let CurrentInvoice = null;
 
-
-/* =========================================================
-   أدوات عامة
-========================================================= */
-
 function money(value) {
   return "AED " + Number(value || 0).toFixed(2);
 }
 
-
 function formatDateTime(value) {
-
   if (!value) return "—";
 
   try {
-
     return new Date(value).toLocaleString(
       "ar-AE",
       {
@@ -35,20 +27,15 @@ function formatDateTime(value) {
         minute: "2-digit"
       }
     );
-
   } catch (e) {
-
     return value;
   }
 }
 
-
 function formatDate(value) {
-
   if (!value) return "—";
 
   try {
-
     return new Date(value).toLocaleDateString(
       "ar-AE",
       {
@@ -57,19 +44,15 @@ function formatDate(value) {
         day: "numeric"
       }
     );
-
   } catch (e) {
-
     return value;
   }
 }
-
 
 function statusLabel(
   status,
   receiptStatus
 ) {
-
   if (
     status === "delivered" &&
     receiptStatus === "confirmed"
@@ -78,7 +61,6 @@ function statusLabel(
   }
 
   const labels = {
-
     pending:
       "بانتظار التأكيد",
 
@@ -103,11 +85,8 @@ function statusLabel(
     "—";
 }
 
-
 function paymentStatusLabel(status) {
-
   const labels = {
-
     unpaid:
       "غير مدفوع",
 
@@ -126,11 +105,8 @@ function paymentStatusLabel(status) {
     "غير مدفوع";
 }
 
-
 function paymentMethodLabel(method) {
-
   const labels = {
-
     pilot_no_charge:
       "طلب تجريبي / بدون تحصيل",
 
@@ -140,11 +116,17 @@ function paymentMethodLabel(method) {
     apple_pay:
       "Apple Pay",
 
+    bank_transfer:
+      "تحويل بنكي",
+
     cash:
       "نقداً",
 
-    bank_transfer:
-      "تحويل بنكي"
+    tabby:
+      "Tabby",
+
+    tamara:
+      "Tamara"
   };
 
   return labels[method] ||
@@ -152,11 +134,8 @@ function paymentMethodLabel(method) {
     "غير محدد";
 }
 
-
 function invoiceStatusLabel(status) {
-
   const labels = {
-
     draft:
       "مسودة",
 
@@ -178,23 +157,23 @@ function invoiceStatusLabel(status) {
     "—";
 }
 
-
-function setText(id, value) {
-
+function setText(
+  id,
+  value
+) {
   const element =
     document.getElementById(id);
 
   if (element) {
-
     element.textContent =
       value ?? "—";
   }
 }
 
-
 function getOrderBuyerId(order) {
-
-  if (!order) return null;
+  if (!order) {
+    return null;
+  }
 
   return (
     order.user_id ||
@@ -203,44 +182,44 @@ function getOrderBuyerId(order) {
   );
 }
 
-
-/* =========================================================
-   رقم الطلب من الرابط
-========================================================= */
-
 function getOrderNoFromURL() {
-
   const params =
     new URLSearchParams(
       window.location.search
     );
 
-  return params.get("order");
+  return params.get(
+    "order"
+  );
 }
 
-
-/* =========================================================
-   المستخدم الحالي
-========================================================= */
-
 async function loadCurrentUser() {
-
-  CurrentUser = null;
+  CurrentUser =
+    null;
 
   try {
-
     if (
       window.Bahrna &&
       typeof Bahrna.getCurrentUser ===
         "function"
     ) {
-
       CurrentUser =
         await Bahrna.getCurrentUser();
+    } else if (
+      window.Bahrna &&
+      Bahrna.client &&
+      Bahrna.client.auth
+    ) {
+      const {
+        data
+      } =
+        await Bahrna.client.auth.getUser();
+
+      CurrentUser =
+        data?.user ||
+        null;
     }
-
   } catch (e) {
-
     console.warn(
       "تعذر قراءة المستخدم الحالي",
       e
@@ -250,18 +229,11 @@ async function loadCurrentUser() {
   return CurrentUser;
 }
 
-
-/* =========================================================
-   تحميل الطلب
-========================================================= */
-
 async function loadOrderDetails() {
-
   const orderNo =
     getOrderNoFromURL();
 
   if (!orderNo) {
-
     showError(
       "لم يتم تحديد رقم الطلب في الرابط."
     );
@@ -273,7 +245,6 @@ async function loadOrderDetails() {
     !window.Bahrna ||
     !Bahrna.client
   ) {
-
     showError(
       "الاتصال بقاعدة البيانات غير متاح."
     );
@@ -282,7 +253,6 @@ async function loadOrderDetails() {
   }
 
   try {
-
     await loadCurrentUser();
 
     const {
@@ -290,7 +260,9 @@ async function loadOrderDetails() {
       error
     } = await Bahrna.client
 
-      .from("orders")
+      .from(
+        "orders"
+      )
 
       .select(`
         *,
@@ -311,7 +283,6 @@ async function loadOrderDetails() {
     }
 
     if (!data) {
-
       throw new Error(
         "الطلب غير موجود"
       );
@@ -320,18 +291,27 @@ async function loadOrderDetails() {
     CurrentOrder =
       data;
 
-    renderOrder(data);
+    renderOrder(
+      data
+    );
 
-    await loadBuyerInfo(data);
+    await loadBuyerInfo(
+      data
+    );
 
-    await loadSupplierInfo(data);
+    await loadSupplierInfo(
+      data
+    );
 
-    renderReceiptSection(data);
+    renderReceiptSection(
+      data
+    );
 
-    await loadInvoice(data);
+    await loadInvoice(
+      data
+    );
 
   } catch (e) {
-
     console.error(
       "ORDER DETAILS ERROR:",
       e
@@ -339,18 +319,15 @@ async function loadOrderDetails() {
 
     showError(
       "تعذر تحميل تفاصيل الطلب: " +
-      (e.message || e)
+      (
+        e.message ||
+        e
+      )
     );
   }
 }
 
-
-/* =========================================================
-   عرض الطلب
-========================================================= */
-
 function renderOrder(order) {
-
   const trackingStatus =
     order.tracking_status ||
     order.status ||
@@ -396,41 +373,53 @@ function renderOrder(order) {
 
   setText(
     "deliveryEmirate",
-    address.emirate || "—"
+    address.emirate ||
+    "—"
   );
 
   setText(
     "deliveryArea",
-    address.area || "—"
+    address.area ||
+    "—"
   );
 
   setText(
     "deliveryAddress",
-    address.address || "—"
+    address.address ||
+    "—"
   );
 
   setText(
     "subtotal",
-    money(order.subtotal)
+    money(
+      order.subtotal
+    )
   );
 
   setText(
     "deliveryFee",
-    money(order.delivery_fee)
+    money(
+      order.delivery_fee
+    )
   );
 
   setText(
     "vat",
-    money(order.vat)
+    money(
+      order.vat
+    )
   );
 
   setText(
     "orderTotal",
-    money(order.total)
+    money(
+      order.total
+    )
   );
 
   renderItems(
-    order.order_items || []
+    order.order_items ||
+    []
   );
 
   renderTimeline(
@@ -447,137 +436,146 @@ function renderOrder(order) {
   );
 }
 
-
-/* =========================================================
-   المنتجات
-========================================================= */
-
 function renderItems(items) {
-
   const tbody =
     document.getElementById(
       "orderItems"
     );
 
-  if (!tbody) return;
+  if (!tbody) {
+    return;
+  }
 
   if (!items.length) {
-
     tbody.innerHTML = `
-
       <tr>
-
         <td colspan="4">
           لا توجد منتجات مسجلة على الطلب.
         </td>
-
       </tr>
-
     `;
 
     return;
   }
 
   tbody.innerHTML =
-    items.map(
-      item => `
+    items
+      .map(
+        item => `
+          <tr>
 
-        <tr>
+            <td>
+              <strong>
+                ${
+                  item.product_name ||
+                  "منتج"
+                }
+              </strong>
+            </td>
 
-          <td>
+            <td>
+              ${
+                Number(
+                  item.qty_kg ||
+                  0
+                )
+              }
+              كجم
+            </td>
 
-            <strong>
-              ${item.product_name || "منتج"}
-            </strong>
+            <td>
+              ${
+                money(
+                  item.unit_price
+                )
+              }
+            </td>
 
-          </td>
+            <td>
+              <strong>
+                ${
+                  money(
+                    item.line_total
+                  )
+                }
+              </strong>
+            </td>
 
-          <td>
-
-            ${Number(item.qty_kg || 0)}
-            كجم
-
-          </td>
-
-          <td>
-
-            ${money(item.unit_price)}
-
-          </td>
-
-          <td>
-
-            <strong>
-              ${money(item.line_total)}
-            </strong>
-
-          </td>
-
-        </tr>
-
-      `
-    ).join("");
+          </tr>
+        `
+      )
+      .join("");
 }
-
-
-/* =========================================================
-   مراحل الطلب
-========================================================= */
 
 function renderTimeline(
   status,
   receiptStatus
 ) {
+  let current =
+    0;
 
-  let current = 0;
-
-  if (status === "confirmed") {
-    current = 0;
-  }
-
-  if (status === "preparing") {
-    current = 1;
+  if (
+    status ===
+      "preparing"
+  ) {
+    current =
+      1;
   }
 
   if (
-    status === "out_for_delivery"
+    status ===
+      "out_for_delivery"
   ) {
-    current = 2;
-  }
-
-  if (status === "delivered") {
-    current = 3;
+    current =
+      2;
   }
 
   if (
-    status === "delivered" &&
-    receiptStatus === "confirmed"
+    status ===
+      "delivered"
   ) {
-    current = 4;
+    current =
+      3;
+  }
+
+  if (
+    status ===
+      "delivered" &&
+    receiptStatus ===
+      "confirmed"
+  ) {
+    current =
+      4;
   }
 
   document
     .querySelectorAll(
       ".timeline-step"
     )
-
     .forEach(
-      (step, index) => {
+      (
+        step,
+        index
+      ) => {
 
         step.classList.remove(
           "done",
           "current"
         );
 
-        if (index < current) {
-
+        if (
+          index <
+          current
+        ) {
           step.classList.add(
             "done"
           );
         }
 
-        if (index === current) {
-
+        if (
+          index ===
+          current
+        ) {
           step.classList.add(
             "current"
           );
@@ -588,7 +586,6 @@ function renderTimeline(
             "confirmed" &&
           index <= 4
         ) {
-
           step.classList.remove(
             "current"
           );
@@ -601,29 +598,32 @@ function renderTimeline(
     );
 }
 
-
-/* =========================================================
-   رسالة التنفيذ
-========================================================= */
-
 function trackingMessage(
   status,
   receiptStatus
 ) {
-
   if (
-    status === "delivered" &&
-    receiptStatus === "confirmed"
+    status ===
+      "delivered" &&
+    receiptStatus ===
+      "confirmed"
   ) {
+    if (
+      CurrentOrder &&
+      CurrentOrder.payment_status ===
+        "paid"
+    ) {
+      return (
+        "تم تأكيد استلام الطلب ودفع الفاتورة بنجاح."
+      );
+    }
 
     return (
-      "تم تأكيد استلام الطلب " +
-      "من المشتري بنجاح."
+      "تم تأكيد استلام الطلب من المشتري بنجاح."
     );
   }
 
   const messages = {
-
     pending:
       "تم استلام الطلب وهو بانتظار تأكيد المورد.",
 
@@ -649,13 +649,7 @@ function trackingMessage(
   );
 }
 
-
-/* =========================================================
-   تأكيد استلام المشتري
-========================================================= */
-
 function renderReceiptSection(order) {
-
   const box =
     document.getElementById(
       "receiptBox"
@@ -681,16 +675,18 @@ function renderReceiptSection(order) {
       "receiptDate"
     );
 
-  if (!box) return;
+  if (!box) {
+    return;
+  }
 
   const trackingStatus =
     order.tracking_status ||
     order.status;
 
   if (
-    trackingStatus !== "delivered"
+    trackingStatus !==
+      "delivered"
   ) {
-
     box.style.display =
       "none";
 
@@ -700,29 +696,29 @@ function renderReceiptSection(order) {
   box.style.display =
     "block";
 
+  box.classList.remove(
+    "receipt-success"
+  );
+
   if (
     order.receipt_status ===
       "confirmed"
   ) {
-
     box.classList.add(
       "receipt-success"
     );
 
     if (title) {
-
       title.textContent =
         "✅ تم تأكيد الاستلام";
     }
 
     if (message) {
-
       message.textContent =
         "تم استلام الطلب وإغلاق مرحلة التسليم بنجاح.";
     }
 
     if (button) {
-
       button.style.display =
         "none";
     }
@@ -731,7 +727,6 @@ function renderReceiptSection(order) {
       date &&
       order.buyer_received_at
     ) {
-
       date.style.display =
         "block";
 
@@ -746,30 +741,32 @@ function renderReceiptSection(order) {
   }
 
   const buyerId =
-    getOrderBuyerId(order);
+    getOrderBuyerId(
+      order
+    );
 
   const isBuyer =
     CurrentUser &&
     buyerId &&
-    String(CurrentUser.id) ===
-      String(buyerId);
+    String(
+      CurrentUser.id
+    ) ===
+    String(
+      buyerId
+    );
 
   if (isBuyer) {
-
     if (title) {
-
       title.textContent =
         "تأكيد استلام الطلب";
     }
 
     if (message) {
-
       message.textContent =
         "إذا استلمت المنتجات فعلياً وبالحالة المتفق عليها، اضغط تأكيد الاستلام.";
     }
 
     if (button) {
-
       button.style.display =
         "inline-flex";
 
@@ -784,33 +781,23 @@ function renderReceiptSection(order) {
   }
 
   if (title) {
-
     title.textContent =
       "بانتظار تأكيد المشتري";
   }
 
   if (message) {
-
     message.textContent =
       "تم التسليم من المورد وبانتظار أن يؤكد المشتري استلام الطلب.";
   }
 
   if (button) {
-
     button.style.display =
       "none";
   }
 }
 
-
-/* =========================================================
-   تنفيذ تأكيد الاستلام
-========================================================= */
-
 async function confirmBuyerReceipt() {
-
   if (!CurrentOrder) {
-
     alert(
       "تعذر تحديد الطلب"
     );
@@ -823,9 +810,9 @@ async function confirmBuyerReceipt() {
     CurrentOrder.status;
 
   if (
-    trackingStatus !== "delivered"
+    trackingStatus !==
+      "delivered"
   ) {
-
     alert(
       "لا يمكن تأكيد الاستلام قبل وصول حالة الطلب إلى تم التسليم."
     );
@@ -837,7 +824,6 @@ async function confirmBuyerReceipt() {
     CurrentOrder.receipt_status ===
       "confirmed"
   ) {
-
     alert(
       "تم تأكيد استلام هذا الطلب مسبقاً."
     );
@@ -853,7 +839,6 @@ async function confirmBuyerReceipt() {
     );
 
   if (!CurrentUser) {
-
     alert(
       "يرجى تسجيل الدخول بحساب المشتري أولاً."
     );
@@ -863,10 +848,13 @@ async function confirmBuyerReceipt() {
 
   if (
     !buyerId ||
-    String(CurrentUser.id) !==
-      String(buyerId)
+    String(
+      CurrentUser.id
+    ) !==
+    String(
+      buyerId
+    )
   ) {
-
     alert(
       "تأكيد الاستلام متاح للمشتري صاحب الطلب فقط."
     );
@@ -882,7 +870,9 @@ async function confirmBuyerReceipt() {
       "بعد التأكيد سيتم إغلاق مرحلة التسليم والانتقال للفاتورة."
     );
 
-  if (!ok) return;
+  if (!ok) {
+    return;
+  }
 
   const button =
     document.getElementById(
@@ -890,9 +880,7 @@ async function confirmBuyerReceipt() {
     );
 
   try {
-
     if (button) {
-
       button.disabled =
         true;
 
@@ -904,16 +892,17 @@ async function confirmBuyerReceipt() {
       error
     } = await Bahrna.client
 
-      .from("orders")
+      .from(
+        "orders"
+      )
 
       .update({
-
         receipt_status:
           "confirmed",
 
         buyer_received_at:
-          new Date().toISOString()
-
+          new Date()
+            .toISOString()
       })
 
       .eq(
@@ -932,7 +921,6 @@ async function confirmBuyerReceipt() {
     await loadOrderDetails();
 
   } catch (e) {
-
     console.error(
       "RECEIPT CONFIRM ERROR:",
       e
@@ -940,11 +928,13 @@ async function confirmBuyerReceipt() {
 
     alert(
       "تعذر تأكيد الاستلام: " +
-      (e.message || e)
+      (
+        e.message ||
+        e
+      )
     );
 
     if (button) {
-
       button.disabled =
         false;
 
@@ -954,28 +944,29 @@ async function confirmBuyerReceipt() {
   }
 }
 
-
-/* =========================================================
-   بيانات المشتري
-========================================================= */
-
 async function loadBuyerInfo(order) {
-
   try {
-
     const buyerId =
-      getOrderBuyerId(order);
+      getOrderBuyerId(
+        order
+      );
 
-    if (!buyerId) return;
+    if (!buyerId) {
+      return;
+    }
 
     const {
       data,
       error
     } = await Bahrna.client
 
-      .from("profiles")
+      .from(
+        "profiles"
+      )
 
-      .select("*")
+      .select(
+        "*"
+      )
 
       .eq(
         "id",
@@ -988,7 +979,6 @@ async function loadBuyerInfo(order) {
       !error &&
       data
     ) {
-
       const name =
         data.full_name ||
         data.display_name ||
@@ -996,7 +986,6 @@ async function loadBuyerInfo(order) {
         data.name;
 
       if (name) {
-
         setText(
           "buyerName",
           name
@@ -1005,33 +994,28 @@ async function loadBuyerInfo(order) {
     }
 
   } catch (e) {
-
     console.log(
       "Buyer profile not available"
     );
   }
 }
 
-
-/* =========================================================
-   بيانات المورد
-========================================================= */
-
 async function loadSupplierInfo(order) {
-
-  CurrentSupplier = null;
+  CurrentSupplier =
+    null;
 
   try {
-
     const firstItem =
-      (order.order_items || [])
+      (
+        order.order_items ||
+        []
+      )
       .find(
         item =>
           item.product_id
       );
 
     if (!firstItem) {
-
       setText(
         "supplierName",
         "بحرنا وشراعنا"
@@ -1052,7 +1036,9 @@ async function loadSupplierInfo(order) {
       error
     } = await Bahrna.client
 
-      .from("products")
+      .from(
+        "products"
+      )
 
       .select(`
         id,
@@ -1077,7 +1063,6 @@ async function loadSupplierInfo(order) {
       error ||
       !data
     ) {
-
       throw (
         error ||
         new Error(
@@ -1106,7 +1091,6 @@ async function loadSupplierInfo(order) {
     renderInvoiceSection();
 
   } catch (e) {
-
     console.warn(
       "تعذر تحميل المورد",
       e
@@ -1126,25 +1110,23 @@ async function loadSupplierInfo(order) {
   }
 }
 
-
-/* =========================================================
-   تحميل الفاتورة
-========================================================= */
-
 async function loadInvoice(order) {
-
-  CurrentInvoice = null;
+  CurrentInvoice =
+    null;
 
   try {
-
     const {
       data,
       error
     } = await Bahrna.client
 
-      .from("invoices")
+      .from(
+        "invoices"
+      )
 
-      .select("*")
+      .select(
+        "*"
+      )
 
       .eq(
         "order_id",
@@ -1154,20 +1136,17 @@ async function loadInvoice(order) {
       .maybeSingle();
 
     if (error) {
-
       console.warn(
         "تعذر قراءة الفاتورة:",
         error
       );
-
     } else {
-
       CurrentInvoice =
-        data || null;
+        data ||
+        null;
     }
 
   } catch (e) {
-
     console.warn(
       "Invoice load error",
       e
@@ -1177,74 +1156,83 @@ async function loadInvoice(order) {
   renderInvoiceSection();
 }
 
-
-/* =========================================================
-   إنشاء واجهة الفاتورة ديناميكياً
-========================================================= */
-
 function ensureInvoiceSection() {
-
   let box =
     document.getElementById(
       "invoiceSection"
     );
 
-  if (box) return box;
+  if (box) {
+    return box;
+  }
 
   const receiptBox =
     document.getElementById(
       "receiptBox"
     );
 
-  if (!receiptBox) return null;
+  if (!receiptBox) {
+    return null;
+  }
 
   box =
-    document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   box.id =
     "invoiceSection";
 
-  box.style.cssText = `
-    margin-top:20px;
-    padding:22px;
-    border:1px solid #dfe7ef;
-    border-radius:16px;
-    background:#ffffff;
-  `;
+  box.style.cssText =
+    "margin-top:20px;" +
+    "padding:22px;" +
+    "border:1px solid #dfe7ef;" +
+    "border-radius:16px;" +
+    "background:#ffffff;";
 
-  receiptBox.insertAdjacentElement(
-    "afterend",
-    box
-  );
+  receiptBox
+    .insertAdjacentElement(
+      "afterend",
+      box
+    );
 
   return box;
 }
 
+function getPaymentUrl() {
+  if (
+    !CurrentOrder ||
+    !CurrentInvoice
+  ) {
+    return "payment.html";
+  }
 
-/* =========================================================
-   عرض مرحلة الفاتورة
-========================================================= */
+  return (
+    "payment.html?order=" +
+    encodeURIComponent(
+      CurrentOrder.order_no
+    ) +
+    "&invoice=" +
+    encodeURIComponent(
+      CurrentInvoice.invoice_no ||
+      ""
+    )
+  );
+}
 
 function renderInvoiceSection() {
-
   const box =
     ensureInvoiceSection();
 
-  if (!box) return;
-
-  if (!CurrentOrder) {
-
-    box.style.display =
-      "none";
-
+  if (!box) {
     return;
   }
 
   if (
+    !CurrentOrder ||
     CurrentOrder.receipt_status !==
       "confirmed"
   ) {
-
     box.style.display =
       "none";
 
@@ -1262,21 +1250,88 @@ function renderInvoiceSection() {
   const isBuyer =
     CurrentUser &&
     buyerId &&
-    String(CurrentUser.id) ===
-      String(buyerId);
+    String(
+      CurrentUser.id
+    ) ===
+    String(
+      buyerId
+    );
 
   const isSupplier =
     CurrentUser &&
     CurrentSupplier?.owner_id &&
-    String(CurrentUser.id) ===
-      String(CurrentSupplier.owner_id);
-
-
-  /* -----------------------------------------
-     الفاتورة موجودة بالفعل
-  ----------------------------------------- */
+    String(
+      CurrentUser.id
+    ) ===
+    String(
+      CurrentSupplier.owner_id
+    );
 
   if (CurrentInvoice) {
+    const invoicePaid =
+      CurrentInvoice.status ===
+        "paid" ||
+      CurrentOrder.payment_status ===
+        "paid";
+
+    const paymentAction =
+      isBuyer
+
+        ? (
+          invoicePaid
+
+            ? `
+              <div
+                style="
+                  margin-top:18px;
+                  padding:16px;
+                  border:1px solid #b8e3c8;
+                  border-radius:12px;
+                  background:#effaf3;
+                  color:#146c43;
+                  font-weight:800;
+                "
+              >
+                ✅ تم دفع الفاتورة وإغلاق المرحلة المالية للطلب.
+              </div>
+            `
+
+            : `
+              <div
+                style="
+                  margin-top:18px;
+                  padding-top:16px;
+                  border-top:1px solid #dfe7ef;
+                "
+              >
+
+                <p
+                  style="
+                    margin:0 0 12px;
+                    color:#52677c;
+                  "
+                >
+                  الفاتورة صادرة ومتاحة الآن للدفع.
+                </p>
+
+                <a
+                  href="${getPaymentUrl()}"
+                  class="btn btn-primary"
+                  style="
+                    display:inline-flex;
+                    text-decoration:none;
+                    align-items:center;
+                    justify-content:center;
+                  "
+                >
+                  💳 دفع الفاتورة
+                </a>
+
+              </div>
+            `
+        )
+
+        : "";
 
     box.innerHTML = `
 
@@ -1309,14 +1364,17 @@ function renderInvoiceSection() {
 
         <span class="status ok">
 
-          ${invoiceStatusLabel(
-            CurrentInvoice.status
-          )}
+          ${
+            invoiceStatusLabel(
+              invoicePaid
+                ? "paid"
+                : CurrentInvoice.status
+            )
+          }
 
         </span>
 
       </div>
-
 
       <div
         style="
@@ -1329,92 +1387,88 @@ function renderInvoiceSection() {
       >
 
         <div>
-
           <div class="muted">
             رقم الفاتورة
           </div>
 
           <strong>
-            ${CurrentInvoice.invoice_no}
+            ${
+              CurrentInvoice.invoice_no ||
+              "—"
+            }
           </strong>
-
         </div>
 
-
         <div>
-
           <div class="muted">
             رقم الطلب
           </div>
 
           <strong>
-            ${CurrentInvoice.order_no}
+            ${
+              CurrentInvoice.order_no ||
+              CurrentOrder.order_no
+            }
           </strong>
-
         </div>
 
-
         <div>
-
           <div class="muted">
             تاريخ الإصدار
           </div>
 
           <strong>
-            ${formatDateTime(
-              CurrentInvoice.issued_at
-            )}
+            ${
+              formatDateTime(
+                CurrentInvoice.issued_at
+              )
+            }
           </strong>
-
         </div>
 
-
         <div>
-
           <div class="muted">
             تاريخ الاستحقاق
           </div>
 
           <strong>
-            ${formatDate(
-              CurrentInvoice.due_date
-            )}
+            ${
+              formatDate(
+                CurrentInvoice.due_date
+              )
+            }
           </strong>
-
         </div>
 
-
         <div>
-
           <div class="muted">
             قيمة المنتجات
           </div>
 
           <strong>
-            ${money(
-              CurrentInvoice.subtotal
-            )}
+            ${
+              money(
+                CurrentInvoice.subtotal
+              )
+            }
           </strong>
-
         </div>
 
-
         <div>
-
           <div class="muted">
             الضريبة
           </div>
 
           <strong>
-            ${money(
-              CurrentInvoice.vat
-            )}
+            ${
+              money(
+                CurrentInvoice.vat
+              )
+            }
           </strong>
-
         </div>
 
       </div>
-
 
       <div
         style="
@@ -1435,42 +1489,22 @@ function renderInvoiceSection() {
             color:#062f5f;
           "
         >
-          ${money(
-            CurrentInvoice.total
-          )}
+          ${
+            money(
+              CurrentInvoice.total
+            )
+          }
         </div>
 
       </div>
 
-
-      ${
-        isBuyer
-          ? `
-            <p
-              style="
-                margin-top:18px;
-                color:#52677c;
-              "
-            >
-              تم إصدار الفاتورة من المورد
-              وهي متاحة الآن للمشتري.
-            </p>
-          `
-          : ""
-      }
-
+      ${paymentAction}
     `;
 
     return;
   }
 
-
-  /* -----------------------------------------
-     لا توجد فاتورة بعد
-  ----------------------------------------- */
-
   if (isSupplier) {
-
     box.innerHTML = `
 
       <h2
@@ -1483,7 +1517,6 @@ function renderInvoiceSection() {
       </h2>
 
       <p class="muted">
-
         تم تأكيد استلام الطلب من المشتري.
         يمكنك الآن إصدار الفاتورة المرتبطة
         بالطلب
@@ -1491,9 +1524,7 @@ function renderInvoiceSection() {
         <strong>
           ${CurrentOrder.order_no}
         </strong>.
-
       </p>
-
 
       <div
         style="
@@ -1515,23 +1546,20 @@ function renderInvoiceSection() {
             color:#062f5f;
           "
         >
-
-          ${money(
-            CurrentOrder.total
-          )}
-
+          ${
+            money(
+              CurrentOrder.total
+            )
+          }
         </div>
 
       </div>
-
 
       <button
         class="btn btn-primary"
         onclick="issueSupplierInvoice()"
       >
-
         إصدار الفاتورة
-
       </button>
 
     `;
@@ -1539,9 +1567,7 @@ function renderInvoiceSection() {
     return;
   }
 
-
   if (isBuyer) {
-
     box.innerHTML = `
 
       <h2
@@ -1554,17 +1580,14 @@ function renderInvoiceSection() {
       </h2>
 
       <p class="muted">
-
         تم تأكيد استلام الطلب.
         بانتظار المورد لإصدار الفاتورة.
-
       </p>
 
     `;
 
     return;
   }
-
 
   box.innerHTML = `
 
@@ -1578,48 +1601,56 @@ function renderInvoiceSection() {
     </h2>
 
     <p class="muted">
-
       تم تأكيد استلام الطلب.
       بانتظار إصدار الفاتورة.
-
     </p>
 
   `;
 }
 
-
-/* =========================================================
-   إنشاء رقم فاتورة
-========================================================= */
-
 function generateInvoiceNo() {
-
   const now =
     new Date();
 
   const date =
     now
       .toISOString()
-      .slice(0,10)
-      .replaceAll("-", "");
+      .slice(
+        0,
+        10
+      )
+      .replaceAll(
+        "-",
+        ""
+      );
 
   let random;
 
   try {
-
     random =
       crypto
         .randomUUID()
-        .replaceAll("-", "")
-        .slice(0,8)
+        .replaceAll(
+          "-",
+          ""
+        )
+        .slice(
+          0,
+          8
+        )
         .toUpperCase();
 
   } catch (e) {
-
     random =
-      Math.random()
-        .toString(36)
-        .slice(2,10)
+      Math
+        .random()
+        .toString(
+          36
+        )
+        .slice(
+          2,
+          10
+        )
         .toUpperCase();
   }
 
@@ -1631,15 +1662,8 @@ function generateInvoiceNo() {
   );
 }
 
-
-/* =========================================================
-   المورد يصدر الفاتورة
-========================================================= */
-
 async function issueSupplierInvoice() {
-
   if (!CurrentOrder) {
-
     alert(
       "تعذر تحديد الطلب"
     );
@@ -1651,7 +1675,6 @@ async function issueSupplierInvoice() {
     CurrentOrder.receipt_status !==
       "confirmed"
   ) {
-
     alert(
       "لا يمكن إصدار الفاتورة قبل تأكيد المشتري استلام الطلب."
     );
@@ -1664,10 +1687,13 @@ async function issueSupplierInvoice() {
   if (
     !CurrentUser ||
     !CurrentSupplier?.owner_id ||
-    String(CurrentUser.id) !==
-      String(CurrentSupplier.owner_id)
+    String(
+      CurrentUser.id
+    ) !==
+    String(
+      CurrentSupplier.owner_id
+    )
   ) {
-
     alert(
       "إصدار الفاتورة متاح للمورد صاحب الطلب فقط."
     );
@@ -1676,7 +1702,6 @@ async function issueSupplierInvoice() {
   }
 
   if (CurrentInvoice) {
-
     alert(
       "تم إصدار فاتورة لهذا الطلب مسبقاً."
     );
@@ -1689,19 +1714,23 @@ async function issueSupplierInvoice() {
       "هل تريد إصدار فاتورة للطلب " +
       CurrentOrder.order_no +
       " بقيمة " +
-      money(CurrentOrder.total) +
+      money(
+        CurrentOrder.total
+      ) +
       "؟"
     );
 
-  if (!ok) return;
+  if (!ok) {
+    return;
+  }
 
   try {
-
     const dueDate =
       new Date();
 
     dueDate.setDate(
-      dueDate.getDate() + 7
+      dueDate.getDate() +
+      7
     );
 
     const buyerId =
@@ -1710,7 +1739,6 @@ async function issueSupplierInvoice() {
       );
 
     const invoiceData = {
-
       invoice_no:
         generateInvoiceNo(),
 
@@ -1755,12 +1783,16 @@ async function issueSupplierInvoice() {
         "issued",
 
       issued_at:
-        new Date().toISOString(),
+        new Date()
+          .toISOString(),
 
       due_date:
         dueDate
           .toISOString()
-          .slice(0,10),
+          .slice(
+            0,
+            10
+          ),
 
       notes:
         "فاتورة طلب شراء مؤسسي B2B"
@@ -1771,13 +1803,17 @@ async function issueSupplierInvoice() {
       error
     } = await Bahrna.client
 
-      .from("invoices")
+      .from(
+        "invoices"
+      )
 
       .insert(
         invoiceData
       )
 
-      .select("*")
+      .select(
+        "*"
+      )
 
       .single();
 
@@ -1797,7 +1833,6 @@ async function issueSupplierInvoice() {
     renderInvoiceSection();
 
   } catch (e) {
-
     console.error(
       "ISSUE INVOICE ERROR:",
       e
@@ -1805,18 +1840,15 @@ async function issueSupplierInvoice() {
 
     alert(
       "تعذر إصدار الفاتورة: " +
-      (e.message || e)
+      (
+        e.message ||
+        e
+      )
     );
   }
 }
 
-
-/* =========================================================
-   تحديث الحالة
-========================================================= */
-
 async function refreshOrder() {
-
   setText(
     "trackingMessage",
     "جاري تحديث حالة الطلب..."
@@ -1825,20 +1857,13 @@ async function refreshOrder() {
   await loadOrderDetails();
 }
 
-
-/* =========================================================
-   عرض الخطأ
-========================================================= */
-
 function showError(message) {
-
   const box =
     document.getElementById(
       "orderError"
     );
 
   if (box) {
-
     box.style.display =
       "block";
 
@@ -1851,11 +1876,6 @@ function showError(message) {
     "تعذر تحميل الطلب"
   );
 }
-
-
-/* =========================================================
-   تشغيل الصفحة
-========================================================= */
 
 document.addEventListener(
   "DOMContentLoaded",
