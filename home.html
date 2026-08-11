@@ -1,20 +1,3537 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>بحرنا وشراعنا</title><link rel="stylesheet" href="app.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script defer src="app.js"></script><script defer src="trust_loyalty.js"></script></head><body><div class="topbar"><div class="container">🇦🇪 الإمارات • AED • MVP تجريبي</div></div><header class="header"><div class="container header-row"><a class="brand" href="home.html"><span class="brand-mark">⛵🐟</span><div>بحرنا وشراعنا<br><small>BAHRNA & SHRAANA</small></div></a><div class="search"><input placeholder="ابحث عن سمك، مورد، منتج..."></div><nav class="navlinks"><a href="catalog.html">الأسماك الطازجة</a><a href="auction.html">المزادات</a><a href="register.html">الشركات</a><a href="login.html">حسابي</a></nav></div></header><section class="section"><div class="container"><div class="hero"><span class="badge">Marketplace • Retail • Wholesale • Auctions</span><h1>من <span class="gold">بحرنا</span>... بشراعنا إلى بابك</h1><p>سوق رقمي إماراتي للأسماك والمأكولات البحرية الطازجة.</p><a class="btn btn-gold" href="catalog.html">تسوق الآن</a></div></div></section><section class="section"><div class="container"><h2>📈 أفضل أسعار اليوم — لكل كجم</h2><div id="ticker" class="market-ticker"></div></div></section><section class="section"><div class="container grid4"><div class="kpi"><strong>0</strong>طلبات مكتملة</div><div class="kpi"><strong>0</strong>مزادات مكتملة</div><div class="kpi"><strong>0</strong>موردون معتمدون</div><div class="kpi"><strong>—</strong>تقييم موثق</div></div></section><script>
-document.addEventListener('DOMContentLoaded',async()=>{
- const offers=await Bahrna.getMarketOffers();
- const best={};
- offers.forEach(o=>{ if(!best[o.name] || o.retail<best[o.name].retail) best[o.name]=o; });
- const rows=Object.values(best).sort((a,b)=>a.retail-b.retail);
- document.getElementById('ticker').innerHTML=rows.map(o=>`<a class="quote" href="catalog.html"><strong>${o.name}</strong><div class="price" style="font-size:20px">${Number(o.retail).toFixed(2)} AED</div><small>${o.supplier||''} • ${o.origin||''}</small></a>`).join('');
-});
-</script><nav class="mobile-bottom"><a href="home.html">⌂<br>الرئيسية</a><a href="catalog.html">🐟<br>السوق</a><a href="auction.html">🔴<br>المزاد</a><a href="checkout.html">🛒<br>السلة</a><a href="login.html">👤<br>حسابي</a></nav>
-<section class="section"><div class="container">
-<h2>ثقة مبنية على عمليات حقيقية</h2>
-<div class="trust-badges">
-<div class="trust-badge"><strong id="trustOrders">0</strong><span>طلبات مكتملة</span></div>
-<div class="trust-badge"><strong id="trustReviews">0</strong><span>تقييمات موثقة</span></div>
-<div class="trust-badge"><strong id="trustRating">—</strong><span>متوسط التقييم</span></div>
-<div class="trust-badge"><strong id="trustSuppliers">0</strong><span>موردون نشطون</span></div>
+<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1">
+
+  <title>
+    بحرنا وشراعنا | سوق المأكولات البحرية الإماراتي
+  </title>
+
+  <meta
+    name="description"
+    content="بحرنا وشراعنا - سوق إماراتي رقمي للأسماك والمأكولات البحرية الطازجة والجملة والمزادات والتوصيل.">
+
+  <link
+    rel="stylesheet"
+    href="app.css?v=20260812-home01">
+
+
+  <!-- =========================================================
+       HOME PAGE PREMIUM VISUAL IDENTITY
+  ========================================================== -->
+
+  <style>
+
+    :root {
+
+      --home-navy: #032b58;
+      --home-deep: #001d3d;
+      --home-blue: #075c98;
+      --home-sky: #dff3fb;
+
+      --home-gold: #e5a529;
+      --home-gold-dark: #c98512;
+
+      --home-green: #058044;
+      --home-red: #ef2d32;
+
+      --home-bg: #f4f8fb;
+      --home-white: #ffffff;
+
+      --home-text: #062d57;
+      --home-muted: #6d8093;
+
+      --home-border: #d7e4ef;
+
+      --shadow:
+        0 12px 35px rgba(0, 41, 82, .10);
+
+    }
+
+
+    * {
+      box-sizing: border-box;
+    }
+
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+
+    body {
+
+      margin: 0;
+
+      background:
+        linear-gradient(
+          180deg,
+          #f8fbfd,
+          #f1f7fb
+        );
+
+      color:
+        var(--home-text);
+
+      font-family:
+        Tahoma,
+        Arial,
+        sans-serif;
+
+    }
+
+
+    a {
+      text-decoration: none;
+    }
+
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+
+    /* =========================================================
+       TOP BAR
+    ========================================================== */
+
+    .home-topbar {
+
+      background:
+        var(--home-deep);
+
+      color:
+        #ffffff;
+
+      font-size:
+        13px;
+
+      min-height:
+        34px;
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+    }
+
+
+    .home-topbar-inner {
+
+      width:
+        min(1440px, 96%);
+
+      margin:
+        auto;
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        space-between;
+
+      gap:
+        18px;
+
+    }
+
+
+    .home-topbar-right {
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      gap:
+        18px;
+
+    }
+
+
+    .home-topbar-left {
+
+      opacity:
+        .9;
+
+    }
+
+
+    /* =========================================================
+       MAIN HEADER
+    ========================================================== */
+
+    .home-header {
+
+      background:
+        linear-gradient(
+          90deg,
+          #002651,
+          #064b82
+        );
+
+      color:
+        #ffffff;
+
+      box-shadow:
+        0 5px 18px rgba(0, 31, 64, .16);
+
+      position:
+        sticky;
+
+      top:
+        0;
+
+      z-index:
+        100;
+
+    }
+
+
+    .home-header-inner {
+
+      width:
+        min(1440px, 96%);
+
+      margin:
+        auto;
+
+      min-height:
+        76px;
+
+      display:
+        grid;
+
+      grid-template-columns:
+        auto minmax(260px, 1fr) auto;
+
+      align-items:
+        center;
+
+      gap:
+        26px;
+
+    }
+
+
+    .home-brand {
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      gap:
+        12px;
+
+      color:
+        #ffffff;
+
+      font-weight:
+        900;
+
+    }
+
+
+    .home-logo {
+
+      width:
+        64px;
+
+      height:
+        64px;
+
+      display:
+        grid;
+
+      place-items:
+        center;
+
+      border-radius:
+        50%;
+
+      background:
+        rgba(255, 255, 255, .08);
+
+      border:
+        1px solid rgba(255, 255, 255, .20);
+
+      font-size:
+        33px;
+
+      box-shadow:
+        0 6px 18px rgba(0, 0, 0, .14);
+
+    }
+
+
+    .home-brand-name {
+
+      font-size:
+        21px;
+
+      line-height:
+        1.25;
+
+    }
+
+
+    .home-brand-name small {
+
+      display:
+        block;
+
+      margin-top:
+        4px;
+
+      font-size:
+        11px;
+
+      letter-spacing:
+        1px;
+
+      color:
+        #d5eaff;
+
+    }
+
+
+    .home-search {
+
+      position:
+        relative;
+
+    }
+
+
+    .home-search input {
+
+      width:
+        100%;
+
+      min-height:
+        45px;
+
+      border:
+        0;
+
+      border-radius:
+        30px;
+
+      padding:
+        0 44px 0 18px;
+
+      background:
+        #ffffff;
+
+      color:
+        #183b5f;
+
+      font-family:
+        inherit;
+
+      outline:
+        none;
+
+      box-shadow:
+        inset 0 1px 2px rgba(0, 0, 0, .05);
+
+    }
+
+
+    .home-search-icon {
+
+      position:
+        absolute;
+
+      right:
+        17px;
+
+      top:
+        50%;
+
+      transform:
+        translateY(-50%);
+
+      font-size:
+        18px;
+
+    }
+
+
+    .home-account {
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      gap:
+        16px;
+
+      color:
+        #ffffff;
+
+      white-space:
+        nowrap;
+
+      font-weight:
+        700;
+
+    }
+
+
+    .home-account a {
+
+      color:
+        #ffffff;
+
+    }
+
+
+    /* =========================================================
+       CATEGORY NAV
+    ========================================================== */
+
+    .home-nav {
+
+      background:
+        #ffffff;
+
+      border-bottom:
+        1px solid var(--home-border);
+
+      box-shadow:
+        0 3px 12px rgba(0, 45, 88, .04);
+
+    }
+
+
+    .home-nav-inner {
+
+      width:
+        min(1440px, 96%);
+
+      margin:
+        auto;
+
+      min-height:
+        48px;
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      gap:
+        0;
+
+      overflow-x:
+        auto;
+
+    }
+
+
+    .home-nav a {
+
+      color:
+        #173b60;
+
+      font-size:
+        13px;
+
+      font-weight:
+        800;
+
+      padding:
+        15px 22px;
+
+      white-space:
+        nowrap;
+
+      border-left:
+        1px solid #edf2f6;
+
+      transition:
+        .2s ease;
+
+    }
+
+
+    .home-nav a:hover,
+    .home-nav a.active {
+
+      color:
+        #075c98;
+
+      background:
+        #f4f9fd;
+
+    }
+
+
+    .home-nav a.active {
+
+      box-shadow:
+        inset 0 -3px var(--home-gold);
+
+    }
+
+
+    /* =========================================================
+       HERO
+    ========================================================== */
+
+    .home-hero-wrap {
+
+      width:
+        min(1440px, 96%);
+
+      margin:
+        18px auto 0;
+
+      display:
+        grid;
+
+      grid-template-columns:
+        minmax(0, 1fr) 265px;
+
+      gap:
+        16px;
+
+      direction:
+        ltr;
+
+    }
+
+
+    .home-hero {
+
+      direction:
+        rtl;
+
+      min-height:
+        480px;
+
+      border-radius:
+        22px;
+
+      overflow:
+        hidden;
+
+      position:
+        relative;
+
+      background:
+
+        linear-gradient(
+          90deg,
+          rgba(0, 36, 75, .15),
+          rgba(0, 28, 61, .78)
+        ),
+
+        url("assets/hero-seafood.jpg")
+        center / cover
+        no-repeat,
+
+        linear-gradient(
+          135deg,
+          #4fa8d0,
+          #c9edf7
+        );
+
+      box-shadow:
+        var(--shadow);
+
+    }
+
+
+    .home-hero::before {
+
+      content:
+        "";
+
+      position:
+        absolute;
+
+      inset:
+        0;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255, 255, 255, .03),
+          rgba(0, 31, 66, .16)
+        );
+
+    }
+
+
+    .hero-content {
+
+      position:
+        relative;
+
+      z-index:
+        2;
+
+      width:
+        min(600px, 88%);
+
+      min-height:
+        480px;
+
+      margin-right:
+        auto;
+
+      padding:
+        70px 48px;
+
+      display:
+        flex;
+
+      flex-direction:
+        column;
+
+      justify-content:
+        center;
+
+      align-items:
+        flex-start;
+
+      color:
+        #ffffff;
+
+      text-shadow:
+        0 2px 10px rgba(0, 24, 55, .25);
+
+    }
+
+
+    .hero-logo-big {
+
+      font-size:
+        72px;
+
+      line-height:
+        1;
+
+      margin-bottom:
+        8px;
+
+    }
+
+
+    .hero-brand-title {
+
+      font-size:
+        clamp(36px, 4vw, 56px);
+
+      font-weight:
+        900;
+
+      line-height:
+        1.15;
+
+      margin:
+        0;
+
+    }
+
+
+    .hero-brand-en {
+
+      font-size:
+        18px;
+
+      font-weight:
+        900;
+
+      letter-spacing:
+        1.5px;
+
+      margin-top:
+        4px;
+
+    }
+
+
+    .hero-slogan {
+
+      font-size:
+        22px;
+
+      font-weight:
+        800;
+
+      margin:
+        18px 0 24px;
+
+    }
+
+
+    .hero-actions {
+
+      display:
+        flex;
+
+      gap:
+        12px;
+
+      flex-wrap:
+        wrap;
+
+    }
+
+
+    .hero-btn {
+
+      min-height:
+        47px;
+
+      padding:
+        0 24px;
+
+      border-radius:
+        11px;
+
+      display:
+        inline-flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      font-weight:
+        900;
+
+      transition:
+        .2s ease;
+
+    }
+
+
+    .hero-btn-primary {
+
+      background:
+        var(--home-gold);
+
+      color:
+        #ffffff;
+
+      box-shadow:
+        0 8px 20px rgba(228, 165, 41, .28);
+
+    }
+
+
+    .hero-btn-secondary {
+
+      background:
+        rgba(0, 44, 89, .82);
+
+      border:
+        1px solid rgba(255, 255, 255, .32);
+
+      color:
+        #ffffff;
+
+      backdrop-filter:
+        blur(5px);
+
+    }
+
+
+    .hero-btn:hover {
+
+      transform:
+        translateY(-2px);
+
+    }
+
+
+    /* =========================================================
+       HERO TRUST ICONS
+    ========================================================== */
+
+    .hero-trust {
+
+      position:
+        absolute;
+
+      z-index:
+        3;
+
+      bottom:
+        20px;
+
+      right:
+        28px;
+
+      left:
+        28px;
+
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap:
+        10px;
+
+    }
+
+
+    .hero-trust-item {
+
+      min-height:
+        75px;
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        center;
+
+      gap:
+        9px;
+
+      padding:
+        10px;
+
+      background:
+        rgba(0, 41, 82, .75);
+
+      border:
+        1px solid rgba(255, 255, 255, .18);
+
+      border-radius:
+        14px;
+
+      color:
+        #ffffff;
+
+      backdrop-filter:
+        blur(7px);
+
+      font-size:
+        12px;
+
+      font-weight:
+        800;
+
+    }
+
+
+    .hero-trust-icon {
+
+      width:
+        40px;
+
+      height:
+        40px;
+
+      border-radius:
+        50%;
+
+      display:
+        grid;
+
+      place-items:
+        center;
+
+      border:
+        1px solid rgba(255, 255, 255, .4);
+
+      background:
+        rgba(255, 255, 255, .08);
+
+      font-size:
+        20px;
+
+    }
+
+
+    /* =========================================================
+       HERO SIDE STATS
+    ========================================================== */
+
+    .hero-side {
+
+      direction:
+        rtl;
+
+      display:
+        grid;
+
+      gap:
+        12px;
+
+    }
+
+
+    .side-card {
+
+      background:
+        #ffffff;
+
+      border:
+        1px solid var(--home-border);
+
+      border-radius:
+        16px;
+
+      padding:
+        17px;
+
+      box-shadow:
+        0 7px 20px rgba(0, 46, 91, .06);
+
+      display:
+        grid;
+
+      grid-template-columns:
+        48px 1fr;
+
+      align-items:
+        center;
+
+      gap:
+        12px;
+
+    }
+
+
+    .side-card-icon {
+
+      width:
+        48px;
+
+      height:
+        48px;
+
+      border-radius:
+        50%;
+
+      display:
+        grid;
+
+      place-items:
+        center;
+
+      background:
+        #eaf4fb;
+
+      color:
+        var(--home-navy);
+
+      font-size:
+        21px;
+
+    }
+
+
+    .side-card strong {
+
+      display:
+        block;
+
+      font-size:
+        25px;
+
+      color:
+        var(--home-navy);
+
+      line-height:
+        1.1;
+
+      margin-top:
+        4px;
+
+    }
+
+
+    .side-card span {
+
+      color:
+        var(--home-muted);
+
+      font-size:
+        12px;
+
+    }
+
+
+    .side-card.rating strong {
+
+      color:
+        #e29b13;
+
+    }
+
+
+    /* =========================================================
+       SECTION GENERAL
+    ========================================================== */
+
+    .home-section {
+
+      width:
+        min(1440px, 96%);
+
+      margin:
+        18px auto;
+
+    }
+
+
+    .home-section-title {
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        space-between;
+
+      gap:
+        15px;
+
+      margin-bottom:
+        12px;
+
+    }
+
+
+    .home-section-title h2 {
+
+      margin:
+        0;
+
+      color:
+        var(--home-navy);
+
+      font-size:
+        24px;
+
+    }
+
+
+    .home-section-title a {
+
+      color:
+        #075c98;
+
+      font-size:
+        13px;
+
+      font-weight:
+        800;
+
+    }
+
+
+    /* =========================================================
+       PRICE LIVE PANEL
+    ========================================================== */
+
+    .price-live-box {
+
+      background:
+        var(--home-navy);
+
+      border-radius:
+        18px;
+
+      overflow:
+        hidden;
+
+      box-shadow:
+        var(--shadow);
+
+    }
+
+
+    .price-live-head {
+
+      min-height:
+        47px;
+
+      padding:
+        0 18px;
+
+      display:
+        flex;
+
+      align-items:
+        center;
+
+      justify-content:
+        space-between;
+
+      color:
+        #ffffff;
+
+    }
+
+
+    .live-label {
+
+      display:
+        inline-flex;
+
+      align-items:
+        center;
+
+      gap:
+        5px;
+
+      background:
+        var(--home-red);
+
+      color:
+        #ffffff;
+
+      padding:
+        5px 10px;
+
+      border-radius:
+        8px;
+
+      font-size:
+        11px;
+
+      font-weight:
+        900;
+
+    }
+
+
+    #ticker {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(6, minmax(140px, 1fr));
+
+      gap:
+        1px;
+
+      background:
+        #dfe8ef;
+
+      overflow-x:
+        auto;
+
+    }
+
+
+    #ticker .quote {
+
+      min-width:
+        145px;
+
+      background:
+        #ffffff;
+
+      padding:
+        14px 12px;
+
+      text-align:
+        center;
+
+      color:
+        var(--home-text);
+
+      transition:
+        .2s ease;
+
+    }
+
+
+    #ticker .quote:hover {
+
+      background:
+        #f3f9fd;
+
+      transform:
+        translateY(-1px);
+
+    }
+
+
+    #ticker .quote strong {
+
+      display:
+        block;
+
+      margin-bottom:
+        5px;
+
+      font-size:
+        13px;
+
+    }
+
+
+    #ticker .quote .price {
+
+      color:
+        var(--home-green);
+
+      font-size:
+        20px !important;
+
+      font-weight:
+        900;
+
+    }
+
+
+    #ticker .quote small {
+
+      display:
+        block;
+
+      color:
+        var(--home-muted);
+
+      font-size:
+        10px;
+
+      margin-top:
+        4px;
+
+    }
+
+
+    /* =========================================================
+       FEATURE SERVICES
+    ========================================================== */
+
+    .service-grid {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(3, 1fr);
+
+      gap:
+        14px;
+
+    }
+
+
+    .service-card {
+
+      min-height:
+        205px;
+
+      border-radius:
+        18px;
+
+      overflow:
+        hidden;
+
+      position:
+        relative;
+
+      display:
+        flex;
+
+      align-items:
+        flex-end;
+
+      padding:
+        24px;
+
+      color:
+        #ffffff;
+
+      box-shadow:
+        var(--shadow);
+
+      background:
+        #074477;
+
+    }
+
+
+    .service-card::before {
+
+      content:
+        "";
+
+      position:
+        absolute;
+
+      inset:
+        0;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(0, 32, 68, .05),
+          rgba(0, 28, 60, .90)
+        );
+
+    }
+
+
+    .service-card.delivery {
+
+      background:
+        url("assets/delivery.jpg")
+        center / cover
+        no-repeat,
+
+        #0a4f80;
+
+    }
+
+
+    .service-card.auction {
+
+      background:
+        url("assets/auction-fish.jpg")
+        center / cover
+        no-repeat,
+
+        #0a4f80;
+
+    }
+
+
+    .service-card.today {
+
+      background:
+        url("assets/fresh-catch.jpg")
+        center / cover
+        no-repeat,
+
+        #0a4f80;
+
+    }
+
+
+    .service-content {
+
+      position:
+        relative;
+
+      z-index:
+        2;
+
+    }
+
+
+    .service-content h3 {
+
+      color:
+        #ffffff;
+
+      font-size:
+        24px;
+
+      margin:
+        0 0 5px;
+
+    }
+
+
+    .service-content p {
+
+      margin:
+        0 0 14px;
+
+      opacity:
+        .9;
+
+    }
+
+
+    .service-link {
+
+      display:
+        inline-flex;
+
+      min-height:
+        39px;
+
+      align-items:
+        center;
+
+      padding:
+        0 17px;
+
+      border:
+        1px solid rgba(255, 255, 255, .55);
+
+      border-radius:
+        9px;
+
+      color:
+        #ffffff;
+
+      font-weight:
+        800;
+
+      background:
+        rgba(0, 38, 77, .40);
+
+    }
+
+
+    .auction-live {
+
+      background:
+        var(--home-red);
+
+      border:
+        0;
+
+    }
+
+
+    /* =========================================================
+       QUICK SERVICES
+    ========================================================== */
+
+    .quick-grid {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(5, 1fr);
+
+      gap:
+        12px;
+
+    }
+
+
+    .quick-card {
+
+      background:
+        #ffffff;
+
+      border:
+        1px solid var(--home-border);
+
+      border-radius:
+        16px;
+
+      padding:
+        18px;
+
+      text-align:
+        center;
+
+      box-shadow:
+        0 6px 18px rgba(0, 44, 88, .05);
+
+      transition:
+        .2s ease;
+
+    }
+
+
+    .quick-card:hover {
+
+      transform:
+        translateY(-3px);
+
+      box-shadow:
+        0 12px 25px rgba(0, 44, 88, .09);
+
+    }
+
+
+    .quick-icon {
+
+      width:
+        52px;
+
+      height:
+        52px;
+
+      margin:
+        auto auto 10px;
+
+      display:
+        grid;
+
+      place-items:
+        center;
+
+      border-radius:
+        50%;
+
+      background:
+        #e8f4fb;
+
+      color:
+        var(--home-navy);
+
+      font-size:
+        23px;
+
+    }
+
+
+    .quick-card strong {
+
+      color:
+        var(--home-navy);
+
+      font-size:
+        13px;
+
+    }
+
+
+    /* =========================================================
+       TRUST
+    ========================================================== */
+
+    .trust-badges {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap:
+        14px;
+
+    }
+
+
+    .trust-badge {
+
+      background:
+        #ffffff;
+
+      border:
+        1px solid var(--home-border);
+
+      border-radius:
+        17px;
+
+      padding:
+        20px;
+
+      text-align:
+        center;
+
+      box-shadow:
+        0 6px 18px rgba(0, 44, 88, .05);
+
+    }
+
+
+    .trust-badge strong {
+
+      display:
+        block;
+
+      color:
+        var(--home-navy);
+
+      font-size:
+        30px;
+
+      margin-bottom:
+        4px;
+
+    }
+
+
+    .trust-badge span {
+
+      color:
+        var(--home-muted);
+
+      font-size:
+        13px;
+
+    }
+
+
+    /* =========================================================
+       REVIEWS
+    ========================================================== */
+
+    #reviewList {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap:
+        14px;
+
+    }
+
+
+    #reviewList > * {
+
+      background:
+        #ffffff;
+
+      border:
+        1px solid var(--home-border);
+
+      border-radius:
+        17px;
+
+      box-shadow:
+        0 6px 18px rgba(0, 44, 88, .05);
+
+    }
+
+
+    /* =========================================================
+       APP PROMO
+    ========================================================== */
+
+    .app-promo {
+
+      display:
+        grid;
+
+      grid-template-columns:
+        1fr 1fr;
+
+      align-items:
+        center;
+
+      gap:
+        30px;
+
+      min-height:
+        240px;
+
+      padding:
+        32px;
+
+      border-radius:
+        22px;
+
+      overflow:
+        hidden;
+
+      background:
+        linear-gradient(
+          135deg,
+          #052d5b,
+          #0b619c
+        );
+
+      color:
+        #ffffff;
+
+      box-shadow:
+        var(--shadow);
+
+    }
+
+
+    .app-promo h2 {
+
+      color:
+        #ffffff;
+
+      font-size:
+        30px;
+
+      margin:
+        0 0 10px;
+
+    }
+
+
+    .app-promo p {
+
+      opacity:
+        .9;
+
+    }
+
+
+    .app-badges {
+
+      display:
+        flex;
+
+      gap:
+        10px;
+
+      flex-wrap:
+        wrap;
+
+      margin-top:
+        18px;
+
+    }
+
+
+    .store-badge {
+
+      background:
+        #111111;
+
+      color:
+        #ffffff;
+
+      border-radius:
+        9px;
+
+      padding:
+        10px 18px;
+
+      font-weight:
+        700;
+
+    }
+
+
+    .app-phone {
+
+      font-size:
+        110px;
+
+      text-align:
+        center;
+
+    }
+
+
+    /* =========================================================
+       FOOTER
+    ========================================================== */
+
+    .home-footer {
+
+      margin-top:
+        30px;
+
+      background:
+        linear-gradient(
+          180deg,
+          #032c59,
+          #001d3d
+        );
+
+      color:
+        #ffffff;
+
+    }
+
+
+    .footer-grid {
+
+      width:
+        min(1440px, 96%);
+
+      margin:
+        auto;
+
+      display:
+        grid;
+
+      grid-template-columns:
+        1.4fr 1fr 1fr 1fr;
+
+      gap:
+        30px;
+
+      padding:
+        38px 0;
+
+    }
+
+
+    .footer-logo {
+
+      font-size:
+        28px;
+
+      font-weight:
+        900;
+
+      margin-bottom:
+        8px;
+
+    }
+
+
+    .footer-grid h4 {
+
+      color:
+        #ffffff;
+
+      margin-top:
+        0;
+
+    }
+
+
+    .footer-grid a {
+
+      display:
+        block;
+
+      color:
+        #d7e7f5;
+
+      margin:
+        8px 0;
+
+      font-size:
+        13px;
+
+    }
+
+
+    .footer-bottom {
+
+      border-top:
+        1px solid rgba(255, 255, 255, .10);
+
+      padding:
+        15px 0;
+
+      text-align:
+        center;
+
+      font-size:
+        12px;
+
+      color:
+        #c6daea;
+
+    }
+
+
+    /* =========================================================
+       MOBILE NAV
+    ========================================================== */
+
+    .mobile-bottom {
+
+      display:
+        none;
+
+    }
+
+
+    /* =========================================================
+       RESPONSIVE
+    ========================================================== */
+
+    @media(max-width: 1100px) {
+
+      .home-hero-wrap {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
+
+      .hero-side {
+
+        grid-template-columns:
+          repeat(4, 1fr);
+
+      }
+
+
+      .side-card {
+
+        grid-template-columns:
+          1fr;
+
+        text-align:
+          center;
+
+      }
+
+
+      .side-card-icon {
+
+        margin:
+          auto;
+
+      }
+
+
+      #ticker {
+
+        grid-template-columns:
+          repeat(6, 160px);
+
+      }
+
+    }
+
+
+    @media(max-width: 850px) {
+
+      .home-header-inner {
+
+        grid-template-columns:
+          auto 1fr;
+
+      }
+
+
+      .home-account {
+
+        display:
+          none;
+
+      }
+
+
+      .home-search {
+
+        grid-column:
+          1 / -1;
+
+        padding-bottom:
+          12px;
+
+      }
+
+
+      .home-nav-inner {
+
+        justify-content:
+          flex-start;
+
+      }
+
+
+      .home-hero {
+
+        min-height:
+          520px;
+
+      }
+
+
+      .hero-content {
+
+        width:
+          100%;
+
+        min-height:
+          520px;
+
+        padding:
+          45px 24px 150px;
+
+        justify-content:
+          flex-start;
+
+      }
+
+
+      .hero-trust {
+
+        grid-template-columns:
+          repeat(2, 1fr);
+
+      }
+
+
+      .hero-side {
+
+        grid-template-columns:
+          repeat(2, 1fr);
+
+      }
+
+
+      .service-grid {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
+
+      .quick-grid {
+
+        grid-template-columns:
+          repeat(3, 1fr);
+
+      }
+
+
+      .trust-badges {
+
+        grid-template-columns:
+          repeat(2, 1fr);
+
+      }
+
+
+      #reviewList {
+
+        grid-template-columns:
+          repeat(2, 1fr);
+
+      }
+
+
+      .app-promo {
+
+        grid-template-columns:
+          1fr;
+
+        text-align:
+          center;
+
+      }
+
+
+      .app-badges {
+
+        justify-content:
+          center;
+
+      }
+
+
+      .footer-grid {
+
+        grid-template-columns:
+          repeat(2, 1fr);
+
+      }
+
+    }
+
+
+    @media(max-width: 580px) {
+
+      body {
+
+        padding-bottom:
+          69px;
+
+      }
+
+
+      .home-topbar-left {
+
+        display:
+          none;
+
+      }
+
+
+      .home-header-inner {
+
+        width:
+          92%;
+
+      }
+
+
+      .home-brand-name {
+
+        font-size:
+          16px;
+
+      }
+
+
+      .home-logo {
+
+        width:
+          48px;
+
+        height:
+          48px;
+
+        font-size:
+          26px;
+
+      }
+
+
+      .home-nav {
+
+        display:
+          none;
+
+      }
+
+
+      .home-hero-wrap {
+
+        width:
+          100%;
+
+        margin-top:
+          0;
+
+      }
+
+
+      .home-hero {
+
+        border-radius:
+          0 0 22px 22px;
+
+        min-height:
+          545px;
+
+      }
+
+
+      .hero-content {
+
+        min-height:
+          545px;
+
+        padding:
+          36px 20px 175px;
+
+      }
+
+
+      .hero-brand-title {
+
+        font-size:
+          36px;
+
+      }
+
+
+      .hero-slogan {
+
+        font-size:
+          17px;
+
+      }
+
+
+      .hero-logo-big {
+
+        font-size:
+          58px;
+
+      }
+
+
+      .hero-trust {
+
+        right:
+          14px;
+
+        left:
+          14px;
+
+        bottom:
+          15px;
+
+        gap:
+          7px;
+
+      }
+
+
+      .hero-trust-item {
+
+        font-size:
+          10px;
+
+        min-height:
+          64px;
+
+      }
+
+
+      .hero-trust-icon {
+
+        width:
+          34px;
+
+        height:
+          34px;
+
+        font-size:
+          17px;
+
+      }
+
+
+      .hero-side {
+
+        width:
+          94%;
+
+        margin:
+          auto;
+
+        grid-template-columns:
+          repeat(2, 1fr);
+
+      }
+
+
+      .home-section {
+
+        width:
+          94%;
+
+      }
+
+
+      .quick-grid {
+
+        grid-template-columns:
+          repeat(2, 1fr);
+
+      }
+
+
+      .trust-badges {
+
+        grid-template-columns:
+          repeat(2, 1fr);
+
+      }
+
+
+      #reviewList {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
+
+      .footer-grid {
+
+        grid-template-columns:
+          1fr;
+
+      }
+
+
+      .mobile-bottom {
+
+        position:
+          fixed;
+
+        right:
+          0;
+
+        left:
+          0;
+
+        bottom:
+          0;
+
+        z-index:
+          200;
+
+        display:
+          grid;
+
+        grid-template-columns:
+          repeat(5, 1fr);
+
+        background:
+          rgba(255, 255, 255, .98);
+
+        border-top:
+          1px solid var(--home-border);
+
+        box-shadow:
+          0 -4px 18px rgba(0, 41, 82, .10);
+
+        padding:
+          7px 3px;
+
+      }
+
+
+      .mobile-bottom a {
+
+        color:
+          #385d7e;
+
+        text-align:
+          center;
+
+        font-size:
+          10px;
+
+        font-weight:
+          800;
+
+      }
+
+    }
+
+  </style>
+
+
+  <!-- =========================================================
+       SUPABASE
+  ========================================================== -->
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+  </script>
+
+  <script src="config.js"></script>
+
+  <script defer src="app.js"></script>
+
+  <script defer src="trust_loyalty.js"></script>
+
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     TOP BAR
+========================================================= -->
+
+<div class="home-topbar">
+
+  <div class="home-topbar-inner">
+
+    <div class="home-topbar-right">
+
+      <span>
+        🇦🇪 الإمارات
+      </span>
+
+      <span>
+        AED
+      </span>
+
+      <span>
+        🐟 سوق المأكولات البحرية الإماراتي
+      </span>
+
+    </div>
+
+
+    <div class="home-topbar-left">
+
+      توصيل سريع • موردون موثوقون • جودة مضمونة
+
+    </div>
+
+  </div>
+
 </div>
-</div></section>
-<section class="section"><div class="container"><h2>آراء العملاء</h2><div id="reviewList" class="grid4"></div><p class="muted small">الأرقام والتقييمات أعلاه بيانات Demo لعرض الوظيفة فقط، وستستبدل آليًا بالبيانات الفعلية عند التشغيل.</p></div></section>
-</body></html>
+
+
+
+<!-- =========================================================
+     HEADER
+========================================================= -->
+
+<header class="home-header">
+
+  <div class="home-header-inner">
+
+
+    <a
+      class="home-brand"
+      href="home.html">
+
+
+      <span class="home-logo">
+
+        ⛵🐟
+
+      </span>
+
+
+      <div class="home-brand-name">
+
+        بحرنا وشراعنا
+
+        <small>
+
+          BAHRNA &amp; SHRAANA
+
+        </small>
+
+      </div>
+
+
+    </a>
+
+
+
+    <div class="home-search">
+
+      <span class="home-search-icon">
+
+        🔎
+
+      </span>
+
+      <input
+        type="search"
+        placeholder="ابحث عن نوع السمك، مورد، منتج...">
+
+    </div>
+
+
+
+    <div class="home-account">
+
+      <a href="checkout.html">
+        🛒 السلة
+      </a>
+
+      <a href="login.html">
+        تسجيل الدخول
+      </a>
+
+      <span>
+        ☰
+      </span>
+
+    </div>
+
+
+  </div>
+
+</header>
+
+
+
+<!-- =========================================================
+     NAVIGATION
+========================================================= -->
+
+<nav class="home-nav">
+
+  <div class="home-nav-inner">
+
+    <a
+      class="active"
+      href="home.html">
+
+      الصفحة الرئيسية
+
+    </a>
+
+    <a href="catalog.html">
+      الأسعار الحية
+    </a>
+
+    <a href="auction.html">
+      شراعنا للمزادات 🔴
+    </a>
+
+    <a href="catalog.html">
+      المنتجات
+    </a>
+
+    <a href="supplier.html">
+      الموردون
+    </a>
+
+    <a href="register.html">
+      الشركات
+    </a>
+
+    <a href="buyer.html">
+      الجملة
+    </a>
+
+    <a href="catalog.html">
+      عروض اليوم
+    </a>
+
+  </div>
+
+</nav>
+
+
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+
+<section class="home-hero-wrap">
+
+
+  <div class="home-hero">
+
+
+    <div class="hero-content">
+
+
+      <div class="hero-logo-big">
+
+        ⛵🐟
+
+      </div>
+
+
+      <h1 class="hero-brand-title">
+
+        بحرنا وشراعنا
+
+      </h1>
+
+
+      <div class="hero-brand-en">
+
+        BAHRNA &amp; SHRAANA
+
+      </div>
+
+
+      <div class="hero-slogan">
+
+        من بحرنا... بشراعنا إلى بابك
+
+      </div>
+
+
+      <div class="hero-actions">
+
+        <a
+          class="hero-btn hero-btn-primary"
+          href="catalog.html">
+
+          تسوق الآن
+
+        </a>
+
+
+        <a
+          class="hero-btn hero-btn-secondary"
+          href="buyer.html">
+
+          الجملة والشركات
+
+        </a>
+
+      </div>
+
+
+    </div>
+
+
+
+    <div class="hero-trust">
+
+
+      <div class="hero-trust-item">
+
+        <span class="hero-trust-icon">
+          🚚
+        </span>
+
+        <span>
+          توصيل سريع
+          <br>
+          داخل الإمارات
+        </span>
+
+      </div>
+
+
+
+      <div class="hero-trust-item">
+
+        <span class="hero-trust-icon">
+          🛡️
+        </span>
+
+        <span>
+          موردون
+          <br>
+          معتمدون
+        </span>
+
+      </div>
+
+
+
+      <div class="hero-trust-item">
+
+        <span class="hero-trust-icon">
+          ❄️
+        </span>
+
+        <span>
+          سلسلة تبريد
+          <br>
+          محفوظة
+        </span>
+
+      </div>
+
+
+
+      <div class="hero-trust-item">
+
+        <span class="hero-trust-icon">
+          💰
+        </span>
+
+        <span>
+          أفضل
+          <br>
+          الأسعار
+        </span>
+
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+
+
+  <!-- =========================================================
+       HERO SIDE KPIs
+  ========================================================== -->
+
+  <aside class="hero-side">
+
+
+    <div class="side-card">
+
+      <div class="side-card-icon">
+        📦
+      </div>
+
+      <div>
+
+        <span>
+          الطلبات المكتملة
+        </span>
+
+        <strong id="heroOrders">
+          —
+        </strong>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="side-card">
+
+      <div class="side-card-icon">
+        ⚖️
+      </div>
+
+      <div>
+
+        <span>
+          المزادات المكتملة
+        </span>
+
+        <strong id="heroAuctions">
+          —
+        </strong>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="side-card">
+
+      <div class="side-card-icon">
+        🏪
+      </div>
+
+      <div>
+
+        <span>
+          الموردون المعتمدون
+        </span>
+
+        <strong id="heroSuppliers">
+          —
+        </strong>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="side-card rating">
+
+      <div class="side-card-icon">
+        ⭐
+      </div>
+
+      <div>
+
+        <span>
+          متوسط تقييم العملاء
+        </span>
+
+        <strong id="heroRating">
+          —
+        </strong>
+
+      </div>
+
+    </div>
+
+
+  </aside>
+
+
+</section>
+
+
+
+<!-- =========================================================
+     LIVE PRICES
+========================================================= -->
+
+<section class="home-section">
+
+
+  <div class="price-live-box">
+
+
+    <div class="price-live-head">
+
+
+      <strong>
+
+        أفضل أسعار اليوم — لكل كجم
+
+      </strong>
+
+
+      <span class="live-label">
+
+        LIVE
+
+      </span>
+
+
+    </div>
+
+
+    <div
+      id="ticker">
+
+    </div>
+
+
+  </div>
+
+
+</section>
+
+
+
+<!-- =========================================================
+     QUICK SERVICES
+========================================================= -->
+
+<section class="home-section">
+
+
+  <div class="quick-grid">
+
+
+    <a
+      class="quick-card"
+      href="catalog.html">
+
+      <div class="quick-icon">
+        🐟
+      </div>
+
+      <strong>
+        صيد اليوم
+      </strong>
+
+    </a>
+
+
+
+    <a
+      class="quick-card"
+      href="auction.html">
+
+      <div class="quick-icon">
+        ⚖️
+      </div>
+
+      <strong>
+        شراعنا مباشر
+      </strong>
+
+    </a>
+
+
+
+    <a
+      class="quick-card"
+      href="buyer.html">
+
+      <div class="quick-icon">
+        🏢
+      </div>
+
+      <strong>
+        الجملة
+      </strong>
+
+    </a>
+
+
+
+    <a
+      class="quick-card"
+      href="supplier.html">
+
+      <div class="quick-icon">
+        🏪
+      </div>
+
+      <strong>
+        الموردون
+      </strong>
+
+    </a>
+
+
+
+    <a
+      class="quick-card"
+      href="tracking.html">
+
+      <div class="quick-icon">
+        🚚
+      </div>
+
+      <strong>
+        تتبع الطلب
+      </strong>
+
+    </a>
+
+
+  </div>
+
+
+</section>
+
+
+
+<!-- =========================================================
+     FEATURE CARDS
+========================================================= -->
+
+<section class="home-section">
+
+
+  <div class="service-grid">
+
+
+    <div class="service-card today">
+
+      <div class="service-content">
+
+        <h3>
+          صيد اليوم
+        </h3>
+
+        <p>
+          أحدث الصيد من سواحل الإمارات.
+        </p>
+
+        <a
+          class="service-link"
+          href="catalog.html">
+
+          تسوق الآن
+
+        </a>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="service-card auction">
+
+      <div class="service-content">
+
+        <h3>
+          شراعنا للمزادات
+        </h3>
+
+        <p>
+          مزادات مباشرة على أجود المنتجات البحرية.
+        </p>
+
+        <a
+          class="service-link auction-live"
+          href="auction.html">
+
+          🔴 ادخل المزاد الآن
+
+        </a>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="service-card delivery">
+
+      <div class="service-content">
+
+        <h3>
+          التوصيل اليومي
+        </h3>
+
+        <p>
+          توصيل سريع وآمن إلى باب منزلك أو منشأتك.
+        </p>
+
+        <a
+          class="service-link"
+          href="catalog.html">
+
+          اطلب الآن
+
+        </a>
+
+      </div>
+
+    </div>
+
+
+  </div>
+
+
+</section>
+
+
+
+<!-- =========================================================
+     TRUST DATA
+========================================================= -->
+
+<section class="home-section">
+
+
+  <div class="home-section-title">
+
+    <h2>
+      ثقة مبنية على عمليات حقيقية
+    </h2>
+
+  </div>
+
+
+
+  <div class="trust-badges">
+
+
+    <div class="trust-badge">
+
+      <strong id="trustOrders">
+        0
+      </strong>
+
+      <span>
+        طلبات مكتملة
+      </span>
+
+    </div>
+
+
+
+    <div class="trust-badge">
+
+      <strong id="trustReviews">
+        0
+      </strong>
+
+      <span>
+        تقييمات موثقة
+      </span>
+
+    </div>
+
+
+
+    <div class="trust-badge">
+
+      <strong id="trustRating">
+        —
+      </strong>
+
+      <span>
+        متوسط التقييم
+      </span>
+
+    </div>
+
+
+
+    <div class="trust-badge">
+
+      <strong id="trustSuppliers">
+        0
+      </strong>
+
+      <span>
+        موردون نشطون
+      </span>
+
+    </div>
+
+
+  </div>
+
+
+</section>
+
+
+
+<!-- =========================================================
+     REVIEWS
+========================================================= -->
+
+<section class="home-section">
+
+
+  <div class="home-section-title">
+
+    <h2>
+      آراء العملاء
+    </h2>
+
+    <a href="#">
+      عرض جميع التقييمات
+    </a>
+
+  </div>
+
+
+  <div
+    id="reviewList">
+
+  </div>
+
+
+  <p
+    class="muted"
+    style="
+      font-size:11px;
+      margin-top:10px;
+    ">
+
+    يتم تحديث المؤشرات والتقييمات حسب البيانات المتاحة في النظام.
+
+  </p>
+
+
+</section>
+
+
+
+<!-- =========================================================
+     APP PROMO
+========================================================= -->
+
+<section class="home-section">
+
+
+  <div class="app-promo">
+
+
+    <div>
+
+      <h2>
+
+        بحرنا وشراعنا معك أينما كنت
+
+      </h2>
+
+
+      <p>
+
+        تجربة أسهل لشراء الأسماك،
+        متابعة الطلبات،
+        الدخول للمزادات،
+        والتعامل مع الموردين.
+
+      </p>
+
+
+      <div class="app-badges">
+
+        <span class="store-badge">
+
+           App Store
+
+        </span>
+
+        <span class="store-badge">
+
+          ▶ Google Play
+
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <div class="app-phone">
+
+      📱
+
+    </div>
+
+
+  </div>
+
+
+</section>
+
+
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+
+<footer class="home-footer">
+
+
+  <div class="footer-grid">
+
+
+    <div>
+
+      <div class="footer-logo">
+
+        ⛵🐟 بحرنا وشراعنا
+
+      </div>
+
+      <p>
+
+        سوق رقمي إماراتي للمأكولات البحرية
+        يربط المستهلكين والشركات بالموردين.
+
+      </p>
+
+    </div>
+
+
+
+    <div>
+
+      <h4>
+        السوق
+      </h4>
+
+      <a href="catalog.html">
+        الأسماك الطازجة
+      </a>
+
+      <a href="auction.html">
+        المزادات
+      </a>
+
+      <a href="buyer.html">
+        الجملة والشركات
+      </a>
+
+    </div>
+
+
+
+    <div>
+
+      <h4>
+        الحساب
+      </h4>
+
+      <a href="login.html">
+        تسجيل الدخول
+      </a>
+
+      <a href="register.html">
+        إنشاء حساب
+      </a>
+
+      <a href="tracking.html">
+        تتبع الطلب
+      </a>
+
+    </div>
+
+
+
+    <div>
+
+      <h4>
+        بحرنا وشراعنا
+      </h4>
+
+      <a href="about.html">
+        من نحن
+      </a>
+
+      <a href="terms.html">
+        الشروط والأحكام
+      </a>
+
+      <a href="privacy.html">
+        سياسة الخصوصية
+      </a>
+
+    </div>
+
+
+  </div>
+
+
+
+  <div class="footer-bottom">
+
+    © بحرنا وشراعنا — BAHRNA &amp; SHRAANA
+
+  </div>
+
+
+</footer>
+
+
+
+<!-- =========================================================
+     MOBILE NAVIGATION
+========================================================= -->
+
+<nav class="mobile-bottom">
+
+
+  <a href="home.html">
+    🏠
+    <br>
+    الرئيسية
+  </a>
+
+
+  <a href="catalog.html">
+    🔎
+    <br>
+    بحث
+  </a>
+
+
+  <a href="auction.html">
+    ⚖️
+    <br>
+    المزادات
+  </a>
+
+
+  <a href="checkout.html">
+    🛒
+    <br>
+    السلة
+  </a>
+
+
+  <a href="login.html">
+    👤
+    <br>
+    الحساب
+  </a>
+
+
+</nav>
+
+
+
+<!-- =========================================================
+     MARKET DATA
+========================================================= -->
+
+<script>
+
+document.addEventListener(
+  "DOMContentLoaded",
+  async () => {
+
+    try {
+
+      const offers =
+        await Bahrna.getMarketOffers();
+
+
+      const best = {};
+
+
+      offers.forEach(
+        o => {
+
+          if (
+            !best[o.name] ||
+            Number(o.retail) <
+            Number(best[o.name].retail)
+          ) {
+
+            best[o.name] = o;
+
+          }
+
+        }
+      );
+
+
+      const rows =
+        Object.values(best)
+          .sort(
+            (a, b) =>
+              Number(a.retail) -
+              Number(b.retail)
+          );
+
+
+      const ticker =
+        document.getElementById(
+          "ticker"
+        );
+
+
+      if (ticker) {
+
+        ticker.innerHTML =
+          rows
+            .slice(0, 10)
+            .map(
+              o => `
+
+                <a
+                  class="quote"
+                  href="catalog.html">
+
+                  <div
+                    style="
+                      font-size:28px;
+                      margin-bottom:3px;
+                    ">
+
+                    🐟
+
+                  </div>
+
+                  <strong>
+
+                    ${o.name || "منتج بحري"}
+
+                  </strong>
+
+                  <div class="price">
+
+                    ${Number(
+                      o.retail || 0
+                    ).toFixed(2)}
+
+                    AED
+
+                  </div>
+
+                  <small>
+
+                    ${
+                      o.supplier || ""
+                    }
+
+                    ${
+                      o.origin
+                        ? " • " + o.origin
+                        : ""
+                    }
+
+                  </small>
+
+                </a>
+
+              `
+            )
+            .join("");
+
+      }
+
+
+    } catch (e) {
+
+      console.error(
+        "تعذر تحميل أسعار السوق:",
+        e
+      );
+
+    }
+
+  }
+);
+
+</script>
+
+
+
+<!-- =========================================================
+     COPY TRUST VALUES TO HERO
+========================================================= -->
+
+<script>
+
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    const syncValue =
+      (
+        sourceId,
+        targetId
+      ) => {
+
+        const source =
+          document.getElementById(
+            sourceId
+          );
+
+        const target =
+          document.getElementById(
+            targetId
+          );
+
+
+        if (
+          !source ||
+          !target
+        ) {
+
+          return;
+
+        }
+
+
+        const observer =
+          new MutationObserver(
+            () => {
+
+              target.textContent =
+                source.textContent;
+
+            }
+          );
+
+
+        observer.observe(
+          source,
+          {
+            childList: true,
+            subtree: true,
+            characterData: true
+          }
+        );
+
+
+        target.textContent =
+          source.textContent;
+
+      };
+
+
+    syncValue(
+      "trustOrders",
+      "heroOrders"
+    );
+
+
+    syncValue(
+      "trustSuppliers",
+      "heroSuppliers"
+    );
+
+
+    syncValue(
+      "trustRating",
+      "heroRating"
+    );
+
+  }
+);
+
+</script>
+
+
+</body>
+
+</html>
