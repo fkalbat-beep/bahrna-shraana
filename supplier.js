@@ -5,6 +5,7 @@ const SupplierDemo = {
 
 let offerModes = new Set(["retail"]);
 
+
 /* =========================================
    أدوات عامة
 ========================================= */
@@ -14,16 +15,22 @@ function money(n) {
 }
 
 function showSupplierPanel(id, el) {
+
   document.querySelectorAll(".supplier-panel")
     .forEach(p => p.classList.remove("active"));
 
   const panel = document.getElementById(id);
-  if (panel) panel.classList.add("active");
+
+  if (panel) {
+    panel.classList.add("active");
+  }
 
   document.querySelectorAll(".supplier-sidebar a")
     .forEach(a => a.classList.remove("active"));
 
-  if (el) el.classList.add("active");
+  if (el) {
+    el.classList.add("active");
+  }
 }
 
 
@@ -52,8 +59,15 @@ async function getCurrentSupplier() {
     .single();
 
   if (error) {
-    console.error("خطأ قراءة المورد:", error);
-    throw new Error("لم يتم العثور على سجل المورد لهذا الحساب");
+
+    console.error(
+      "خطأ قراءة المورد:",
+      error
+    );
+
+    throw new Error(
+      "لم يتم العثور على سجل المورد لهذا الحساب"
+    );
   }
 
   return data;
@@ -69,7 +83,9 @@ async function loadSupplierOffers() {
   try {
 
     const sb = Bahrna.client;
-    const supplier = await getCurrentSupplier();
+
+    const supplier =
+      await getCurrentSupplier();
 
     const { data, error } = await sb
       .from("products")
@@ -84,34 +100,74 @@ async function loadSupplierOffers() {
         arrived_at,
         active
       `)
-      .eq("supplier_id", supplier.id)
-      .order("created_at", { ascending: false });
+      .eq(
+        "supplier_id",
+        supplier.id
+      )
+      .order(
+        "created_at",
+        { ascending: false }
+      );
 
     if (error) {
-      console.error("خطأ تحميل عروض المورد:", error);
+
+      console.error(
+        "خطأ تحميل عروض المورد:",
+        error
+      );
+
       SupplierDemo.offers = [];
+
       return;
     }
 
-    SupplierDemo.offers = (data || []).map(x => ({
-      id: x.id,
-      name: x.name_ar,
-      qty: Number(x.stock_kg || 0),
-      retail: Number(x.price_per_kg || 0),
-      wholesale: Number(x.wholesale_price_per_kg || 0),
-      auction: false,
-      status: x.active ? "active" : "paused",
-      arrived: x.arrived_at || "",
-      supplier: supplier.display_name || "مورد",
-      origin: x.origin || "الإمارات",
-      isReal: true
-    }));
+    SupplierDemo.offers =
+      (data || []).map(x => ({
+
+        id: x.id,
+
+        name: x.name_ar,
+
+        qty:
+          Number(x.stock_kg || 0),
+
+        retail:
+          Number(
+            x.price_per_kg || 0
+          ),
+
+        wholesale:
+          Number(
+            x.wholesale_price_per_kg || 0
+          ),
+
+        auction: false,
+
+        status:
+          x.active
+            ? "active"
+            : "paused",
+
+        arrived:
+          x.arrived_at || "",
+
+        supplier:
+          supplier.display_name ||
+          "مورد",
+
+        origin:
+          x.origin ||
+          "الإمارات",
+
+        isReal: true
+
+      }));
 
   } catch (e) {
 
     console.error(e);
-    SupplierDemo.offers = [];
 
+    SupplierDemo.offers = [];
   }
 }
 
@@ -123,8 +179,13 @@ async function loadSupplierOffers() {
 async function loadSupplierOrders() {
 
   if (!window.Bahrna || !Bahrna.client) {
-    console.warn("Supabase غير متصل");
+
+    console.warn(
+      "Supabase غير متصل"
+    );
+
     SupplierDemo.orders = [];
+
     return;
   }
 
@@ -146,32 +207,58 @@ async function loadSupplierOrders() {
         line_total
       )
     `)
-    .order("created_at", { ascending: false });
+    .order(
+      "created_at",
+      { ascending: false }
+    );
 
   if (error) {
-    console.error("خطأ تحميل الطلبات:", error);
+
+    console.error(
+      "خطأ تحميل الطلبات:",
+      error
+    );
+
     SupplierDemo.orders = [];
+
     return;
   }
 
-  SupplierDemo.orders = (data || []).map(order => {
+  SupplierDemo.orders =
+    (data || []).map(order => {
 
-    const items = order.order_items || [];
+      const items =
+        order.order_items || [];
 
-    const itemText = items.length
-      ? items.map(i =>
-          `${i.product_name || "منتج"} ${Number(i.qty_kg || 0)} كجم`
-        ).join("، ")
-      : "—";
+      const itemText =
+        items.length
 
-    return {
-      id: order.id,
-      no: order.order_no,
-      item: itemText,
-      total: Number(order.total || 0),
-      status: order.tracking_status || order.status || "pending"
-    };
-  });
+          ? items.map(i =>
+              `${i.product_name || "منتج"} ${Number(i.qty_kg || 0)} كجم`
+            ).join("، ")
+
+          : "—";
+
+      return {
+
+        id:
+          order.id,
+
+        no:
+          order.order_no,
+
+        item:
+          itemText,
+
+        total:
+          Number(order.total || 0),
+
+        status:
+          order.tracking_status ||
+          order.status ||
+          "confirmed"
+      };
+    });
 }
 
 
@@ -181,109 +268,375 @@ async function loadSupplierOrders() {
 
 function renderSupplier() {
 
-  const activeOffers = document.getElementById("activeOffers");
-  const stockKg = document.getElementById("stockKg");
-  const pendingOrders = document.getElementById("pendingOrders");
-  const supplierGMV = document.getElementById("supplierGMV");
-  const offerRows = document.getElementById("offerRows");
-  const supplierOrderRows = document.getElementById("supplierOrderRows");
+  const activeOffers =
+    document.getElementById(
+      "activeOffers"
+    );
+
+  const stockKg =
+    document.getElementById(
+      "stockKg"
+    );
+
+  const pendingOrders =
+    document.getElementById(
+      "pendingOrders"
+    );
+
+  const supplierGMV =
+    document.getElementById(
+      "supplierGMV"
+    );
+
+  const offerRows =
+    document.getElementById(
+      "offerRows"
+    );
+
+  const supplierOrderRows =
+    document.getElementById(
+      "supplierOrderRows"
+    );
+
+
+  /* عدد العروض النشطة */
 
   if (activeOffers) {
+
     activeOffers.textContent =
-      SupplierDemo.offers.filter(x => x.status === "active").length;
+      SupplierDemo.offers.filter(
+        x => x.status === "active"
+      ).length;
   }
 
+
+  /* إجمالي المخزون */
+
   if (stockKg) {
+
     stockKg.textContent =
       SupplierDemo.offers.reduce(
-        (s, x) => s + Number(x.qty || 0),
+        (s, x) =>
+          s + Number(x.qty || 0),
         0
       ) + " كجم";
   }
 
+
+  /* الطلبات غير المسلمة */
+
   if (pendingOrders) {
+
     pendingOrders.textContent =
-      SupplierDemo.orders.length;
+      SupplierDemo.orders.filter(
+        o =>
+          o.status !==
+          "delivered"
+      ).length;
   }
 
+
+  /* إجمالي قيمة الطلبات */
+
   if (supplierGMV) {
+
     supplierGMV.textContent =
       money(
         SupplierDemo.orders.reduce(
-          (s, o) => s + Number(o.total || 0),
+          (s, o) =>
+            s + Number(o.total || 0),
           0
         )
       );
   }
 
+
+  /* =========================================
+     جدول العروض
+  ========================================= */
+
   if (offerRows) {
 
     offerRows.innerHTML =
+
       SupplierDemo.offers.length
 
-        ? SupplierDemo.offers.map(o => `
+        ? SupplierDemo.offers
+            .map(o => `
+
           <tr>
 
-            <td>${o.name}</td>
-
-            <td>${o.qty} كجم</td>
-
-            <td>${money(o.retail)}</td>
-
-            <td>${money(o.wholesale)}</td>
-
-            <td>${o.auction ? "نعم" : "لا"}</td>
-
             <td>
-              ${
-                o.status === "active"
-                  ? '<span class="status ok">نشط</span>'
-                  : '<span class="status wait">موقوف</span>'
-              }
+              ${o.name}
             </td>
 
             <td>
+              ${o.qty} كجم
+            </td>
+
+            <td>
+              ${money(o.retail)}
+            </td>
+
+            <td>
+              ${money(o.wholesale)}
+            </td>
+
+            <td>
+              ${o.auction ? "نعم" : "لا"}
+            </td>
+
+            <td>
+
+              ${
+                o.status === "active"
+
+                  ? '<span class="status ok">نشط</span>'
+
+                  : '<span class="status wait">موقوف</span>'
+              }
+
+            </td>
+
+            <td>
+
               <button
                 class="btn btn-primary small"
                 onclick="toggleOffer('${o.id}')">
-                ${o.status === "active" ? "إيقاف" : "تفعيل"}
+
+                ${
+                  o.status === "active"
+                    ? "إيقاف"
+                    : "تفعيل"
+                }
+
               </button>
+
             </td>
 
           </tr>
+
         `).join("")
 
         : `
+
           <tr>
+
             <td colspan="7">
               لا توجد عروض حالياً
             </td>
+
           </tr>
+
         `;
   }
+
+
+  /* =========================================
+     جدول الطلبات + تغيير الحالة
+  ========================================= */
 
   if (supplierOrderRows) {
 
     supplierOrderRows.innerHTML =
+
       SupplierDemo.orders.length
 
-        ? SupplierDemo.orders.map(o => `
+        ? SupplierDemo.orders
+            .map(o => `
+
           <tr>
-            <td>${o.no}</td>
-            <td>${o.item}</td>
-            <td>${money(o.total)}</td>
-            <td>${o.status}</td>
+
+            <td>
+              ${o.no}
+            </td>
+
+            <td>
+              ${o.item}
+            </td>
+
+            <td>
+              ${money(o.total)}
+            </td>
+
+            <td>
+
+              <select
+                class="order-status-select"
+                onchange="updateOrderStatus('${o.id}', this.value)"
+              >
+
+                <option
+                  value="confirmed"
+                  ${
+                    o.status === "confirmed"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  تم التأكيد
+                </option>
+
+
+                <option
+                  value="preparing"
+                  ${
+                    o.status === "preparing"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  جاري التجهيز
+                </option>
+
+
+                <option
+                  value="out_for_delivery"
+                  ${
+                    o.status === "out_for_delivery"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  خرج للتوصيل
+                </option>
+
+
+                <option
+                  value="delivered"
+                  ${
+                    o.status === "delivered"
+                      ? "selected"
+                      : ""
+                  }
+                >
+                  تم التسليم
+                </option>
+
+              </select>
+
+            </td>
+
           </tr>
+
         `).join("")
 
         : `
+
           <tr>
+
             <td colspan="4">
               لا توجد طلبات حالياً
             </td>
+
           </tr>
+
         `;
   }
+}
+
+
+/* =========================================
+   تحديث حالة الطلب في Supabase
+========================================= */
+
+async function updateOrderStatus(
+  orderId,
+  newStatus
+) {
+
+  if (
+    !window.Bahrna ||
+    !Bahrna.client
+  ) {
+
+    alert(
+      "قاعدة البيانات غير متصلة"
+    );
+
+    return;
+  }
+
+
+  const allowedStatuses = [
+
+    "confirmed",
+
+    "preparing",
+
+    "out_for_delivery",
+
+    "delivered"
+
+  ];
+
+
+  if (
+    !allowedStatuses.includes(
+      newStatus
+    )
+  ) {
+
+    alert(
+      "حالة الطلب غير صحيحة"
+    );
+
+    return;
+  }
+
+
+  const sb =
+    Bahrna.client;
+
+
+  const { error } =
+    await sb
+
+      .from("orders")
+
+      .update({
+
+        tracking_status:
+          newStatus
+
+      })
+
+      .eq(
+        "id",
+        orderId
+      );
+
+
+  if (error) {
+
+    console.error(
+      "خطأ تحديث حالة الطلب:",
+      error
+    );
+
+
+    alert(
+      "تعذر تحديث حالة الطلب: " +
+      error.message
+    );
+
+
+    await loadSupplierOrders();
+
+    renderSupplier();
+
+    return;
+  }
+
+
+  await loadSupplierOrders();
+
+  renderSupplier();
+
+
+  alert(
+    "تم تحديث حالة الطلب بنجاح ✅"
+  );
 }
 
 
@@ -291,18 +644,28 @@ function renderSupplier() {
    تفعيل قنوات البيع
 ========================================= */
 
-function toggleMode(el, mode) {
+function toggleMode(
+  el,
+  mode
+) {
 
-  if (offerModes.has(mode)) {
+  if (
+    offerModes.has(mode)
+  ) {
 
     offerModes.delete(mode);
-    el.classList.remove("active");
+
+    el.classList.remove(
+      "active"
+    );
 
   } else {
 
     offerModes.add(mode);
-    el.classList.add("active");
 
+    el.classList.add(
+      "active"
+    );
   }
 }
 
@@ -315,26 +678,63 @@ async function addOffer() {
 
   try {
 
-    if (!window.Bahrna || !Bahrna.client) {
-      return alert("قاعدة البيانات غير متصلة");
+    if (
+      !window.Bahrna ||
+      !Bahrna.client
+    ) {
+
+      return alert(
+        "قاعدة البيانات غير متصلة"
+      );
     }
 
+
     const name =
-      document.getElementById("fishName").value.trim();
+      document
+        .getElementById(
+          "fishName"
+        )
+        .value
+        .trim();
+
 
     const qty =
-      Number(document.getElementById("qtyKg").value);
+      Number(
+        document
+          .getElementById(
+            "qtyKg"
+          )
+          .value
+      );
+
 
     const retail =
-      Number(document.getElementById("retailPrice").value);
+      Number(
+        document
+          .getElementById(
+            "retailPrice"
+          )
+          .value
+      );
+
 
     const wholesale =
       Number(
-        document.getElementById("wholesalePrice").value || 0
+        document
+          .getElementById(
+            "wholesalePrice"
+          )
+          .value || 0
       );
 
+
     const arrived =
-      document.getElementById("arrivedAt").value;
+      document
+        .getElementById(
+          "arrivedAt"
+        )
+        .value;
+
 
     if (
       !name ||
@@ -343,27 +743,41 @@ async function addOffer() {
       !Number.isFinite(retail) ||
       retail <= 0
     ) {
+
       return alert(
         "أكمل اسم المنتج والكمية وسعر التجزئة بشكل صحيح"
       );
     }
 
+
     const supplier =
       await getCurrentSupplier();
 
+
     let arrivedAt = null;
+
 
     if (arrived) {
 
-      const now = new Date();
+      const now =
+        new Date();
 
-      const parts = arrived.split(":");
+
+      const parts =
+        arrived.split(":");
+
 
       const hours =
-        Number(parts[0] || 0);
+        Number(
+          parts[0] || 0
+        );
+
 
       const minutes =
-        Number(parts[1] || 0);
+        Number(
+          parts[1] || 0
+        );
+
 
       now.setHours(
         hours,
@@ -372,26 +786,34 @@ async function addOffer() {
         0
       );
 
+
       arrivedAt =
         now.toISOString();
     }
 
+
     const payload = {
 
-      supplier_id: supplier.id,
+      supplier_id:
+        supplier.id,
 
-      name_ar: name,
+      name_ar:
+        name,
 
-      category: "سمك",
+      category:
+        "سمك",
 
       origin:
-        supplier.emirate || "الإمارات",
+        supplier.emirate ||
+        "الإمارات",
 
       price_per_kg:
         retail,
 
       wholesale_price_per_kg:
-        offerModes.has("wholesale")
+        offerModes.has(
+          "wholesale"
+        )
           ? wholesale
           : null,
 
@@ -405,11 +827,20 @@ async function addOffer() {
         true
     };
 
-    const sb = Bahrna.client;
 
-    const { data, error } = await sb
+    const sb =
+      Bahrna.client;
+
+
+    const {
+      data,
+      error
+    } = await sb
+
       .from("products")
+
       .insert(payload)
+
       .select(`
         id,
         supplier_id,
@@ -421,7 +852,9 @@ async function addOffer() {
         arrived_at,
         active
       `)
+
       .single();
+
 
     if (error) {
 
@@ -430,27 +863,34 @@ async function addOffer() {
         error
       );
 
+
       return alert(
         "تعذر نشر العرض: " +
         error.message
       );
     }
 
+
     alert(
       "تم نشر العرض بنجاح في السوق ✅"
     );
 
+
     await loadSupplierOffers();
 
+
     renderSupplier();
+
 
     showSupplierPanel(
       "offersPanel"
     );
 
+
   } catch (e) {
 
     console.error(e);
+
 
     alert(
       e.message ||
@@ -468,6 +908,7 @@ async function toggleOffer(id) {
 
   /*
     لم نفعّل UPDATE Policy للمنتجات بعد.
+
     لذلك نمنع تعديل قاعدة البيانات مؤقتاً
     حتى نضيف صلاحية المورد لتعديل عروضه فقط.
   */
@@ -502,8 +943,6 @@ document.addEventListener(
       );
 
       renderSupplier();
-
     }
-
   }
 );
