@@ -2,7 +2,6 @@
 <html lang="ar" dir="rtl">
 
 <head>
-
   <meta charset="utf-8">
 
   <meta
@@ -19,2634 +18,40 @@
 
   <link
     rel="stylesheet"
-    href="app.css?v=20260812-home-final">
-
-  <!-- =========================================================
-       SUPABASE
-  ========================================================== -->
+    href="app.css?v=20260812-home-v8">
 
   <script
     src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
   </script>
 
   <script src="config.js"></script>
-
   <script defer src="app.js"></script>
-
   <script defer src="trust_loyalty.js"></script>
-
-
-  <!-- =========================================================
-       HOME VISUAL IDENTITY
-  ========================================================== -->
-
-  <style>
-
-    :root {
-
-      --home-navy:
-        #03376f;
-
-      --home-navy-2:
-        #052d5b;
-
-      --home-deep:
-        #001d3d;
-
-      --home-blue:
-        #0a67a6;
-
-      --home-sky:
-        #eaf6fc;
-
-      --home-gold:
-        #e6a52b;
-
-      --home-gold-dark:
-        #c98611;
-
-      --home-green:
-        #07834b;
-
-      --home-red:
-        #ef2f35;
-
-      --home-bg:
-        #f4f8fb;
-
-      --home-white:
-        #ffffff;
-
-      --home-text:
-        #062f5d;
-
-      --home-muted:
-        #6d8297;
-
-      --home-border:
-        #d7e5ef;
-
-      --home-shadow:
-        0 12px 35px rgba(0,45,90,.10);
-
-    }
-
-
-    * {
-
-      box-sizing:
-        border-box;
-
-    }
-
-
-    html {
-
-      scroll-behavior:
-        smooth;
-
-    }
-
-
-    body {
-
-      margin:
-        0;
-
-      background:
-        linear-gradient(
-          180deg,
-          #f8fbfd 0%,
-          #f1f7fb 100%
-        );
-
-      color:
-        var(--home-text);
-
-      font-family:
-        Tahoma,
-        Arial,
-        sans-serif;
-
-    }
-
-
-    a {
-
-      text-decoration:
-        none;
-
-    }
-
-
-    img {
-
-      max-width:
-        100%;
-
-      display:
-        block;
-
-    }
-
-
-    button,
-    input {
-
-      font-family:
-        inherit;
-
-    }
-
-
-
-    /* =========================================================
-       TOP BAR
-    ========================================================== */
-
-    .home-topbar {
-
-      min-height:
-        33px;
-
-      background:
-        var(--home-deep);
-
-      color:
-        #ffffff;
-
-      display:
-        flex;
-
-      align-items:
-        center;
-
-      font-size:
-        12px;
-
-    }
-
-
-    .home-topbar-inner {
-
-      width:
-        min(1480px,96%);
-
-      margin:
-        auto;
-
-      display:
-        flex;
-
-      align-items:
-        center;
-
-      justify-content:
-        space-between;
-
-      gap:
-        18px;
-
-    }
-
-
-    .home-topbar-right {
-
-      display:
-        flex;
-
-      align-items:
-        center;
-
-      gap:
-        18px;
-
-    }
-
-
-    .home-topbar-left {
-
-      opacity:
-        .88;
-
-    }
-
-
-
-    /* =========================================================
-       HEADER
-    ========================================================== */
-
-    .home-header {
-
-      background:
-        linear-gradient(
-          90deg,
-          #002552 0%,
-          #063f76 55%,
-          #096da9 100%
-        );
-
-      color:
-        #ffffff;
-
-      box-shadow:
-        0 5px 18px rgba(0,34,71,.18);
-
-      position:
-        relative;
-
-      z-index:
-        100;
-
-    }
-
-
-    .home-header-inner {
-
-      width:
-        min(1480px,96%);
-
-      margin:
-        auto;
-
-      min-height:
-        78px;
-
-      display:
-        grid;
-
-      grid-template-columns:
-        auto minmax(320px,1fr) auto;
-
-      align-items:
-        center;
-
-      gap:
-        26px;
-
-    }
-
-
-    .home-brand {
-
-      display:
-        flex;
-
-      align-items:
-        center;
-
-      gap:
-        12px;
-
-      color:
-        #ffffff;
-
-      font-weight:
-        900;
-
-    }
-
-
-    .home-brand-logo {
-
-      width:
-        64px;
-
-      height:
-        64px;
-
-      border-radius:
-        50%;
-
-      display:
-        grid;
-
-      place-items:
-        center;
-
-      border:
-        1px solid rgba(255,255,255,.23);
-
-      background:
-        rgba(255,255,255,.08);
-
-      box-shadow:
-        inset 0 0 18px rgba(255,255,255,.07),
-        0 6px 18px rgba(0,0,0,.12);
-
-      font-size:
-        32px;
-
-    }
-
-
-    .home-brand-name {
-
-      font-size:
-        22px;
-
-      line-height:
-        1.2;
-
-    }
-
-
-    .home-brand-name small {
-
-      display:
-        block;
-
-      margin-top:
-        4px;
-
-      font-size:
-        11px;
-
-      letter-spacing:
-        1px;
-
-      color:
-        #d9ecfb;
-
-    }
-
-
-    .home-search {
-
-      position:
-        relative;
-
-    }
-
-
-    .home-search input {
-
-      width:
-        100%;
-
-      min-height:
-        46px;
-
-      padding:
-        0 48px 0 18px;
-
-      border:
-        0;
-
-      border-radius:
-        30px;
-
-      background:
-        #ffffff;
-
-      color:
-        #173b60;
-
-      outline:
-        none;
-
-      box-shadow:
-        inset 0 1px 2px rgba(0,0,0,.04);
-
-      font-size:
-        13px;
-
-    }
-
-
-    .home-search-icon {
-
-      position:
-        absolute;
-
-      right:
-        17px;
-
-      top:
-        50%;
-
-      transform:
-        translateY(-50%);
-
-      font-size:
-        18px;
-
-    }
-
-
-    .home-header-actions {
-
-      display:
-        flex;
-
-      align-items:
-        center;
-
-      gap:
-        17px;
-
-      white-space:
-        nowrap;
-
-    }
-
-
-    .home-header-actions a {
-
-      color:
-        #ffffff;
-
-      font-weight:
-        800;
-
-      font-size:
-        14px;
-
-    }
-
-
-
-    /* =========================================================
-       MAIN NAV
-    ========================================================== */
-
-    .home-nav {
-
-      background:
-        #ffffff;
-
-      border-bottom:
-        1px solid var(--home-border);
-
-      box-shadow:
-        0 3px 12px rgba(0,45,88,.04);
-
-    }
-
-
-    .home-nav-inner {
-
-      width:
-        min(1480px,96%);
-
-      margin:
-        auto;
-
-      min-height:
-        50px;
-
-      display:
-        flex;
-
-      align-items:
-        center;
-
-      justify-content:
-        center;
-
-      overflow-x:
-        auto;
-
-    }
-
-
-    .home-nav a {
-
-      color:
-        #173b60;
-
-      padding:
-        16px 22px;
-
-      white-space:
-        nowrap;
-
-      font-weight:
-        800;
-
-      font-size:
-        13px;
-
-      border-left:
-        1px solid #edf2f6;
-
-      transition:
-        .2s ease;
-
-    }
-
-
-    .home-nav a:hover {
-
-      background:
-        #f5fafd;
-
-      color:
-        var(--home-blue);
-
-    }
-
-
-    .home-nav a.active {
-
-      background:
-        #f5fafd;
-
-      color:
-        var(--home-blue);
-
-      box-shadow:
-        inset 0 -3px var(--home-gold);
-
-    }
-
-
-
-    /* =========================================================
-       HERO AREA
-    ========================================================== */
-
-    .home-hero-shell {
-
-      width:
-        min(1480px,96%);
-
-      margin:
-        18px auto;
-
-      display:
-        grid;
-
-      grid-template-columns:
-        minmax(0,1fr) 275px;
-
-      gap:
-        16px;
-
-      direction:
-        ltr;
-
-    }
-
-
-    .home-hero {
-
-      direction:
-        rtl;
-
-      min-height:
-        500px;
-
-      border-radius:
-        22px;
-
-      overflow:
-        hidden;
-
-      position:
-        relative;
-
-      box-shadow:
-        var(--home-shadow);
-
-      background-image:
-
-        linear-gradient(
-          90deg,
-          rgba(0,38,78,.08),
-          rgba(0,28,58,.72)
-        ),
-
-        url("assets/hero-seafood.jpg"),
-
-        linear-gradient(
-          135deg,
-          #41a1cf,
-          #ccecf7
-        );
-
-      background-size:
-        cover;
-
-      background-position:
-        center;
-
-      background-repeat:
-        no-repeat;
-
-    }
-
-
-    .home-hero:before {
-
-      content:
-        "";
-
-      position:
-        absolute;
-
-      inset:
-        0;
-
-      background:
-        linear-gradient(
-          180deg,
-          rgba(255,255,255,.02),
-          rgba(0,28,58,.15)
-        );
-
-    }
-
-
-    .hero-main-content {
-
-      position:
-        relative;
-
-      z-index:
-        3;
-
-      min-height:
-        500px;
-
-      width:
-        min(620px,88%);
-
-      margin-right:
-        auto;
-
-      padding:
-        52px 44px 130px;
-
-      display:
-        flex;
-
-      flex-direction:
-        column;
-
-      align-items:
-        flex-start;
-
-      justify-content:
-        center;
-
-      color:
-        #ffffff;
-
-      text-shadow:
-        0 2px 12px rgba(0,20,50,.24);
-
-    }
-
-
-    .hero-logo-symbol {
-
-      font-size:
-        72px;
-
-      line-height:
-        1;
-
-      margin-bottom:
-        8px;
-
-    }
-
-
-    .hero-title {
-
-      margin:
-        0;
-
-      font-size:
-        clamp(38px,4.5vw,58px);
-
-      line-height:
-        1.12;
-
-      font-weight:
-        900;
-
-    }
-
-
-    .hero-title-en {
-
-      font-size:
-        18px;
-
-      font-weight:
-        900;
-
-      letter-spacing:
-        1.5px;
-
-      margin-top:
-        6px;
-
-    }
-
-
-    .hero-tagline {
-
-      margin:
-        20px 0 24px;
-
-      font-size:
-        23px;
-
-      font-weight:
-        900;
-
-    }
-
-
-    .hero-buttons {
-
-      display:
-        flex;
-
-      gap:
-        12px;
-
-      flex-wrap:
-        wrap;
-
-    }
-
-
-    .hero-button {
-
-      min-height:
-        48px;
-
-      padding:
-        0 24px;
-
-      border-radius:
-        10px;
-
-      display:
-        inline-flex;
-
-      align-items:
-        center;
-
-      justify-content:
-        center;
-
-      font-weight:
-        900;
-
-      transition:
-        .2s ease;
-
-    }
-
-
-    .hero-button:hover {
-
-      transform:
-        translateY(-2px);
-
-    }
-
-
-    .hero-button-gold {
-
-      background:
-        var(--home-gold);
-
-      color:
-        #ffffff;
-
-      box-shadow:
-        0 8px 20px rgba(228,165,41,.27);
-
-    }
-
-
-    .hero-button-blue {
-
-      color:
-        #ffffff;
-
-      background:
-        rgba(0,45,89,.80);
-
-      border:
-        1px solid rgba(255,255,255,.35);
-
-      backdrop-filter:
-        blur(5px);
-
-    }
-
-
-
-    /* =========================================================
-       HERO BENEFITS
-    ========================================================== */
-
-    .hero-benefits {
-
-      position:
-        absolute;
-
-      right:
-        28px;
-
-      left:
-        28px;
-
-      bottom:
-        20px;
-
-      z-index:
-        4;
-
-      display:
-        grid;
-
-      grid-template-columns:
-        repeat(4,1fr);
-
-      gap:
-        10px;
-
-    }
-
-
-    .hero-benefit {
-
-      min-height:
-        76px;
-
-      border:
-        1px solid rgba(255,255,255,.17);
-
-      border-radius:
-        14px;
-
-      background:
-        rgba(0,42,84,.77);
-
-      backdrop-filter:
-        blur(8px);
-
-      color:
-        #ffffff;
-
-      display:
-        flex;
-
-      align-items:
-        center;
-
-      justify-content:
-        center;
-
-      gap:
-        9px;
-
-      padding:
-        10px;
-
-      font-size:
-        12px;
-
-      font-weight:
-        800;
-
-    }
-
-
-    .hero-benefit-icon {
-
-      width:
-        41px;
-
-      height:
-        41px;
-
-      display:
-        grid;
-
-      place-items:
-        center;
-
-      border-radius:
-        50%;
-
-      border:
-        1px solid rgba(255,255,255,.38);
-
-      background:
-        rgba(255,255,255,.08);
-
-      font-size:
-        20px;
-
-      flex:
-        0 0 auto;
-
-    }
-
-
-
-    /* =========================================================
-       HERO KPIs
-    ========================================================== */
-
-    .home-kpis {
-
-      direction:
-        rtl;
-
-      display:
-        grid;
-
-      gap:
-        12px;
-
-    }
-
-
-    .home-kpi {
-
-      min-height:
-        112px;
-
-      background:
-        #ffffff;
-
-      border:
-        1px solid var(--home-border);
-
-      border-radius:
-        18px;
-
-      box-shadow:
-        0 7px 20px rgba(0,46,91,.06);
-
-      padding:
-        17px;
-
-      display:
-        grid;
-
-      grid-template-columns:
-        52px 1fr;
-
-      align-items:
-        center;
-
-      gap:
-        13px;
-
-    }
-
-
-    .home-kpi-icon {
-
-      width:
-        52px;
-
-      height:
-        52px;
-
-      border-radius:
-        50%;
-
-      display:
-        grid;
-
-      place-items:
-        center;
-
-      background:
-        #ebf5fb;
-
-      color:
-        var(--home-navy);
-
-      font-size:
-        22px;
-
-    }
-
-
-    .home-kpi span {
-
-      display:
-        block;
-
-      font-size:
-        12px;
-
-      color:
-        var(--home-muted);
-
-    }
-
-
-    .home-kpi strong {
-
-      display:
-        block;
-
-      margin-top:
-        5px;
-
-      font-size:
-        27px;
-
-      color:
-        var(--home-navy);
-
-      line-height:
-        1;
-
-    }
-
-
-    .home-kpi.rating strong {
-
-      color:
-        #df9811;
-
-    }
-
-
-
-    /* =========================================================
-       PAGE SECTIONS
-    ========================================================== */
-
-    .home-section {
-
-      width:
-        min(1480px,96%);
-
-      margin:
-        18px auto;
-
-    }
-
-
-    .section-heading {
-
-      display:
-        flex;
-
-      align-items:
-        center;
-
-      justify-content:
-        space-between;
-
-      gap:
-        15px;
-
-      margin-bottom:
-        12px;
-
-    }
-
-
-    .section-heading h2 {
-
-      margin:
-        0;
-
-      color:
-        var(--home-navy);
-
-      font-size:
-        24px;
-
-      font-weight:
-        900;
-
-    }
-
-
-    .section-heading a {
-
-      color:
-        var(--home-blue);
-
-      font-size:
-        13px;
-
-      font-weight:
-        800;
-
-    }
-
-
-
-    /* =========================================================
-       LIVE MARKET
-    ========================================================== */
-
-    .market-live {
-
-      border-radius:
-        18px;
-
-      overflow:
-        hidden;
-
-      background:
-        var(--home-navy);
-
-      box-shadow:
-        var(--home-shadow);
-
-    }
-
-
-    .market-live-header {
-
-      min-height:
-        48px;
-
-      color:
-        #ffffff;
-
-      display:
-        flex;
-
-      align-items:
-        center;
-
-      justify-content:
-        space-between;
-
-      padding:
-        0 18px;
-
-    }
-
-
-    .market-live-header strong {
-
-      font-size:
-        15px;
-
-    }
-
-
-    .live-pill {
-
-      background:
-        var(--home-red);
-
-      color:
-        #ffffff;
-
-      border-radius:
-        7px;
-
-      padding:
-        5px 9px;
-
-      font-size:
-        10px;
-
-      font-weight:
-        900;
-
-    }
-
-
-    #ticker {
-
-      display:
-        grid;
-
-      grid-template-columns:
-        repeat(6,minmax(145px,1fr));
-
-      background:
-        #dce7ef;
-
-      gap:
-        1px;
-
-      overflow-x:
-        auto;
-
-    }
-
-
-    #ticker .quote {
-
-      min-width:
-        145px;
-
-      padding:
-        14px 11px;
-
-      background:
-        #ffffff;
-
-      text-align:
-        center;
-
-      color:
-        var(--home-text);
-
-      transition:
-        .2s ease;
-
-    }
-
-
-    #ticker .quote:hover {
-
-      background:
-        #f3f9fc;
-
-      transform:
-        translateY(-1px);
-
-    }
-
-
-    #ticker .quote strong {
-
-      display:
-        block;
-
-      font-size:
-        13px;
-
-      margin-bottom:
-        5px;
-
-    }
-
-
-    #ticker .quote .price {
-
-      color:
-        var(--home-green);
-
-      font-size:
-        21px !important;
-
-      font-weight:
-        900;
-
-    }
-
-
-    #ticker .quote small {
-
-      display:
-        block;
-
-      margin-top:
-        5px;
-
-      color:
-        var(--home-muted);
-
-      font-size:
-        10px;
-
-    }
-
-
-    .ticker-fish-icon {
-
-      font-size:
-        29px;
-
-      line-height:
-        1;
-
-      margin-bottom:
-        4px;
-
-    }
-
-
-
-    /* =========================================================
-       QUICK ICONS
-    ========================================================== */
-
-    .quick-services {
-
-      display:
-        grid;
-
-      grid-template-columns:
-        repeat(5,1fr);
-
-      gap:
-        12px;
-
-    }
-
-
-    .quick-service {
-
-      min-height:
-        120px;
-
-      background:
-        #ffffff;
-
-      border:
-        1px solid var(--home-border);
-
-      border-radius:
-        17px;
-
-      box-shadow:
-        0 6px 18px rgba(0,44,88,.05);
-
-      display:
-        flex;
-
-      flex-direction:
-        column;
-
-      align-items:
-        center;
-
-      justify-content:
-        center;
-
-      gap:
-        10px;
-
-      text-align:
-        center;
-
-      color:
-        var(--home-navy);
-
-      transition:
-        .2s ease;
-
-    }
-
-
-    .quick-service:hover {
-
-      transform:
-        translateY(-3px);
-
-      box-shadow:
-        0 12px 25px rgba(0,44,88,.09);
-
-    }
-
-
-    .quick-service-icon {
-
-      width:
-        55px;
-
-      height:
-        55px;
-
-      display:
-        grid;
-
-      place-items:
-        center;
-
-      border-radius:
-        50%;
-
-      background:
-        #e8f4fb;
-
-      font-size:
-        24px;
-
-    }
-
-
-    .quick-service strong {
-
-      font-size:
-        13px;
-
-    }
-
-
-
-    /* =========================================================
-       FEATURE IMAGE CARDS
-    ========================================================== */
-
-    .feature-grid {
-
-      display:
-        grid;
-
-      grid-template-columns:
-        repeat(3,1fr);
-
-      gap:
-        15px;
-
-    }
-
-
-    .feature-card {
-
-      min-height:
-        225px;
-
-      position:
-        relative;
-
-      overflow:
-        hidden;
-
-      border-radius:
-        20px;
-
-      display:
-        flex;
-
-      align-items:
-        flex-end;
-
-      padding:
-        24px;
-
-      color:
-        #ffffff;
-
-      box-shadow:
-        var(--home-shadow);
-
-      background-color:
-        #084b7d;
-
-      background-size:
-        cover;
-
-      background-position:
-        center;
-
-    }
-
-
-    .feature-card:before {
-
-      content:
-        "";
-
-      position:
-        absolute;
-
-      inset:
-        0;
-
-      background:
-        linear-gradient(
-          180deg,
-          rgba(0,34,68,.04),
-          rgba(0,25,54,.91)
-        );
-
-    }
-
-
-    .feature-catch {
-
-      background-image:
-        url("assets/fresh-catch.jpg");
-
-    }
-
-
-    .feature-auction {
-
-      background-image:
-        url("assets/auction-fish.jpg");
-
-    }
-
-
-    .feature-delivery {
-
-      background-image:
-        url("assets/delivery.jpg");
-
-    }
-
-
-    .feature-content {
-
-      position:
-        relative;
-
-      z-index:
-        2;
-
-    }
-
-
-    .feature-content h3 {
-
-      margin:
-        0 0 5px;
-
-      color:
-        #ffffff;
-
-      font-size:
-        25px;
-
-    }
-
-
-    .feature-content p {
-
-      margin:
-        0 0 15px;
-
-      line-height:
-        1.7;
-
-      font-size:
-        13px;
-
-      opacity:
-        .92;
-
-    }
-
-
-    .feature-button {
-
-      min-height:
-        40px;
-
-      padding:
-        0 18px;
-
-      border-radius:
-        9px;
-
-      display:
-        inline-flex;
-
-      align-items:
-        center;
-
-      justify-content:
-        center;
-
-      color:
-        #ffffff;
-
-      border:
-        1px solid rgba(255,255,255,.48);
-
-      background:
-        rgba(0,44,88,.46);
-
-      font-weight:
-        800;
-
-    }
-
-
-    .feature-button-red {
-
-      background:
-        var(--home-red);
-
-      border-color:
-        var(--home-red);
-
-    }
-
-
-
-    /* =========================================================
-       TRUST
-    ========================================================== */
-
-    .trust-badges {
-
-      display:
-        grid;
-
-      grid-template-columns:
-        repeat(4,1fr);
-
-      gap:
-        14px;
-
-    }
-
-
-    .trust-badge {
-
-      min-height:
-        126px;
-
-      background:
-        #ffffff;
-
-      border:
-        1px solid var(--home-border);
-
-      border-radius:
-        17px;
-
-      box-shadow:
-        0 6px 18px rgba(0,44,88,.05);
-
-      display:
-        flex;
-
-      flex-direction:
-        column;
-
-      align-items:
-        center;
-
-      justify-content:
-        center;
-
-      text-align:
-        center;
-
-      padding:
-        18px;
-
-    }
-
-
-    .trust-badge strong {
-
-      display:
-        block;
-
-      color:
-        var(--home-navy);
-
-      font-size:
-        30px;
-
-      margin-bottom:
-        5px;
-
-    }
-
-
-    .trust-badge span {
-
-      color:
-        var(--home-muted);
-
-      font-size:
-        12px;
-
-    }
-
-
-
-    /* =========================================================
-       REVIEWS
-    ========================================================== */
-
-    #reviewList {
-
-      display:
-        grid;
-
-      grid-template-columns:
-        repeat(4,1fr);
-
-      gap:
-        14px;
-
-    }
-
-
-    #reviewList > * {
-
-      background:
-        #ffffff;
-
-      border:
-        1px solid var(--home-border);
-
-      border-radius:
-        17px;
-
-      box-shadow:
-        0 6px 18px rgba(0,44,88,.05);
-
-    }
-
-
-
-    /* =========================================================
-       CORPORATE BANNER
-    ========================================================== */
-
-    .corporate-banner {
-
-      min-height:
-        190px;
-
-      padding:
-        32px;
-
-      border-radius:
-        20px;
-
-      color:
-        #ffffff;
-
-      display:
-        flex;
-
-      align-items:
-        center;
-
-      justify-content:
-        space-between;
-
-      gap:
-        30px;
-
-      overflow:
-        hidden;
-
-      position:
-        relative;
-
-      box-shadow:
-        var(--home-shadow);
-
-      background-image:
-
-        linear-gradient(
-          90deg,
-          rgba(0,33,69,.92),
-          rgba(0,72,117,.55)
-        ),
-
-        url("assets/hero-seafood.jpg");
-
-      background-size:
-        cover;
-
-      background-position:
-        center;
-
-    }
-
-
-    .corporate-banner h2 {
-
-      margin:
-        0 0 10px;
-
-      color:
-        #ffffff;
-
-      font-size:
-        29px;
-
-    }
-
-
-    .corporate-banner p {
-
-      margin:
-        0;
-
-      max-width:
-        700px;
-
-      line-height:
-        1.8;
-
-      opacity:
-        .92;
-
-    }
-
-
-    .corporate-banner .hero-button {
-
-      flex:
-        0 0 auto;
-
-    }
-
-
-
-    /* =========================================================
-       APP PROMO
-    ========================================================== */
-
-    .app-promo {
-
-      min-height:
-        245px;
-
-      border-radius:
-        21px;
-
-      overflow:
-        hidden;
-
-      padding:
-        32px;
-
-      display:
-        grid;
-
-      grid-template-columns:
-        1fr 1fr;
-
-      align-items:
-        center;
-
-      gap:
-        30px;
-
-      color:
-        #ffffff;
-
-      background:
-        linear-gradient(
-          135deg,
-          #052e5c,
-          #0a659f
-        );
-
-      box-shadow:
-        var(--home-shadow);
-
-    }
-
-
-    .app-promo h2 {
-
-      margin:
-        0 0 9px;
-
-      color:
-        #ffffff;
-
-      font-size:
-        30px;
-
-    }
-
-
-    .app-promo p {
-
-      line-height:
-        1.8;
-
-      opacity:
-        .9;
-
-    }
-
-
-    .app-store-buttons {
-
-      display:
-        flex;
-
-      align-items:
-        center;
-
-      gap:
-        10px;
-
-      flex-wrap:
-        wrap;
-
-      margin-top:
-        18px;
-
-    }
-
-
-    .app-store {
-
-      padding:
-        11px 18px;
-
-      border-radius:
-        9px;
-
-      background:
-        #111111;
-
-      color:
-        #ffffff;
-
-      font-weight:
-        800;
-
-    }
-
-
-    .app-phone {
-
-      display:
-        flex;
-
-      align-items:
-        center;
-
-      justify-content:
-        center;
-
-      font-size:
-        115px;
-
-    }
-
-
-
-    /* =========================================================
-       FOOTER
-    ========================================================== */
-
-    .home-footer {
-
-      margin-top:
-        30px;
-
-      background:
-        linear-gradient(
-          180deg,
-          #05305e,
-          #001d3d
-        );
-
-      color:
-        #ffffff;
-
-    }
-
-
-    .home-footer-grid {
-
-      width:
-        min(1480px,96%);
-
-      margin:
-        auto;
-
-      display:
-        grid;
-
-      grid-template-columns:
-        1.4fr 1fr 1fr 1fr;
-
-      gap:
-        30px;
-
-      padding:
-        40px 0;
-
-    }
-
-
-    .footer-brand {
-
-      font-size:
-        28px;
-
-      font-weight:
-        900;
-
-      margin-bottom:
-        10px;
-
-    }
-
-
-    .home-footer p {
-
-      color:
-        #d1e1ee;
-
-      line-height:
-        1.8;
-
-      font-size:
-        13px;
-
-    }
-
-
-    .home-footer h4 {
-
-      margin-top:
-        0;
-
-      color:
-        #ffffff;
-
-    }
-
-
-    .home-footer a {
-
-      display:
-        block;
-
-      margin:
-        8px 0;
-
-      color:
-        #d9e7f2;
-
-      font-size:
-        13px;
-
-    }
-
-
-    .footer-bottom {
-
-      border-top:
-        1px solid rgba(255,255,255,.10);
-
-      text-align:
-        center;
-
-      padding:
-        15px 0;
-
-      color:
-        #c5d9e9;
-
-      font-size:
-        11px;
-
-    }
-
-
-
-    /* =========================================================
-       MOBILE NAV
-    ========================================================== */
-
-    .mobile-bottom {
-
-      display:
-        none;
-
-    }
-
-
-
-    /* =========================================================
-       RESPONSIVE
-    ========================================================== */
-
-    @media(max-width:1150px) {
-
-      .home-hero-shell {
-
-        grid-template-columns:
-          1fr;
-
-      }
-
-
-      .home-kpis {
-
-        grid-template-columns:
-          repeat(4,1fr);
-
-      }
-
-
-      .home-kpi {
-
-        grid-template-columns:
-          1fr;
-
-        text-align:
-          center;
-
-      }
-
-
-      .home-kpi-icon {
-
-        margin:
-          auto;
-
-      }
-
-
-      #ticker {
-
-        grid-template-columns:
-          repeat(6,165px);
-
-      }
-
-    }
-
-
-    @media(max-width:900px) {
-
-      .home-header-inner {
-
-        grid-template-columns:
-          auto 1fr;
-
-      }
-
-
-      .home-header-actions {
-
-        display:
-          none;
-
-      }
-
-
-      .home-search {
-
-        grid-column:
-          1 / -1;
-
-        padding-bottom:
-          12px;
-
-      }
-
-
-      .home-nav-inner {
-
-        justify-content:
-          flex-start;
-
-      }
-
-
-      .home-hero {
-
-        min-height:
-          540px;
-
-      }
-
-
-      .hero-main-content {
-
-        min-height:
-          540px;
-
-        width:
-          100%;
-
-        padding:
-          44px 25px 160px;
-
-        justify-content:
-          flex-start;
-
-      }
-
-
-      .hero-benefits {
-
-        grid-template-columns:
-          repeat(2,1fr);
-
-      }
-
-
-      .home-kpis {
-
-        grid-template-columns:
-          repeat(2,1fr);
-
-      }
-
-
-      .feature-grid {
-
-        grid-template-columns:
-          1fr;
-
-      }
-
-
-      .quick-services {
-
-        grid-template-columns:
-          repeat(3,1fr);
-
-      }
-
-
-      .trust-badges {
-
-        grid-template-columns:
-          repeat(2,1fr);
-
-      }
-
-
-      #reviewList {
-
-        grid-template-columns:
-          repeat(2,1fr);
-
-      }
-
-
-      .corporate-banner {
-
-        align-items:
-          flex-start;
-
-        flex-direction:
-          column;
-
-      }
-
-
-      .app-promo {
-
-        grid-template-columns:
-          1fr;
-
-        text-align:
-          center;
-
-      }
-
-
-      .app-store-buttons {
-
-        justify-content:
-          center;
-
-      }
-
-
-      .home-footer-grid {
-
-        grid-template-columns:
-          repeat(2,1fr);
-
-      }
-
-    }
-
-
-    @media(max-width:600px) {
-
-      body {
-
-        padding-bottom:
-          70px;
-
-      }
-
-
-      .home-topbar-left {
-
-        display:
-          none;
-
-      }
-
-
-      .home-header-inner {
-
-        width:
-          92%;
-
-      }
-
-
-      .home-brand-logo {
-
-        width:
-          48px;
-
-        height:
-          48px;
-
-        font-size:
-          25px;
-
-      }
-
-
-      .home-brand-name {
-
-        font-size:
-          16px;
-
-      }
-
-
-      .home-nav {
-
-        display:
-          none;
-
-      }
-
-
-      .home-hero-shell {
-
-        width:
-          100%;
-
-        margin-top:
-          0;
-
-      }
-
-
-      .home-hero {
-
-        border-radius:
-          0 0 22px 22px;
-
-        min-height:
-          560px;
-
-      }
-
-
-      .hero-main-content {
-
-        min-height:
-          560px;
-
-        padding:
-          35px 20px 180px;
-
-      }
-
-
-      .hero-title {
-
-        font-size:
-          37px;
-
-      }
-
-
-      .hero-title-en {
-
-        font-size:
-          14px;
-
-      }
-
-
-      .hero-tagline {
-
-        font-size:
-          17px;
-
-      }
-
-
-      .hero-logo-symbol {
-
-        font-size:
-          56px;
-
-      }
-
-
-      .hero-benefits {
-
-        right:
-          13px;
-
-        left:
-          13px;
-
-        bottom:
-          14px;
-
-        gap:
-          7px;
-
-      }
-
-
-      .hero-benefit {
-
-        min-height:
-          66px;
-
-        font-size:
-          10px;
-
-      }
-
-
-      .hero-benefit-icon {
-
-        width:
-          34px;
-
-        height:
-          34px;
-
-        font-size:
-          17px;
-
-      }
-
-
-      .home-kpis {
-
-        width:
-          94%;
-
-        margin:
-          auto;
-
-      }
-
-
-      .home-section {
-
-        width:
-          94%;
-
-      }
-
-
-      .quick-services {
-
-        grid-template-columns:
-          repeat(2,1fr);
-
-      }
-
-
-      .trust-badges {
-
-        grid-template-columns:
-          repeat(2,1fr);
-
-      }
-
-
-      #reviewList {
-
-        grid-template-columns:
-          1fr;
-
-      }
-
-
-      .corporate-banner {
-
-        padding:
-          24px;
-
-      }
-
-
-      .corporate-banner h2 {
-
-        font-size:
-          24px;
-
-      }
-
-
-      .home-footer-grid {
-
-        grid-template-columns:
-          1fr;
-
-      }
-
-
-      .mobile-bottom {
-
-        position:
-          fixed;
-
-        right:
-          0;
-
-        left:
-          0;
-
-        bottom:
-          0;
-
-        z-index:
-          300;
-
-        display:
-          grid;
-
-        grid-template-columns:
-          repeat(5,1fr);
-
-        background:
-          rgba(255,255,255,.98);
-
-        border-top:
-          1px solid var(--home-border);
-
-        box-shadow:
-          0 -4px 18px rgba(0,41,82,.10);
-
-        padding:
-          7px 3px;
-
-      }
-
-
-      .mobile-bottom a {
-
-        text-align:
-          center;
-
-        color:
-          #345d80;
-
-        font-size:
-          10px;
-
-        font-weight:
-          800;
-
-      }
-
-    }
-
-  </style>
-
 </head>
 
 
-<body>
+<body class="bahrna-home">
 
 
 <!-- =========================================================
-     TOP BAR
+     TOP STRIP
 ========================================================= -->
 
-<div class="home-topbar">
+<div class="bh-top-strip">
 
-  <div class="home-topbar-inner">
+  <div class="bh-wide">
 
-
-    <div class="home-topbar-right">
-
-      <span>
-        🇦🇪 الإمارات
-      </span>
-
-      <span>
-        AED
-      </span>
-
-      <span>
-        🐟 سوق المأكولات البحرية الإماراتي
-      </span>
-
+    <div class="bh-top-location">
+      🇦🇪 الإمارات
+      <span>•</span>
+      AED
+      <span>•</span>
+      🐟 سوق المأكولات البحرية الإماراتي
     </div>
 
-
-    <div class="home-topbar-left">
-
+    <div class="bh-top-promise">
       توصيل سريع • موردون موثوقون • جودة وسلسلة تبريد محفوظة
-
     </div>
-
 
   </div>
 
@@ -2655,77 +60,72 @@
 
 
 <!-- =========================================================
-     HEADER
+     MAIN HEADER
 ========================================================= -->
 
-<header class="home-header">
+<header class="bh-header">
 
-  <div class="home-header-inner">
+  <div class="bh-wide bh-header-row">
 
 
     <a
-      class="home-brand"
+      class="bh-brand"
       href="home.html">
 
-
-      <div class="home-brand-logo">
-
-        ⛵🐟
-
+      <div class="bh-brand-symbol">
+        ⛵
       </div>
 
+      <div class="bh-brand-copy">
 
-      <div class="home-brand-name">
+        <strong>
+          بحرنا وشراعنا
+        </strong>
 
-        بحرنا وشراعنا
-
-        <small>
-
+        <span>
           BAHRNA &amp; SHRAANA
-
-        </small>
+        </span>
 
       </div>
-
 
     </a>
 
 
+    <form
+      class="bh-search"
+      onsubmit="return homeSearchSubmit(event)">
 
-    <div class="home-search">
-
-      <span class="home-search-icon">
+      <span class="bh-search-icon">
         🔎
       </span>
 
       <input
         id="homeSearch"
         type="search"
+        autocomplete="off"
         placeholder="ابحث عن نوع السمك، المورد، المنتج...">
 
-    </div>
+    </form>
 
 
-
-    <div class="home-header-actions">
+    <div class="bh-header-tools">
 
       <a href="checkout.html">
-
-        🛒 السلة
-
+        🛒
+        <span>السلة</span>
       </a>
 
       <a href="login.html">
-
-        تسجيل الدخول
-
+        👤
+        <span>تسجيل الدخول</span>
       </a>
 
-      <span>
-
+      <button
+        class="bh-menu-button"
+        type="button"
+        aria-label="القائمة">
         ☰
-
-      </span>
+      </button>
 
     </div>
 
@@ -2737,71 +137,49 @@
 
 
 <!-- =========================================================
-     NAVIGATION
+     MAIN NAVIGATION
 ========================================================= -->
 
-<nav class="home-nav">
+<nav class="bh-main-nav">
 
-  <div class="home-nav-inner">
-
+  <div class="bh-wide bh-nav-inner">
 
     <a
       class="active"
       href="home.html">
-
       الصفحة الرئيسية
-
     </a>
 
-
     <a href="catalog.html">
-
       الأسعار الحية
-
     </a>
 
-
-    <a href="auction.html">
-
-      شراعنا للمزادات 🔴
-
+    <a
+      class="bh-auction-nav"
+      href="auction.html">
+      <span class="bh-live-dot"></span>
+      شراعنا للمزادات
     </a>
-
 
     <a href="catalog.html">
-
       المنتجات
-
     </a>
-
 
     <a href="supplier.html">
-
       الموردون
-
     </a>
-
 
     <a href="register.html">
-
       الشركات
-
     </a>
-
 
     <a href="buyer.html">
-
       الجملة
-
     </a>
-
 
     <a href="catalog.html">
-
       عروض اليوم
-
     </a>
-
 
   </div>
 
@@ -2810,66 +188,122 @@
 
 
 <!-- =========================================================
-     HERO + KPIs
+     HERO
 ========================================================= -->
 
-<section class="home-hero-shell">
+<main>
 
 
-  <div class="home-hero">
+<section class="bh-hero-area">
+
+  <div class="bh-wide bh-hero-layout">
 
 
-    <div class="hero-main-content">
+    <!-- HERO IMAGE -->
+
+    <div class="bh-hero">
 
 
-      <div class="hero-logo-symbol">
+      <div class="bh-hero-shade"></div>
 
-        ⛵🐟
+
+      <div class="bh-hero-copy">
+
+        <div class="bh-hero-emblem">
+          ⛵
+        </div>
+
+        <h1>
+          بحرنا وشراعنا
+        </h1>
+
+        <div class="bh-hero-en">
+          BAHRNA &amp; SHRAANA
+        </div>
+
+        <p class="bh-hero-slogan">
+          من بحرنا... بشراعنا إلى بابك
+        </p>
+
+
+        <div class="bh-hero-actions">
+
+          <a
+            class="bh-btn bh-btn-gold"
+            href="catalog.html">
+            تسوق الآن
+          </a>
+
+          <a
+            class="bh-btn bh-btn-glass"
+            href="buyer.html">
+            الجملة والشركات
+          </a>
+
+        </div>
 
       </div>
 
 
-      <h1 class="hero-title">
 
-        بحرنا وشراعنا
+      <!-- HERO BENEFITS -->
 
-      </h1>
+      <div class="bh-benefits">
 
+        <div class="bh-benefit">
 
-      <div class="hero-title-en">
+          <div class="bh-benefit-icon">
+            🚚
+          </div>
 
-        BAHRNA &amp; SHRAANA
+          <div>
+            <strong>توصيل سريع</strong>
+            <span>داخل الإمارات</span>
+          </div>
 
-      </div>
-
-
-      <div class="hero-tagline">
-
-        من بحرنا... بشراعنا إلى بابك
-
-      </div>
+        </div>
 
 
-      <div class="hero-buttons">
+        <div class="bh-benefit">
+
+          <div class="bh-benefit-icon">
+            🛡️
+          </div>
+
+          <div>
+            <strong>موردون معتمدون</strong>
+            <span>موردون موثوقون</span>
+          </div>
+
+        </div>
 
 
-        <a
-          class="hero-button hero-button-gold"
-          href="catalog.html">
+        <div class="bh-benefit">
 
-          تسوق الآن
+          <div class="bh-benefit-icon">
+            ❄️
+          </div>
 
-        </a>
+          <div>
+            <strong>سلسلة تبريد</strong>
+            <span>جودة محفوظة</span>
+          </div>
+
+        </div>
 
 
-        <a
-          class="hero-button hero-button-blue"
-          href="buyer.html">
+        <div class="bh-benefit">
 
-          الجملة والشركات
+          <div class="bh-benefit-icon">
+            🏷️
+          </div>
 
-        </a>
+          <div>
+            <strong>أسعار تنافسية</strong>
+            <span>أفضل سعر متاح</span>
+          </div>
 
+        </div>
 
       </div>
 
@@ -2878,70 +312,267 @@
 
 
 
-    <div class="hero-benefits">
+    <!-- KPI SIDE -->
+
+    <aside class="bh-kpi-column">
 
 
-      <div class="hero-benefit">
+      <div class="bh-kpi-card">
 
-        <span class="hero-benefit-icon">
+        <div class="bh-kpi-icon">
+          📦
+        </div>
+
+        <div>
+
+          <span>
+            الطلبات المكتملة
+          </span>
+
+          <strong id="heroOrders">
+            —
+          </strong>
+
+          <small>
+            طلب ناجح
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <div class="bh-kpi-card">
+
+        <div class="bh-kpi-icon">
+          ⚖️
+        </div>
+
+        <div>
+
+          <span>
+            المزادات المكتملة
+          </span>
+
+          <strong id="heroAuctions">
+            —
+          </strong>
+
+          <small>
+            مزادات شراعنا
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <div class="bh-kpi-card">
+
+        <div class="bh-kpi-icon">
+          🏪
+        </div>
+
+        <div>
+
+          <span>
+            الموردون المعتمدون
+          </span>
+
+          <strong id="heroSuppliers">
+            —
+          </strong>
+
+          <small>
+            مورد موثوق
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <div class="bh-kpi-card bh-kpi-rating">
+
+        <div class="bh-kpi-icon">
+          ⭐
+        </div>
+
+        <div>
+
+          <span>
+            متوسط تقييم العملاء
+          </span>
+
+          <strong id="heroRating">
+            —
+          </strong>
+
+          <small>
+            تقييم موثق
+          </small>
+
+        </div>
+
+      </div>
+
+
+    </aside>
+
+
+  </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     LIVE MARKET
+========================================================= -->
+
+<section class="bh-section">
+
+  <div class="bh-wide">
+
+
+    <div class="bh-market-box">
+
+
+      <div class="bh-market-header">
+
+        <div>
+
+          <span class="bh-live-badge">
+            LIVE
+          </span>
+
+          <strong>
+            أفضل أسعار اليوم
+          </strong>
+
+          <small>
+            أرخص سعر لكل كجم
+          </small>
+
+        </div>
+
+
+        <a href="catalog.html">
+          عرض جميع الأسعار ←
+        </a>
+
+      </div>
+
+
+      <div
+        id="ticker"
+        class="bh-market-ticker">
+      </div>
+
+
+      <div class="bh-market-update">
+        ⟳ يتم تحديث الأسعار تلقائيًا حسب عروض الموردين
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+</section>
+
+
+
+<!-- =========================================================
+     QUICK ACTIONS
+========================================================= -->
+
+<section class="bh-section">
+
+  <div class="bh-wide">
+
+
+    <div class="bh-quick-actions">
+
+
+      <a
+        class="bh-quick"
+        href="catalog.html">
+
+        <span class="bh-quick-icon">
+          🐟
+        </span>
+
+        <strong>
+          صيد اليوم
+        </strong>
+
+      </a>
+
+
+      <a
+        class="bh-quick"
+        href="auction.html">
+
+        <span class="bh-quick-icon">
+          ⚖️
+        </span>
+
+        <strong>
+          شراعنا مباشر
+        </strong>
+
+        <small class="bh-mini-live">
+          LIVE
+        </small>
+
+      </a>
+
+
+      <a
+        class="bh-quick"
+        href="buyer.html">
+
+        <span class="bh-quick-icon">
+          🏢
+        </span>
+
+        <strong>
+          الجملة والشركات
+        </strong>
+
+      </a>
+
+
+      <a
+        class="bh-quick"
+        href="supplier.html">
+
+        <span class="bh-quick-icon">
+          🏪
+        </span>
+
+        <strong>
+          الموردون
+        </strong>
+
+      </a>
+
+
+      <a
+        class="bh-quick"
+        href="tracking.html">
+
+        <span class="bh-quick-icon">
           🚚
         </span>
 
-        <span>
-          توصيل سريع
-          <br>
-          داخل الإمارات
-        </span>
+        <strong>
+          تتبع الطلب
+        </strong>
 
-      </div>
-
-
-
-      <div class="hero-benefit">
-
-        <span class="hero-benefit-icon">
-          🛡️
-        </span>
-
-        <span>
-          موردون
-          <br>
-          معتمدون
-        </span>
-
-      </div>
-
-
-
-      <div class="hero-benefit">
-
-        <span class="hero-benefit-icon">
-          ❄️
-        </span>
-
-        <span>
-          سلسلة تبريد
-          <br>
-          محفوظة
-        </span>
-
-      </div>
-
-
-
-      <div class="hero-benefit">
-
-        <span class="hero-benefit-icon">
-          💰
-        </span>
-
-        <span>
-          أسعار
-          <br>
-          تنافسية
-        </span>
-
-      </div>
+      </a>
 
 
     </div>
@@ -2949,404 +580,179 @@
 
   </div>
 
-
-
-  <!-- KPI CARDS -->
-
-  <aside class="home-kpis">
-
-
-    <div class="home-kpi">
-
-      <div class="home-kpi-icon">
-
-        📦
-
-      </div>
-
-      <div>
-
-        <span>
-          الطلبات المكتملة
-        </span>
-
-        <strong id="heroOrders">
-
-          —
-
-        </strong>
-
-      </div>
-
-    </div>
-
-
-
-    <div class="home-kpi">
-
-      <div class="home-kpi-icon">
-
-        ⚖️
-
-      </div>
-
-      <div>
-
-        <span>
-          المزادات المكتملة
-        </span>
-
-        <strong id="heroAuctions">
-
-          —
-
-        </strong>
-
-      </div>
-
-    </div>
-
-
-
-    <div class="home-kpi">
-
-      <div class="home-kpi-icon">
-
-        🏪
-
-      </div>
-
-      <div>
-
-        <span>
-          الموردون المعتمدون
-        </span>
-
-        <strong id="heroSuppliers">
-
-          —
-
-        </strong>
-
-      </div>
-
-    </div>
-
-
-
-    <div class="home-kpi rating">
-
-      <div class="home-kpi-icon">
-
-        ⭐
-
-      </div>
-
-      <div>
-
-        <span>
-          متوسط تقييم العملاء
-        </span>
-
-        <strong id="heroRating">
-
-          —
-
-        </strong>
-
-      </div>
-
-    </div>
-
-
-  </aside>
-
-
 </section>
 
 
 
 <!-- =========================================================
-     LIVE PRICES
+     FEATURE CARDS
 ========================================================= -->
 
-<section class="home-section">
+<section class="bh-section">
+
+  <div class="bh-wide">
 
 
-  <div class="market-live">
+    <div class="bh-feature-grid">
 
 
-    <div class="market-live-header">
+      <!-- CATCH -->
 
-      <strong>
+      <article class="bh-feature bh-feature-catch">
 
-        أفضل أسعار اليوم — سعر الكيلو
+        <div class="bh-feature-overlay"></div>
 
-      </strong>
+        <div class="bh-feature-content">
 
-      <span class="live-pill">
+          <span class="bh-feature-label">
+            طازج اليوم
+          </span>
 
-        LIVE
+          <h2>
+            صيد اليوم
+          </h2>
 
-      </span>
+          <p>
+            أحدث الصيد من سواحل الإمارات،
+            متاح مباشرة للطلب والتوصيل.
+          </p>
 
-    </div>
+          <a
+            href="catalog.html"
+            class="bh-feature-btn">
+
+            تسوق الآن
+
+          </a>
+
+        </div>
+
+      </article>
 
 
-    <div
-      id="ticker">
+
+      <!-- AUCTION -->
+
+      <article class="bh-feature bh-feature-auction">
+
+        <div class="bh-feature-overlay"></div>
+
+        <div class="bh-feature-content">
+
+          <span class="bh-feature-label bh-feature-live">
+            LIVE
+          </span>
+
+          <h2>
+            شراعنا للمزادات
+          </h2>
+
+          <p>
+            مزادات مباشرة على منتجات بحرية
+            مختارة من الموردين.
+          </p>
+
+          <a
+            href="auction.html"
+            class="bh-feature-btn bh-feature-btn-red">
+
+            🔴 ادخل المزاد الآن
+
+          </a>
+
+        </div>
+
+      </article>
+
+
+
+      <!-- DELIVERY -->
+
+      <article class="bh-feature bh-feature-delivery">
+
+        <div class="bh-feature-overlay"></div>
+
+        <div class="bh-feature-content">
+
+          <span class="bh-feature-label">
+            توصيل مبرد
+          </span>
+
+          <h2>
+            التوصيل اليومي
+          </h2>
+
+          <p>
+            توصيل سريع وآمن للمنازل
+            والمطاعم والفنادق والشركات.
+          </p>
+
+          <a
+            href="catalog.html"
+            class="bh-feature-btn">
+
+            اطلب الآن
+
+          </a>
+
+        </div>
+
+      </article>
+
 
     </div>
 
 
   </div>
 
-
 </section>
 
 
 
 <!-- =========================================================
-     QUICK SERVICES
+     CORPORATE
 ========================================================= -->
 
-<section class="home-section">
+<section class="bh-section">
+
+  <div class="bh-wide">
 
 
-  <div class="quick-services">
+    <div class="bh-business-banner">
 
 
-    <a
-      class="quick-service"
-      href="catalog.html">
+      <div class="bh-business-content">
 
-      <div class="quick-service-icon">
-        🐟
-      </div>
+        <span>
+          B2B
+        </span>
 
-      <strong>
-        صيد اليوم
-      </strong>
-
-    </a>
-
-
-    <a
-      class="quick-service"
-      href="auction.html">
-
-      <div class="quick-service-icon">
-        ⚖️
-      </div>
-
-      <strong>
-        شراعنا مباشر
-      </strong>
-
-    </a>
-
-
-    <a
-      class="quick-service"
-      href="buyer.html">
-
-      <div class="quick-service-icon">
-        🏢
-      </div>
-
-      <strong>
-        الجملة والشركات
-      </strong>
-
-    </a>
-
-
-    <a
-      class="quick-service"
-      href="supplier.html">
-
-      <div class="quick-service-icon">
-        🏪
-      </div>
-
-      <strong>
-        الموردون
-      </strong>
-
-    </a>
-
-
-    <a
-      class="quick-service"
-      href="tracking.html">
-
-      <div class="quick-service-icon">
-        🚚
-      </div>
-
-      <strong>
-        تتبع الطلب
-      </strong>
-
-    </a>
-
-
-  </div>
-
-
-</section>
-
-
-
-<!-- =========================================================
-     IMAGE FEATURE CARDS
-========================================================= -->
-
-<section class="home-section">
-
-
-  <div class="feature-grid">
-
-
-    <article class="feature-card feature-catch">
-
-      <div class="feature-content">
-
-        <h3>
-
-          صيد اليوم
-
-        </h3>
+        <h2>
+          الجملة والشركات
+        </h2>
 
         <p>
-
-          أحدث الصيد من سواحل الإمارات،
-          جاهز للطلب والتوصيل.
-
+          للمطاعم والفنادق وشركات التموين والجهات المؤسسية.
+          قارن أسعار الجملة، أرسل طلبات RFQ، استقبل عروض الموردين،
+          وأنشئ طلبات الشراء من خلال منصة واحدة.
         </p>
-
-        <a
-          class="feature-button"
-          href="catalog.html">
-
-          تسوق الآن
-
-        </a>
 
       </div>
 
-    </article>
 
+      <a
+        class="bh-btn bh-btn-gold bh-business-btn"
+        href="buyer.html">
 
+        الدخول إلى منصة الأعمال
 
-    <article class="feature-card feature-auction">
+      </a>
 
-      <div class="feature-content">
-
-        <h3>
-
-          شراعنا للمزادات
-
-        </h3>
-
-        <p>
-
-          مزادات مباشرة على منتجات بحرية مختارة
-          من الموردين.
-
-        </p>
-
-        <a
-          class="feature-button feature-button-red"
-          href="auction.html">
-
-          🔴 ادخل المزاد الآن
-
-        </a>
-
-      </div>
-
-    </article>
-
-
-
-    <article class="feature-card feature-delivery">
-
-      <div class="feature-content">
-
-        <h3>
-
-          التوصيل اليومي
-
-        </h3>
-
-        <p>
-
-          توصيل مبرد وآمن إلى المنزل
-          والمطاعم والفنادق والشركات.
-
-        </p>
-
-        <a
-          class="feature-button"
-          href="catalog.html">
-
-          اطلب الآن
-
-        </a>
-
-      </div>
-
-    </article>
-
-
-  </div>
-
-
-</section>
-
-
-
-<!-- =========================================================
-     CORPORATE / WHOLESALE
-========================================================= -->
-
-<section class="home-section">
-
-
-  <div class="corporate-banner">
-
-
-    <div>
-
-      <h2>
-
-        الجملة والشركات
-
-      </h2>
-
-      <p>
-
-        للمطاعم والفنادق وشركات التموين والجهات المؤسسية:
-        قارن أسعار الجملة، أرسل طلبات RFQ، استقبل عروض الموردين،
-        وأنشئ طلبات شراء مؤسسية من خلال منصة واحدة.
-
-      </p>
 
     </div>
 
 
-    <a
-      class="hero-button hero-button-gold"
-      href="buyer.html">
-
-      الدخول إلى منصة الأعمال
-
-    </a>
-
-
   </div>
-
 
 </section>
 
@@ -3356,97 +762,104 @@
      TRUST
 ========================================================= -->
 
-<section class="home-section">
+<section class="bh-section">
+
+  <div class="bh-wide">
 
 
-  <div class="section-heading">
+    <div class="bh-section-head">
 
-    <h2>
+      <div>
 
-      ثقة مبنية على عمليات حقيقية
+        <span>
+          الثقة والجودة
+        </span>
 
-    </h2>
+        <h2>
+          ثقة مبنية على عمليات حقيقية
+        </h2>
+
+      </div>
+
+    </div>
+
+
+
+    <div class="trust-badges bh-trust-grid">
+
+
+      <div class="trust-badge bh-trust-card">
+
+        <div class="bh-trust-icon">
+          📦
+        </div>
+
+        <strong id="trustOrders">
+          0
+        </strong>
+
+        <span>
+          طلبات مكتملة
+        </span>
+
+      </div>
+
+
+      <div class="trust-badge bh-trust-card">
+
+        <div class="bh-trust-icon">
+          💬
+        </div>
+
+        <strong id="trustReviews">
+          0
+        </strong>
+
+        <span>
+          تقييمات موثقة
+        </span>
+
+      </div>
+
+
+      <div class="trust-badge bh-trust-card">
+
+        <div class="bh-trust-icon">
+          ⭐
+        </div>
+
+        <strong id="trustRating">
+          —
+        </strong>
+
+        <span>
+          متوسط التقييم
+        </span>
+
+      </div>
+
+
+      <div class="trust-badge bh-trust-card">
+
+        <div class="bh-trust-icon">
+          🏪
+        </div>
+
+        <strong id="trustSuppliers">
+          0
+        </strong>
+
+        <span>
+          موردون نشطون
+        </span>
+
+      </div>
+
+
+    </div>
+
 
   </div>
-
-
-
-  <div class="trust-badges">
-
-
-    <div class="trust-badge">
-
-      <strong id="trustOrders">
-
-        0
-
-      </strong>
-
-      <span>
-
-        طلبات مكتملة
-
-      </span>
-
-    </div>
-
-
-
-    <div class="trust-badge">
-
-      <strong id="trustReviews">
-
-        0
-
-      </strong>
-
-      <span>
-
-        تقييمات موثقة
-
-      </span>
-
-    </div>
-
-
-
-    <div class="trust-badge">
-
-      <strong id="trustRating">
-
-        —
-
-      </strong>
-
-      <span>
-
-        متوسط التقييم
-
-      </span>
-
-    </div>
-
-
-
-    <div class="trust-badge">
-
-      <strong id="trustSuppliers">
-
-        0
-
-      </strong>
-
-      <span>
-
-        موردون نشطون
-
-      </span>
-
-    </div>
-
-
-  </div>
-
 
 </section>
 
@@ -3456,113 +869,135 @@
      REVIEWS
 ========================================================= -->
 
-<section class="home-section">
+<section class="bh-section bh-reviews-section">
+
+  <div class="bh-wide">
 
 
-  <div class="section-heading">
+    <div class="bh-section-head bh-section-head-row">
 
 
-    <h2>
+      <div>
 
-      آراء العملاء
+        <span>
+          المشترون
+        </span>
 
-    </h2>
+        <h2>
+          آراء العملاء
+        </h2>
+
+      </div>
 
 
-    <a href="#">
+      <a href="#">
+        عرض جميع التقييمات
+      </a>
 
-      عرض جميع التقييمات
 
-    </a>
+    </div>
+
+
+    <div
+      id="reviewList"
+      class="bh-review-grid">
+    </div>
+
+
+    <p class="bh-data-note">
+      يتم تحديث مؤشرات الثقة والتقييمات حسب البيانات المتاحة في النظام.
+    </p>
 
 
   </div>
-
-
-
-  <div
-    id="reviewList">
-
-  </div>
-
-
-  <p
-    class="muted"
-    style="
-      font-size:11px;
-      margin-top:10px;
-    ">
-
-    يتم تحديث مؤشرات الثقة والتقييمات
-    حسب البيانات المتاحة في النظام.
-
-  </p>
-
 
 </section>
 
 
 
 <!-- =========================================================
-     APP
+     APP DOWNLOAD
 ========================================================= -->
 
-<section class="home-section">
+<section class="bh-section">
+
+  <div class="bh-wide">
 
 
-  <div class="app-promo">
+    <div class="bh-app-banner">
 
 
-    <div>
+      <div class="bh-app-copy">
 
-      <h2>
-
-        حمّل تطبيق بحرنا وشراعنا
-
-      </h2>
-
-      <p>
-
-        تجربة أسرع لشراء المنتجات البحرية،
-        متابعة الطلبات، دخول المزادات،
-        والوصول إلى الموردين من أي مكان.
-
-      </p>
-
-
-      <div class="app-store-buttons">
-
-
-        <span class="app-store">
-
-           App Store
-
+        <span class="bh-app-eyebrow">
+          بحرنا وشراعنا
         </span>
 
+        <h2>
+          حمّل تطبيق بحرنا وشراعنا
+        </h2>
 
-        <span class="app-store">
+        <p>
+          تجربة أسرع لشراء المنتجات البحرية،
+          متابعة الطلبات، دخول المزادات،
+          والوصول إلى الموردين من أي مكان.
+        </p>
 
-          ▶ Google Play
 
-        </span>
+        <div class="bh-store-row">
 
+          <span class="bh-store-button">
+             App Store
+          </span>
+
+          <span class="bh-store-button">
+            ▶ Google Play
+          </span>
+
+        </div>
 
       </div>
 
-    </div>
 
+      <div class="bh-phone-art">
 
-    <div class="app-phone">
+        <div class="bh-phone-shell">
 
-      📱
+          <div class="bh-phone-speaker"></div>
+
+          <div class="bh-phone-logo">
+            ⛵
+          </div>
+
+          <strong>
+            بحرنا وشراعنا
+          </strong>
+
+          <div class="bh-phone-photo"></div>
+
+          <div class="bh-phone-cards">
+
+            <span>🐟</span>
+            <span>🦐</span>
+            <span>🦀</span>
+
+          </div>
+
+        </div>
+
+      </div>
+
 
     </div>
 
 
   </div>
 
-
 </section>
+
+
+
+</main>
 
 
 
@@ -3570,30 +1005,31 @@
      FOOTER
 ========================================================= -->
 
-<footer class="home-footer">
+<footer class="bh-footer">
 
 
-  <div class="home-footer-grid">
+  <div class="bh-wide bh-footer-grid">
 
 
-    <div>
+    <div class="bh-footer-brand">
 
-
-      <div class="footer-brand">
-
-        ⛵🐟 بحرنا وشراعنا
-
+      <div class="bh-footer-logo">
+        ⛵
       </div>
 
+      <h2>
+        بحرنا وشراعنا
+      </h2>
+
+      <span>
+        BAHRNA &amp; SHRAANA
+      </span>
 
       <p>
-
         سوق رقمي إماراتي للمأكولات البحرية
         يربط المستهلكين والشركات بالموردين
         ويوفر تجربة شراء ومزادات وتوصيل متكاملة.
-
       </p>
-
 
     </div>
 
@@ -3601,34 +1037,24 @@
 
     <div>
 
-      <h4>
-
+      <h3>
         السوق
-
-      </h4>
+      </h3>
 
       <a href="catalog.html">
-
         الأسماك الطازجة
+      </a>
 
+      <a href="catalog.html">
+        الأسعار الحية
       </a>
 
       <a href="auction.html">
-
         المزادات
-
       </a>
 
       <a href="buyer.html">
-
         الجملة والشركات
-
-      </a>
-
-      <a href="supplier.html">
-
-        الموردون
-
       </a>
 
     </div>
@@ -3637,34 +1063,24 @@
 
     <div>
 
-      <h4>
-
+      <h3>
         حسابي
-
-      </h4>
+      </h3>
 
       <a href="login.html">
-
         تسجيل الدخول
-
       </a>
 
       <a href="register.html">
-
         إنشاء حساب
-
       </a>
 
       <a href="tracking.html">
-
         تتبع الطلب
-
       </a>
 
       <a href="checkout.html">
-
         السلة
-
       </a>
 
     </div>
@@ -3673,28 +1089,20 @@
 
     <div>
 
-      <h4>
-
+      <h3>
         معلومات
-
-      </h4>
+      </h3>
 
       <a href="about.html">
-
         من نحن
-
       </a>
 
       <a href="terms.html">
-
         الشروط والأحكام
-
       </a>
 
       <a href="privacy.html">
-
         سياسة الخصوصية
-
       </a>
 
     </div>
@@ -3703,9 +1111,15 @@
   </div>
 
 
-  <div class="footer-bottom">
 
-    © بحرنا وشراعنا — BAHRNA &amp; SHRAANA
+  <div class="bh-footer-bottom">
+
+    <div class="bh-wide">
+
+      © بحرنا وشراعنا —
+      BAHRNA &amp; SHRAANA
+
+    </div>
 
   </div>
 
@@ -3715,138 +1129,98 @@
 
 
 <!-- =========================================================
-     MOBILE NAV
+     MOBILE BOTTOM NAV
 ========================================================= -->
 
-<nav class="mobile-bottom">
-
+<nav class="mobile-bottom bh-mobile-nav">
 
   <a href="home.html">
-
     🏠
-    <br>
-    الرئيسية
-
+    <span>الرئيسية</span>
   </a>
-
 
   <a href="catalog.html">
-
     🔎
-    <br>
-    بحث
-
+    <span>بحث</span>
   </a>
-
 
   <a href="auction.html">
-
     ⚖️
-    <br>
-    المزادات
-
+    <span>المزادات</span>
   </a>
-
 
   <a href="checkout.html">
-
     🛒
-    <br>
-    السلة
-
+    <span>السلة</span>
   </a>
-
 
   <a href="login.html">
-
     👤
-    <br>
-    الحساب
-
+    <span>الحساب</span>
   </a>
-
 
 </nav>
 
 
 
 <!-- =========================================================
-     HOME SEARCH
+     HOME JS
 ========================================================= -->
 
 <script>
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
 
-    const search =
-      document.getElementById(
-        "homeSearch"
-      );
+function homeSearchSubmit(event) {
+
+  event.preventDefault();
 
 
-    if (!search) {
-
-      return;
-
-    }
-
-
-    search.addEventListener(
-      "keydown",
-      event => {
-
-        if (
-          event.key !== "Enter"
-        ) {
-
-          return;
-
-        }
-
-
-        const query =
-          search.value.trim();
-
-
-        if (!query) {
-
-          window.location.href =
-            "catalog.html";
-
-          return;
-
-        }
-
-
-        window.location.href =
-          "catalog.html?search=" +
-          encodeURIComponent(
-            query
-          );
-
-      }
+  const input =
+    document.getElementById(
+      "homeSearch"
     );
 
+
+  const query =
+    input
+      ? input.value.trim()
+      : "";
+
+
+  if (!query) {
+
+    window.location.href =
+      "catalog.html";
+
+    return false;
+
   }
-);
-
-</script>
 
 
+  window.location.href =
+    "catalog.html?search=" +
+    encodeURIComponent(
+      query
+    );
 
-<!-- =========================================================
-     MARKET TICKER
-========================================================= -->
 
-<script>
+  return false;
+
+}
+
+
 
 document.addEventListener(
   "DOMContentLoaded",
   async () => {
 
+
+    /* =========================================================
+       LIVE MARKET DATA
+    ========================================================== */
+
     try {
+
 
       const offers =
         await Bahrna.getMarketOffers();
@@ -3859,12 +1233,13 @@ document.addEventListener(
         .forEach(
           offer => {
 
+
             const name =
               offer.name ||
               "منتج بحري";
 
 
-            const retail =
+            const price =
               Number(
                 offer.retail || 0
               );
@@ -3872,7 +1247,7 @@ document.addEventListener(
 
             if (
               !best[name] ||
-              retail <
+              price <
               Number(
                 best[name].retail || 0
               )
@@ -3882,6 +1257,7 @@ document.addEventListener(
                 offer;
 
             }
+
 
           }
         );
@@ -3903,121 +1279,112 @@ document.addEventListener(
         );
 
 
-      if (!ticker) {
+      if (ticker) {
 
-        return;
+
+        if (!rows.length) {
+
+
+          ticker.innerHTML = `
+
+            <a
+              class="bh-price-card"
+              href="catalog.html">
+
+              <div class="bh-price-image">
+                🐟
+              </div>
+
+              <strong>
+                أسعار السوق
+              </strong>
+
+              <div class="bh-price-value">
+                —
+              </div>
+
+              <small>
+                جاري تحديث الأسعار
+              </small>
+
+            </a>
+
+          `;
+
+
+        } else {
+
+
+          ticker.innerHTML =
+            rows
+              .slice(0,8)
+              .map(
+                offer => {
+
+
+                  const price =
+                    Number(
+                      offer.retail || 0
+                    ).toFixed(2);
+
+
+                  return `
+
+                    <a
+                      class="bh-price-card"
+                      href="catalog.html">
+
+                      <div class="bh-price-image">
+                        🐟
+                      </div>
+
+                      <strong>
+                        ${offer.name || "منتج بحري"}
+                      </strong>
+
+                      <div class="bh-price-value">
+
+                        ${price}
+
+                        <span>
+                          AED
+                        </span>
+
+                      </div>
+
+                      <small>
+
+                        ${
+                          offer.supplier ||
+                          "مورد موثوق"
+                        }
+
+                        ${
+                          offer.origin
+                            ? " • " +
+                              offer.origin
+                            : ""
+                        }
+
+                      </small>
+
+                    </a>
+
+                  `;
+
+                }
+              )
+              .join("");
+
+
+        }
+
 
       }
-
-
-      if (!rows.length) {
-
-        ticker.innerHTML = `
-
-          <a
-            class="quote"
-            href="catalog.html">
-
-            <div class="ticker-fish-icon">
-              🐟
-            </div>
-
-            <strong>
-              أسعار السوق
-            </strong>
-
-            <div class="price">
-              —
-            </div>
-
-            <small>
-              جاري تحديث الأسعار
-            </small>
-
-          </a>
-
-        `;
-
-        return;
-
-      }
-
-
-      ticker.innerHTML =
-        rows
-          .slice(0,10)
-          .map(
-            offer => {
-
-              const name =
-                offer.name ||
-                "منتج بحري";
-
-
-              const price =
-                Number(
-                  offer.retail || 0
-                ).toFixed(2);
-
-
-              const supplier =
-                offer.supplier ||
-                "";
-
-
-              const origin =
-                offer.origin ||
-                "";
-
-
-              return `
-
-                <a
-                  class="quote"
-                  href="catalog.html">
-
-                  <div class="ticker-fish-icon">
-
-                    🐟
-
-                  </div>
-
-                  <strong>
-
-                    ${name}
-
-                  </strong>
-
-                  <div class="price">
-
-                    ${price}
-
-                    AED
-
-                  </div>
-
-                  <small>
-
-                    ${supplier}
-
-                    ${
-                      origin
-                        ? " • " + origin
-                        : ""
-                    }
-
-                  </small>
-
-                </a>
-
-              `;
-
-            }
-          )
-          .join("");
 
 
     } catch (error) {
+
 
       console.error(
         "تعذر تحميل أسعار السوق:",
@@ -4025,68 +1392,13 @@ document.addEventListener(
       );
 
 
-      const ticker =
-        document.getElementById(
-          "ticker"
-        );
-
-
-      if (ticker) {
-
-        ticker.innerHTML = `
-
-          <a
-            class="quote"
-            href="catalog.html">
-
-            <div class="ticker-fish-icon">
-
-              🐟
-
-            </div>
-
-            <strong>
-
-              السوق
-
-            </strong>
-
-            <div class="price">
-
-              —
-
-            </div>
-
-            <small>
-
-              تعذر تحميل الأسعار الآن
-
-            </small>
-
-          </a>
-
-        `;
-
-      }
-
     }
 
-  }
-);
-
-</script>
 
 
-
-<!-- =========================================================
-     COPY TRUST DATA INTO HERO
-========================================================= -->
-
-<script>
-
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
+    /* =========================================================
+       MIRROR TRUST DATA
+    ========================================================== */
 
 
     function mirrorValue(
@@ -4117,21 +1429,22 @@ document.addEventListener(
       }
 
 
-      const update =
-        () => {
-
-          const value =
-            source.textContent.trim();
+      function update() {
 
 
-          if (value) {
+        const value =
+          source.textContent.trim();
 
-            target.textContent =
-              value;
 
-          }
+        if (value) {
 
-        };
+          target.textContent =
+            value;
+
+        }
+
+
+      }
 
 
       update();
@@ -4146,6 +1459,7 @@ document.addEventListener(
       observer.observe(
         source,
         {
+
           childList:
             true,
 
@@ -4154,6 +1468,7 @@ document.addEventListener(
 
           characterData:
             true
+
         }
       );
 
@@ -4182,10 +1497,9 @@ document.addEventListener(
   }
 );
 
+
 </script>
 
 
-
 </body>
-
 </html>
