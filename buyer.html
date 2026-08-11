@@ -1,33 +1,1147 @@
-<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة الشركات | بحرنا وشراعنا</title><link rel="stylesheet" href="app.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="config.js"></script><script defer src="app.js"></script></head><body>
-<div class="topbar"><div class="container">حساب شركات / مطاعم / فنادق • Demo</div></div>
-<header class="header"><div class="container header-row"><a class="brand" href="home.html"><span class="brand-mark">⛵🐟</span><div>بحرنا وشراعنا<br><small>BUSINESS BUYER</small></div></a><div style="margin-right:auto">الحساب المؤسسي</div></div></header>
+<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1">
+
+  <title>
+    لوحة المشتري المؤسسي | بحرنا وشراعنا
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="app.css">
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     الشريط العلوي
+========================================= -->
+
+<div class="topbar">
+
+  <div class="container">
+
+    حساب شركات / مطاعم / فنادق • بحرنا وشراعنا
+
+  </div>
+
+</div>
+
+
+
+<!-- =========================================
+     Header
+========================================= -->
+
+<header class="header">
+
+  <div class="container header-row">
+
+
+    <a
+      class="brand"
+      href="home.html">
+
+
+      <span class="brand-mark">
+
+        ⛵🐟
+
+      </span>
+
+
+      <div>
+
+        بحرنا وشراعنا
+
+        <br>
+
+        <small>
+          BUSINESS BUYER
+        </small>
+
+      </div>
+
+
+    </a>
+
+
+
+    <div style="margin-right:auto">
+
+      الحساب المؤسسي
+
+    </div>
+
+
+  </div>
+
+</header>
+
+
+
+<!-- =========================================
+     هيكل لوحة المشتري
+========================================= -->
+
 <div class="buyer-shell">
-<aside class="buyer-sidebar"><h3>المشتري المؤسسي</h3>
-<a class="active" href="#" onclick="showBuyerPanel('overviewPanel',this)">الرئيسية</a>
-<a href="#" onclick="showBuyerPanel('wholesalePanel',this)">أسعار الجملة</a>
-<a href="#" onclick="showBuyerPanel('newRfqPanel',this)">طلب عرض سعر RFQ</a>
-<a href="#" onclick="showBuyerPanel('rfqPanel',this)">طلبات RFQ</a>
-<a href="#" onclick="showBuyerPanel('ordersPanel',this)">الطلبات</a>
+
+
+
+<!-- =========================================
+     القائمة الجانبية
+========================================= -->
+
+<aside class="buyer-sidebar">
+
+
+  <h3>
+
+    المشتري المؤسسي
+
+  </h3>
+
+
+  <a
+    class="active"
+    href="#"
+    onclick="showBuyerPanel('overviewPanel',this)">
+
+    الرئيسية
+
+  </a>
+
+
+  <a
+    href="#"
+    onclick="showBuyerPanel('wholesalePanel',this)">
+
+    أسعار الجملة
+
+  </a>
+
+
+  <a
+    href="#"
+    onclick="showBuyerPanel('newRfqPanel',this)">
+
+    طلب عرض سعر RFQ
+
+  </a>
+
+
+  <a
+    href="#"
+    onclick="showBuyerPanel('rfqPanel',this)">
+
+    طلبات RFQ
+
+  </a>
+
+
+  <a
+    href="#"
+    onclick="showBuyerPanel('quotesPanel',this)">
+
+    عروض الموردين
+
+  </a>
+
+
+  <a
+    href="#"
+    onclick="showBuyerPanel('ordersPanel',this)">
+
+    الطلبات
+
+  </a>
+
+
 </aside>
+
+
+
+<!-- =========================================
+     المحتوى الرئيسي
+========================================= -->
+
 <main class="buyer-main">
-<div class="admin-top"><div><h1 style="margin:0;color:var(--navy)">لوحة المشتري المؤسسي</h1><p class="muted">للمطاعم والفنادق وشركات التموين والجهات المؤسسية.</p></div><div><a class="btn btn-gold" href="catalog.html">السوق</a></div></div>
 
-<section id="overviewPanel" class="buyer-panel active"><div class="grid4">
-<div class="stat-card"><span class="muted">RFQ</span><div id="rfqCount" class="big">0</div></div>
-<div class="stat-card"><span class="muted">طلبات جملة</span><div id="b2bOrderCount" class="big">0</div></div>
-<div class="stat-card"><span class="muted">حالة الحساب</span><div class="big">✓</div></div>
-<div class="stat-card"><span class="muted">حد ائتماني</span><div class="big">—</div></div>
-</div><div class="card" style="margin-top:16px"><h2>لماذا حساب الأعمال؟</h2><p class="muted">مقارنة أسعار الجملة، طلب كميات، RFQ، عقود أسعار لاحقًا، وفواتير وتقارير دورية.</p></div></section>
 
-<section id="wholesalePanel" class="buyer-panel"><h2>أفضل أسعار الجملة</h2><div id="wholesaleCards" class="grid4"></div></section>
 
-<section id="newRfqPanel" class="buyer-panel"><div class="card"><h2>طلب عرض سعر RFQ</h2><div class="form-grid">
-<div class="field"><label>المنتج</label><input id="rfqItem" placeholder="مثال: هامور محلي"></div>
-<div class="field"><label>الكمية كجم</label><input id="rfqQty" type="number" step="1"></div>
-<div class="field"><label>الإمارة</label><select id="rfqDelivery"><option>دبي</option><option>أبوظبي</option><option>الشارقة</option><option>عجمان</option><option>رأس الخيمة</option><option>الفجيرة</option><option>أم القيوين</option></select></div>
-<div class="field"><label>موعد التسليم المطلوب</label><input type="date"></div>
-</div><div class="field"><label>ملاحظات</label><textarea rows="3" placeholder="المقاس، التنظيف، التغليف، أي شروط أخرى"></textarea></div><button class="btn btn-primary" onclick="submitRFQ()">إرسال RFQ</button></div></section>
+<div class="admin-top">
 
-<section id="rfqPanel" class="buyer-panel"><div class="card"><h2>طلبات عروض الأسعار</h2><table class="table"><thead><tr><th>الرقم</th><th>المنتج</th><th>الكمية</th><th>التسليم</th><th>الحالة</th></tr></thead><tbody id="rfqRows"></tbody></table></div></section>
-<section id="ordersPanel" class="buyer-panel"><div class="card"><h2>طلبات الجملة</h2><table class="table"><thead><tr><th>الطلب</th><th>المنتج</th><th>القيمة</th><th>الحالة</th></tr></thead><tbody id="b2bRows"></tbody></table></div></section>
-</main></div><script src="buyer.js"></script></body></html>
+
+  <div>
+
+
+    <h1
+      style="margin:0;color:var(--navy)">
+
+      لوحة المشتري المؤسسي
+
+    </h1>
+
+
+    <p class="muted">
+
+      للمطاعم والفنادق وشركات التموين
+      والجهات المؤسسية.
+
+    </p>
+
+
+  </div>
+
+
+
+  <div>
+
+
+    <a
+      class="btn btn-gold"
+      href="catalog.html">
+
+      السوق
+
+    </a>
+
+
+  </div>
+
+
+</div>
+
+
+
+<!-- =========================================
+     الرئيسية
+========================================= -->
+
+<section
+  id="overviewPanel"
+  class="buyer-panel active">
+
+
+<div class="grid4">
+
+
+  <div class="stat-card">
+
+
+    <span class="muted">
+
+      RFQ
+
+    </span>
+
+
+    <div
+      id="rfqCount"
+      class="big">
+
+      0
+
+    </div>
+
+
+  </div>
+
+
+
+  <div class="stat-card">
+
+
+    <span class="muted">
+
+      عروض الموردين
+
+    </span>
+
+
+    <div
+      id="quoteCount"
+      class="big">
+
+      0
+
+    </div>
+
+
+  </div>
+
+
+
+  <div class="stat-card">
+
+
+    <span class="muted">
+
+      طلبات جملة
+
+    </span>
+
+
+    <div
+      id="b2bOrderCount"
+      class="big">
+
+      0
+
+    </div>
+
+
+  </div>
+
+
+
+  <div class="stat-card">
+
+
+    <span class="muted">
+
+      حالة الحساب
+
+    </span>
+
+
+    <div class="big">
+
+      ✓
+
+    </div>
+
+
+  </div>
+
+
+</div>
+
+
+
+<div
+  class="card"
+  style="margin-top:16px">
+
+
+  <h2>
+
+    حساب الأعمال
+
+  </h2>
+
+
+  <p class="muted">
+
+    يتيح حساب الأعمال مقارنة أسعار الجملة،
+    وإرسال طلبات RFQ،
+    واستقبال عروض متعددة من الموردين،
+    واختيار العرض الأنسب،
+    ثم تحويله لاحقاً إلى طلب شراء مؤسسي.
+
+  </p>
+
+
+</div>
+
+
+</section>
+
+
+
+<!-- =========================================
+     أسعار الجملة
+========================================= -->
+
+<section
+  id="wholesalePanel"
+  class="buyer-panel">
+
+
+  <h2>
+
+    أفضل أسعار الجملة
+
+  </h2>
+
+
+  <div
+    id="wholesaleCards"
+    class="grid4">
+
+
+    <div class="card">
+
+      جاري تحميل أسعار الجملة...
+
+    </div>
+
+
+  </div>
+
+
+</section>
+
+
+
+<!-- =========================================
+     إنشاء RFQ
+========================================= -->
+
+<section
+  id="newRfqPanel"
+  class="buyer-panel">
+
+
+<div class="card">
+
+
+<h2>
+
+  طلب عرض سعر RFQ
+
+</h2>
+
+
+
+<div class="form-grid">
+
+
+
+<div class="field">
+
+
+  <label>
+
+    المنتج
+
+  </label>
+
+
+  <input
+    id="rfqItem"
+    placeholder="مثال: هامور محلي">
+
+
+</div>
+
+
+
+<div class="field">
+
+
+  <label>
+
+    الكمية كجم
+
+  </label>
+
+
+  <input
+    id="rfqQty"
+    type="number"
+    step="1"
+    min="1">
+
+
+</div>
+
+
+
+<div class="field">
+
+
+  <label>
+
+    الإمارة
+
+  </label>
+
+
+  <select id="rfqDelivery">
+
+
+    <option value="دبي">
+      دبي
+    </option>
+
+
+    <option value="أبوظبي">
+      أبوظبي
+    </option>
+
+
+    <option value="الشارقة">
+      الشارقة
+    </option>
+
+
+    <option value="عجمان">
+      عجمان
+    </option>
+
+
+    <option value="رأس الخيمة">
+      رأس الخيمة
+    </option>
+
+
+    <option value="الفجيرة">
+      الفجيرة
+    </option>
+
+
+    <option value="أم القيوين">
+      أم القيوين
+    </option>
+
+
+  </select>
+
+
+</div>
+
+
+
+<div class="field">
+
+
+  <label>
+
+    موعد التسليم المطلوب
+
+  </label>
+
+
+  <input
+    id="rfqDeliveryDate"
+    type="date">
+
+
+</div>
+
+
+</div>
+
+
+
+<div class="field">
+
+
+  <label>
+
+    ملاحظات
+
+  </label>
+
+
+  <textarea
+    id="rfqNotes"
+    rows="3"
+    placeholder="المقاس، التنظيف، التغليف، شروط التوريد أو أي تفاصيل إضافية"></textarea>
+
+
+</div>
+
+
+
+<button
+  class="btn btn-primary"
+  onclick="submitRFQ()">
+
+  إرسال RFQ
+
+</button>
+
+
+</div>
+
+
+</section>
+
+
+
+<!-- =========================================
+     طلبات RFQ
+========================================= -->
+
+<section
+  id="rfqPanel"
+  class="buyer-panel">
+
+
+<div class="card">
+
+
+<h2>
+
+  طلبات عروض الأسعار
+
+</h2>
+
+
+
+<table class="table">
+
+
+<thead>
+
+
+<tr>
+
+
+  <th>
+    الرقم
+  </th>
+
+
+  <th>
+    المنتج
+  </th>
+
+
+  <th>
+    الكمية
+  </th>
+
+
+  <th>
+    التسليم
+  </th>
+
+
+  <th>
+    الحالة
+  </th>
+
+
+  <th>
+    العروض
+  </th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody id="rfqRows">
+
+
+<tr>
+
+
+  <td colspan="6">
+
+    جاري تحميل طلبات RFQ...
+
+  </td>
+
+
+</tr>
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+</section>
+
+
+
+<!-- =========================================
+     عروض الموردين
+========================================= -->
+
+<section
+  id="quotesPanel"
+  class="buyer-panel">
+
+
+<div class="card">
+
+
+<h2>
+
+  عروض الموردين
+
+</h2>
+
+
+<p class="muted">
+
+  يمكنك هنا مقارنة عروض الموردين
+  من حيث السعر والكمية ومدة التوصيل
+  ثم اختيار العرض الأنسب.
+
+</p>
+
+
+
+<div
+  id="buyerQuoteSummary"
+  style="margin-bottom:16px">
+
+
+  <span class="muted">
+
+    جاري تحميل عروض الموردين...
+
+  </span>
+
+
+</div>
+
+
+
+<table class="table">
+
+
+<thead>
+
+
+<tr>
+
+
+  <th>
+    رقم RFQ
+  </th>
+
+
+  <th>
+    المنتج
+  </th>
+
+
+  <th>
+    المورد
+  </th>
+
+
+  <th>
+    الكمية
+  </th>
+
+
+  <th>
+    السعر / كجم
+  </th>
+
+
+  <th>
+    الإجمالي
+  </th>
+
+
+  <th>
+    التوصيل
+  </th>
+
+
+  <th>
+    الحالة
+  </th>
+
+
+  <th>
+    الإجراء
+  </th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody id="buyerQuoteRows">
+
+
+<tr>
+
+
+  <td colspan="9">
+
+    جاري تحميل عروض الموردين...
+
+  </td>
+
+
+</tr>
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+
+<!-- =========================================
+     تفاصيل العرض المختار
+========================================= -->
+
+<div
+  id="quoteDetailsBox"
+  class="card"
+  style="margin-top:16px;display:none">
+
+
+  <h2>
+
+    تفاصيل عرض المورد
+
+  </h2>
+
+
+  <div class="form-grid">
+
+
+
+    <div class="field">
+
+
+      <label>
+
+        رقم RFQ
+
+      </label>
+
+
+      <input
+        id="selectedQuoteRfqNo"
+        readonly>
+
+
+    </div>
+
+
+
+    <div class="field">
+
+
+      <label>
+
+        المنتج
+
+      </label>
+
+
+      <input
+        id="selectedQuoteProduct"
+        readonly>
+
+
+    </div>
+
+
+
+    <div class="field">
+
+
+      <label>
+
+        المورد
+
+      </label>
+
+
+      <input
+        id="selectedQuoteSupplier"
+        readonly>
+
+
+    </div>
+
+
+
+    <div class="field">
+
+
+      <label>
+
+        الكمية
+
+      </label>
+
+
+      <input
+        id="selectedQuoteQty"
+        readonly>
+
+
+    </div>
+
+
+
+    <div class="field">
+
+
+      <label>
+
+        السعر لكل كجم
+
+      </label>
+
+
+      <input
+        id="selectedQuotePrice"
+        readonly>
+
+
+    </div>
+
+
+
+    <div class="field">
+
+
+      <label>
+
+        الإجمالي
+
+      </label>
+
+
+      <input
+        id="selectedQuoteTotal"
+        readonly>
+
+
+    </div>
+
+
+
+    <div class="field">
+
+
+      <label>
+
+        مدة التوصيل
+
+      </label>
+
+
+      <input
+        id="selectedQuoteDelivery"
+        readonly>
+
+
+    </div>
+
+
+  </div>
+
+
+
+  <div class="field">
+
+
+    <label>
+
+      ملاحظات المورد
+
+    </label>
+
+
+    <textarea
+      id="selectedQuoteNotes"
+      rows="3"
+      readonly></textarea>
+
+
+  </div>
+
+
+
+  <input
+    type="hidden"
+    id="selectedQuoteId">
+
+
+  <input
+    type="hidden"
+    id="selectedQuoteRfqId">
+
+
+
+  <button
+    class="btn btn-primary"
+    onclick="acceptSupplierQuote()">
+
+    قبول العرض
+
+  </button>
+
+
+
+  <button
+    class="btn"
+    style="margin-right:8px"
+    onclick="rejectSupplierQuote()">
+
+    رفض العرض
+
+  </button>
+
+
+
+  <button
+    class="btn"
+    style="margin-right:8px"
+    onclick="closeQuoteDetails()">
+
+    إغلاق
+
+  </button>
+
+
+</div>
+
+
+</section>
+
+
+
+<!-- =========================================
+     طلبات الجملة
+========================================= -->
+
+<section
+  id="ordersPanel"
+  class="buyer-panel">
+
+
+<div class="card">
+
+
+<h2>
+
+  طلبات الجملة
+
+</h2>
+
+
+
+<table class="table">
+
+
+<thead>
+
+
+<tr>
+
+
+  <th>
+
+    الطلب
+
+  </th>
+
+
+  <th>
+
+    المنتج
+
+  </th>
+
+
+  <th>
+
+    القيمة
+
+  </th>
+
+
+  <th>
+
+    الحالة
+
+  </th>
+
+
+</tr>
+
+
+</thead>
+
+
+
+<tbody id="b2bRows">
+
+
+<tr>
+
+
+  <td colspan="4">
+
+    لا توجد طلبات جملة حالياً.
+
+  </td>
+
+
+</tr>
+
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+</section>
+
+
+
+</main>
+
+
+</div>
+
+
+
+<!-- =========================================
+     Supabase
+========================================= -->
+
+<script
+  src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+</script>
+
+
+<script src="config.js"></script>
+
+
+<script src="app.js"></script>
+
+
+<script src="buyer.js"></script>
+
+
+</body>
+
+</html>
