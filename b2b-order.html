@@ -18,6 +18,7 @@
     rel="stylesheet"
     href="app.css">
 
+
   <style>
 
     .order-details-grid {
@@ -27,6 +28,7 @@
       margin-top:18px;
     }
 
+
     .order-info-box {
       border:1px solid #dfe7ef;
       border-radius:16px;
@@ -34,10 +36,12 @@
       background:#fff;
     }
 
+
     .order-info-box h3 {
       margin-top:0;
       color:var(--navy);
     }
+
 
     .order-line {
       display:flex;
@@ -47,33 +51,38 @@
       border-bottom:1px solid #edf1f5;
     }
 
+
     .order-line:last-child {
       border-bottom:0;
     }
 
+
     .order-timeline {
       display:grid;
-      grid-template-columns:repeat(4,1fr);
+      grid-template-columns:repeat(5,1fr);
       position:relative;
-      margin:30px 0;
+      margin:34px 0;
       text-align:center;
     }
+
 
     .order-timeline:before {
       content:"";
       position:absolute;
-      right:8%;
-      left:8%;
+      right:7%;
+      left:7%;
       top:20px;
       height:3px;
       background:#dfe7ef;
       z-index:0;
     }
 
+
     .timeline-step {
       position:relative;
       z-index:1;
     }
+
 
     .timeline-dot {
       width:42px;
@@ -88,15 +97,18 @@
       font-weight:700;
     }
 
+
     .timeline-step.done .timeline-dot {
       background:#15945c;
       color:#fff;
     }
 
+
     .timeline-step.current .timeline-dot {
       background:#e4a72f;
       color:#fff;
     }
+
 
     .order-total {
       font-size:30px;
@@ -104,16 +116,47 @@
       color:var(--navy);
     }
 
+
+    .receipt-box {
+      margin-top:20px;
+      padding:22px;
+      border-radius:16px;
+      border:1px solid #dfe7ef;
+      background:#f8fbfd;
+    }
+
+
+    .receipt-success {
+      background:#f1fbf6;
+      border:1px solid #b9e3cb;
+    }
+
+
+    .receipt-title {
+      font-size:22px;
+      font-weight:800;
+      color:var(--navy);
+      margin-bottom:8px;
+    }
+
+
+    #confirmReceiptBtn {
+      margin-top:15px;
+    }
+
+
     @media(max-width:800px) {
 
       .order-details-grid {
         grid-template-columns:1fr;
       }
 
+
       .order-timeline {
-        grid-template-columns:1fr 1fr;
-        gap:24px;
+        grid-template-columns:1fr;
+        gap:18px;
       }
+
 
       .order-timeline:before {
         display:none;
@@ -138,6 +181,7 @@
   </div>
 
 </div>
+
 
 
 <header class="header">
@@ -167,7 +211,13 @@
     </a>
 
 
-    <div style="margin-right:auto;display:flex;gap:8px">
+    <div
+      style="
+        margin-right:auto;
+        display:flex;
+        gap:8px;
+      "
+    >
 
       <a
         class="btn"
@@ -176,6 +226,7 @@
         لوحة المشتري
 
       </a>
+
 
       <a
         class="btn btn-gold"
@@ -202,12 +253,14 @@
 
 
 <div
-  style="display:flex;
-         justify-content:space-between;
-         align-items:flex-start;
-         gap:20px;
-         flex-wrap:wrap">
-
+  style="
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:20px;
+    flex-wrap:wrap;
+  "
+>
 
   <div>
 
@@ -217,7 +270,11 @@
 
     <h1
       id="orderNo"
-      style="margin-top:0;color:var(--navy)">
+      style="
+        margin-top:0;
+        color:var(--navy);
+      "
+    >
 
       جاري التحميل...
 
@@ -234,14 +291,12 @@
 
     <span
       id="orderStatus"
-      class="status ok">
-
+      class="status ok"
+    >
       —
-
     </span>
 
   </div>
-
 
 </div>
 
@@ -249,9 +304,11 @@
 
 <div class="order-timeline">
 
+
   <div
     class="timeline-step"
-    data-status="confirmed">
+    data-status="confirmed"
+  >
 
     <div class="timeline-dot">
       1
@@ -264,9 +321,11 @@
   </div>
 
 
+
   <div
     class="timeline-step"
-    data-status="preparing">
+    data-status="preparing"
+  >
 
     <div class="timeline-dot">
       2
@@ -279,9 +338,11 @@
   </div>
 
 
+
   <div
     class="timeline-step"
-    data-status="out_for_delivery">
+    data-status="out_for_delivery"
+  >
 
     <div class="timeline-dot">
       3
@@ -294,9 +355,11 @@
   </div>
 
 
+
   <div
     class="timeline-step"
-    data-status="delivered">
+    data-status="delivered"
+  >
 
     <div class="timeline-dot">
       4
@@ -307,6 +370,24 @@
     </div>
 
   </div>
+
+
+
+  <div
+    class="timeline-step"
+    data-status="received"
+  >
+
+    <div class="timeline-dot">
+      5
+    </div>
+
+    <div>
+      تم الاستلام
+    </div>
+
+  </div>
+
 
 </div>
 
@@ -503,7 +584,8 @@
 
 <div
   class="order-info-box"
-  style="margin-top:18px">
+  style="margin-top:18px"
+>
 
 <h3>
   المنتجات
@@ -511,6 +593,7 @@
 
 
 <div style="overflow:auto">
+
 
 <table class="table">
 
@@ -553,14 +636,14 @@
 
 </table>
 
-</div>
 
 </div>
 
+</div>
 
 
-<div
-  class="order-details-grid">
+
+<div class="order-details-grid">
 
 
 <div class="order-info-box">
@@ -611,17 +694,22 @@
 
   <div
     class="order-line"
-    style="border-top:2px solid #dfe7ef;
-           margin-top:8px;
-           padding-top:16px">
+    style="
+      border-top:2px solid #dfe7ef;
+      margin-top:8px;
+      padding-top:16px;
+    "
+  >
 
     <strong>
       الإجمالي
     </strong>
 
+
     <div
       id="orderTotal"
-      class="order-total">
+      class="order-total"
+    >
 
       AED 0.00
 
@@ -642,7 +730,8 @@
 
   <p
     id="trackingMessage"
-    class="muted">
+    class="muted"
+  >
 
     جاري تحميل حالة الطلب...
 
@@ -653,7 +742,8 @@
 
     <button
       class="btn btn-primary"
-      onclick="refreshOrder()">
+      onclick="refreshOrder()"
+    >
 
       تحديث الحالة
 
@@ -667,14 +757,68 @@
 </div>
 
 
+
+<div
+  id="receiptBox"
+  class="receipt-box"
+  style="display:none"
+>
+
+  <div
+    id="receiptTitle"
+    class="receipt-title"
+  >
+
+    تأكيد استلام الطلب
+
+  </div>
+
+
+  <p
+    id="receiptMessage"
+    class="muted"
+  >
+
+    بعد استلام الطلب فعليًا، يرجى تأكيد الاستلام.
+
+  </p>
+
+
+  <button
+    id="confirmReceiptBtn"
+    class="btn btn-primary"
+    onclick="confirmBuyerReceipt()"
+  >
+
+    ✓ تأكيد استلام الطلب
+
+  </button>
+
+
+  <div
+    id="receiptDate"
+    style="
+      display:none;
+      margin-top:12px;
+      font-weight:700;
+    "
+  >
+  </div>
+
+</div>
+
+
+
 <div
   id="orderError"
-  style="display:none;
-         margin-top:20px;
-         padding:16px;
-         border-radius:12px;
-         background:#fff3f3">
-
+  style="
+    display:none;
+    margin-top:20px;
+    padding:16px;
+    border-radius:12px;
+    background:#fff3f3;
+  "
+>
 </div>
 
 
