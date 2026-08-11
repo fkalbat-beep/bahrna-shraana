@@ -816,7 +816,18 @@ function renderSupplier() {
                 <tr>
 
                   <td>
-                    ${o.no}
+
+                    <a
+                      href="b2b-order.html?order=${encodeURIComponent(o.no)}"
+                      style="
+                        font-weight:700;
+                        color:#062f5f;
+                        text-decoration:underline;
+                      "
+                    >
+                      ${o.no}
+                    </a>
+
                   </td>
 
                   <td>
@@ -890,9 +901,11 @@ function renderSupplier() {
         : `
 
             <tr>
+
               <td colspan="4">
                 لا توجد طلبات حالياً
               </td>
+
             </tr>
 
           `;
